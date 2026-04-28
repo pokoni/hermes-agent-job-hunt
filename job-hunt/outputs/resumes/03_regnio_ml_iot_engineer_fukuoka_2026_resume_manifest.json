@@ -1,0 +1,22 @@
+{
+  "job_id": "03_regnio_ml_iot_engineer_fukuoka_2026",
+  "job_basename": "03_regnio_ml_iot_engineer_fukuoka_2026",
+  "resume_version": "1.0.0",
+  "resume_file": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_resume_ja.md",
+  "cv_file": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json",
+    "outputs/fit_reports/03_regnio_ml_iot_engineer_fukuoka_2026.md",
+    "outputs/tailored_resumes/03_regnio_ml_iot_engineer_fukuoka_2026_tailor_plan.md"
+  ],
+  "human_review_required": true,
+  "notes": {
+    "master_experiences_missing": true,
+    "requirements_hidden_behind_login": true,
+    "timing_caveat": "Candidate is M.S. student (graduating 2028-03). Position is full-time. Apply only after confirming timing feasibility.",
+    "known_skill_gaps": ["C/C++", "AWS", "Docker", "IoT", "Gstreamer", "LiDAR", "CircleCI"],
+    "language_level": "JLPT N2 (not business-level Japanese)"
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "job-hunt/schemas/candidate_profile.schema.json",
+  "title": "Candidate Profile",
+  "description": "Flexible schema for the Hermes Japan job-hunt candidate master profile. This schema intentionally allows additional fields so the profile can evolve without breaking existing workflows.",
+  "type": "object",
+  "required": [
+    "name",
+    "email",
+    "current_affiliation",
+    "languages",
+    "visa_status",
+    "weekly_availability",
+    "education",
+    "skills",
+    "target_roles"
+  ],
+  "properties": {
+    "name": {
+      "description": "Candidate display name. Example: HU YAOHUA",
+      "type": [
+        "string",
+        "object"
+      ],
+      "minLength": 1
+    },
+    "email": {
+      "description": "Primary contact email used for applications.",
+      "type": "string",
+      "minLength": 1
+    },
+    "contact_email": {
+      "description": "Optional alias for email if a different schema version uses contact_email.",
+      "type": "string"
+    },
+    "current_affiliation": {
+      "description": "Current university, graduate school, department, or program. Example: 九州大学 システム情報科学府 情報理工専攻",
+      "type": "string",
+      "minLength": 1
+    },
+    "department": {
+      "description": "Optional alias for current affiliation / department.",
+      "type": "string"
+    },
+    "program": {
+      "description": "Optional alias for current program.",
+      "type": "string"
+    },
+    "major": {
+      "description": "Optional alias for current major.",
+      "type": "string"
+    },
+    "visa_status": {
+      "description": "Current residence / visa status in Japan. Do not guess; fill with the user's real status.",
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "unknown",
+          "Unknown",
+          "UNKNOWN",
+          ""
+        ]
+      }
+    },
+    "residency_status": {
+      "description": "Optional alias for visa_status.",
+      "type": "string"
+    },
+    "work_authorization": {
+      "description": "Optional alias for visa or work authorization.",
+      "type": "string"
+    },
+    "weekly_availability": {
+      "description": "Weekly availability for internship or work. Example: 20+ hours/week",
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "enum": [
+          "unknown",
+          "Unknown",
+          "UNKNOWN",
+          ""
+        ]
+      }
+    },
+    "availability_per_week": {
+      "description": "Optional alias for weekly_availability.",
+      "type": "string"
+    },
+    "internship_availability": {
+      "description": "Optional alias for internship availability.",
+      "type": "string"
+    },
+    "location": {
+      "description": "Current location or preferred work location.",
+      "type": [
+        "string",
+        "object"
+      ]
+    },
+    "languages": {
+      "description": "Language skills. Can be a list or structured object.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        }
+      ]
+    },
+    "language_skills": {
+      "description": "Optional alias for languages.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": true
+              }
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "education": {
+      "description": "Education history.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "skills": {
+      "description": "Technical skills and tools.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "target_roles": {
+      "description": "Target job roles or role categories.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "publications": {
+      "description": "Publications or research outputs.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "projects": {
+      "description": "Project summaries. Detailed evidence should remain in master_experiences.json.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "work_experience": {
+      "description": "Internships or work experience.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "links": {
+      "description": "Portfolio, GitHub, lab page, publication links, etc.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ]
+    },
+    "do_not_change": {
+      "description": "Facts that must not be altered by generation or tailoring.",
+      "type": [
+        "array",
+        "object"
+      ]
+    },
+    "notes": {
+      "description": "Additional private notes for tailoring.",
+      "type": [
+        "string",
+        "array",
+        "object"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

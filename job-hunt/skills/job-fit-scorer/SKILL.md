@@ -124,6 +124,30 @@ Then explain why in 2–5 bullet points or a short paragraph.
 
 The words `Recommendation` or `Apply` must appear explicitly in this section.
 
+## Pitfalls
+
+### Hidden requirements behind login walls
+
+Japanese job boards (Green, Wantedly, etc.) frequently hide application-condition details — required skills, preferred skills, and language requirements — behind login authentication. When the normalized job JSON has empty `required_skills` or `preferred_skills` arrays and `raw_description` indicates this is due to login gating (not because the role has no requirements):
+
+- Reduce **Confidence** to `medium` or `low` — the true requirement bar is unknown.
+- Base your scoring on the **visible stack** (`keywords_normalized`) and **responsibilities** as a proxy for what the role likely needs.
+- In `## Evidence Mapping`, mark each inferred requirement with a note like "based on visible stack (actual requirements hidden behind login)."
+- In `## Gaps and Risks`, explicitly call out the hidden-requirements uncertainty.
+
+Do **not** give a perfect required-skill score just because nothing is listed — the absence of data is not a perfect match.
+
+### Student vs. full-time timing mismatch
+
+When the candidate is a current student (especially an M.S. student with a graduation date 1+ year in the future) and the job is `full_time`:
+
+- Deduct from **Experience Alignment** — the candidate is not available for full-time work now.
+- In `## Gaps and Risks`, flag this as a critical timing mismatch.
+- Recommendation should typically be `Low priority` unless the company is known to hire new grads far in advance or the candidate's graduation is imminent.
+- If the company also has internship or new-grad openings, note this as a potential alternative path.
+
+Do **not** ignore the timing mismatch just because the technical skills align.
+
 ## Writing guidelines
 
 Prefer concise, structured, audit-friendly writing.

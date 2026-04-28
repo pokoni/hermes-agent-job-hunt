@@ -1,105 +1,115 @@
-# submission_review_gate prompt asset
+# Submission Review Gate Prompt
 
-Use this prompt asset when generating the final pre-submission review package for a single job application inside the fixed `job-hunt/` workspace.
+You are working inside the frozen Hermes Japan job-hunt workspace.
+
+## Frozen pipeline
+
+```text
+job-normalizer
+→ job-fit-scorer
+→ resume-tailor
+→ jp-application-writer
+→ application-tracker
+→ browser-apply-assistant
+→ submission-review-gate
+→ live-submission-adapter
+```
+
+There is no `submission-session-orchestrator` in this framework.
 
 ## Goal
 
-Create a final review package that answers one operational question:
+Create the final pre-submission review package for one job basename. The review must decide whether the application is blocked, requires human review, or is ready for explicit human approval.
 
-**Is this application package ready to move into a human-approved submission session, without actually submitting anything?**
+## Required outputs
 
-## Workspace rules
+Write:
 
-- Keep all paths inside the existing `job-hunt/` workspace.
-- Use `outputs/`, not `output/`.
-- Do not rename directories or component names.
-- Do not perform a final submit action.
-- Do not claim submission happened.
-- Require explicit final human approval before any submit action.
+```text
+outputs/logs/<job_basename>_submission_review.md
+outputs/logs/<job_basename>_submission_decision.json
+```
 
-## Inputs to inspect
+## Required review headings
 
-Read the following when available:
+```md
+# Submission Review
 
-- `data/jobs/<job>.json`
-- `outputs/fit_reports/<job>.md`
-- `outputs/tailored_resumes/<job>_tailor_plan.md`
-- `outputs/application_drafts/<job>_motivation_ja.md`
-- `outputs/application_drafts/<job>_self_pr_ja.md`
-- `outputs/application_drafts/<job>_application_mail_ja.md`
-- `outputs/logs/application_tracker.jsonl`
-- `outputs/logs/<job>_application_execution_plan.md`
-- `outputs/logs/<job>_application_execution_checklist.md`
-- `outputs/logs/<job>_application_form_snapshot.md`
-
-## Required markdown headings
-
-The markdown output must use these exact headings:
-
-# Submission Review Package
 ## Target Job
-## Artifact Readiness Summary
-## Consistency Checks
-## Missing or Unverified Items
-## Submission Boundary
-## Final Human Approval Checklist
-## Decision Recommendation
+## Candidate Identity Check
+## Required Artifacts
+## Resume Artifacts
+## Application Draft Consistency
+## Browser / Form Readiness
+## Blocking Issues
+## Human Review Checklist
+## Decision
+## Human Approval Boundary
+```
 
-Inside `## Submission Boundary`, include these exact lines:
+## Required decision JSON keys
 
+```json
+{
+  "job_id": "",
+  "job_basename": "",
+  "company_name": "",
+  "job_title": "",
+  "status": "",
+  "decision": "",
+  "resume_version": "",
+  "resume_file": "",
+  "cv_file": "",
+  "resume_manifest": "",
+  "blocking_issues": [],
+  "warnings": [],
+  "next_actions": [],
+  "human_review_required": true,
+  "explicit_human_approval_required": true,
+  "live_submission_allowed": false
+}
+```
+
+## Resume artifact logic
+
+If the resume manifest exists:
+
+```text
+outputs/resumes/<job_basename>_resume_manifest.json
+```
+
+read it and propagate:
+
+- `resume_version`
+- `resume_file`
+- `cv_file`
+
+Do not say resume/CV files are missing if the manifest exists and both files exist.
+
+If tracker records have stale `resume_version: null` but the manifest exists, report:
+
+```text
+Tracker may be stale; rerun application-tracker.
+```
+
+Do not report this as missing resume files.
+
+## Candidate consistency logic
+
+Check candidate email and current affiliation from `data/candidate_profile.json` against application drafts.
+
+If a draft contains old or mismatched values, mark it as a blocker and recommend rerunning `jp-application-writer`.
+
+## Human approval boundary
+
+The review must contain these exact lines:
+
+```text
 Do not submit by default.
 Stop before final submission.
-Require final human approval before any submit action.
+Explicit human approval is required before any submit action.
+```
 
-## Required JSON fields
+## Safety
 
-The decision JSON must contain:
-
-- `job_id`
-- `company_name`
-- `job_title`
-- `ready_for_submission`
-- `requires_human_approval`
-- `blocking_issues`
-- `missing_items`
-- `recommended_next_action`
-- `review_timestamp`
-
-## Review logic
-
-Use a conservative gate.
-
-The package is **not** ready if:
-- required artifacts are missing,
-- key facts conflict across files,
-- generated drafts are not aligned with the target role,
-- browser execution artifacts still show unresolved blocking issues,
-- the actual application path is unclear or unverified.
-
-The package may be treated as operationally ready only if:
-- all major artifacts exist,
-- no blocking inconsistency is found,
-- the next manual execution step is clear,
-- final human approval remains required.
-
-## Preferred language style
-
-- concise
-- operational
-- explicit
-- audit-friendly
-
-## Recommended decision phrases
-
-Use one of these for `recommended_next_action`:
-- `revise_artifacts`
-- `verify_form_access`
-- `obtain_human_approval`
-- `prepare_submission_session`
-
-## Never do these
-
-- never submit
-- never fabricate readiness
-- never hide missing artifacts
-- never omit the human approval boundary
+Do not set `live_submission_allowed` to true unless there are no blockers. Even then, final submission still requires explicit human approval.

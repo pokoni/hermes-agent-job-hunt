@@ -1,159 +1,210 @@
----
-name: submission-review-gate
-description: Final pre-submission review gate for the Japan job-hunt workspace. Use this skill to consolidate all generated artifacts, verify completeness and consistency, and produce an explicit human-approval boundary before any submission action.
----
-
 # submission-review-gate
 
 ## Purpose
 
-Use this skill to create the final pre-submission review package for a single job application.
-This skill does **not** submit anything.
-Its role is to make the submission boundary explicit, confirm artifact readiness, surface unresolved risks, and require final human approval before any submit action.
+Use this skill to create the final pre-submission review package for the Hermes Japan job-hunt workspace.
 
-## When to Use
+This skill belongs to the frozen `job-hunt/` pipeline:
 
-Use this skill when all earlier workspace stages for a target job are already available or mostly available:
+```text
+job-normalizer
+→ job-fit-scorer
+→ resume-tailor
+→ jp-application-writer
+→ application-tracker
+→ browser-apply-assistant
+→ submission-review-gate
+→ live-submission-adapter
+```
 
-- a normalized job posting under `data/jobs/`
-- a fit report under `outputs/fit_reports/`
-- a tailoring plan under `outputs/tailored_resumes/`
-- Japanese application drafts under `outputs/application_drafts/`
-- application tracking artifacts under `outputs/logs/`
-- browser-assisted execution artifacts under `outputs/logs/`
+Do not introduce a new intermediate submission component between `submission-review-gate` and `live-submission-adapter`.
 
-This skill should be called **after**:
-1. `job-normalizer`
-2. `job-fit-scorer`
-3. `resume-tailor`
-4. `jp-application-writer`
-5. `application-tracker`
-6. `browser-apply-assistant`
+## When to use
+
+Use this skill when the user asks to:
+
+- generate a final submission review package,
+- verify whether all generated application artifacts are ready for human review,
+- check consistency across candidate profile, drafts, tracker, resume artifacts, and browser execution artifacts,
+- decide whether the application is blocked, review-ready, or ready for explicit human approval.
 
 ## Inputs
 
-Expected workspace inputs:
+Typical inputs:
 
-- `data/jobs/<job>.json`
-- `outputs/fit_reports/<job>.md`
-- `outputs/tailored_resumes/<job>_tailor_plan.md`
-- `outputs/application_drafts/<job>_motivation_ja.md`
-- `outputs/application_drafts/<job>_self_pr_ja.md`
-- `outputs/application_drafts/<job>_application_mail_ja.md`
-- `outputs/logs/application_tracker.jsonl` when available
-- `outputs/logs/<job>_application_execution_plan.md`
-- `outputs/logs/<job>_application_execution_checklist.md`
-- `outputs/logs/<job>_application_form_snapshot.md`
+- `data/jobs/<job_basename>.json`
+- `data/candidate_profile.json`
+- `outputs/fit_reports/<job_basename>.md`
+- `outputs/tailored_resumes/<job_basename>_tailor_plan.md`
+- `outputs/application_drafts/<job_basename>_motivation_ja.md`
+- `outputs/application_drafts/<job_basename>_self_pr_ja.md`
+- `outputs/application_drafts/<job_basename>_application_mail_ja.md`
+- `outputs/resumes/<job_basename>_resume_ja.md`
+- `outputs/resumes/<job_basename>_cv_ja.md`
+- `outputs/resumes/<job_basename>_resume_manifest.json`
+- `outputs/logs/application_tracker.jsonl`
+- `outputs/logs/application_tracker_latest.md`
+- browser-assist artifacts under `outputs/logs/`
 
-## Required Outputs
+## Outputs
 
-Write these files under `outputs/logs/`:
+Write:
 
-1. `outputs/logs/<job>_submission_review.md`
-2. `outputs/logs/<job>_submission_decision.json`
+```text
+outputs/logs/<job_basename>_submission_review.md
+outputs/logs/<job_basename>_submission_decision.json
+```
 
-Do not change directory names.
-Use `outputs/`, not `output/`.
+Do not write to `output/`.
 
-## Output Contract
+## Required review Markdown contract
 
-The markdown review file must use these exact headings:
+The review Markdown must include these headings:
 
-# Submission Review Package
+```md
+# Submission Review
+
 ## Target Job
-## Artifact Readiness Summary
-## Consistency Checks
-## Missing or Unverified Items
-## Submission Boundary
-## Final Human Approval Checklist
-## Decision Recommendation
+## Candidate Identity Check
+## Required Artifacts
+## Resume Artifacts
+## Application Draft Consistency
+## Browser / Form Readiness
+## Blocking Issues
+## Human Review Checklist
+## Decision
+## Human Approval Boundary
+```
 
-The markdown file must include these exact lines inside `## Submission Boundary`:
+## Required decision JSON contract
 
+The decision JSON must be valid JSON and include these top-level keys:
+
+```json
+{
+  "job_id": "",
+  "job_basename": "",
+  "company_name": "",
+  "job_title": "",
+  "status": "",
+  "decision": "",
+  "resume_version": "",
+  "resume_file": "",
+  "cv_file": "",
+  "resume_manifest": "",
+  "blocking_issues": [],
+  "warnings": [],
+  "next_actions": [],
+  "human_review_required": true,
+  "explicit_human_approval_required": true,
+  "live_submission_allowed": false
+}
+```
+
+## Resume artifact awareness
+
+If this file exists:
+
+```text
+outputs/resumes/<job_basename>_resume_manifest.json
+```
+
+then:
+
+- read it,
+- copy `resume_version`, `resume_file`, and `cv_file` into the decision JSON,
+- do not list “resume/CV files missing” as a blocker if both files exist,
+- if either file path from the manifest is missing, list that exact missing file as a blocker.
+
+If the manifest is absent, add a blocker:
+
+```text
+Resume manifest missing under outputs/resumes/
+```
+
+If `application_tracker_latest.md` or the latest JSONL record still says `resume_version` is null, but the resume manifest exists, treat it as a tracker-refresh warning and recommend rerunning `application-tracker` instead of claiming resume files are missing.
+
+## Candidate consistency checks
+
+Check consistency between `data/candidate_profile.json` and generated application artifacts.
+
+At minimum, check:
+
+- candidate email,
+- current affiliation / department,
+- visa status if present,
+- weekly availability if present,
+- Japanese language level if present.
+
+If an application draft contains an old email or old affiliation, mark it as a blocking issue and recommend rerunning `jp-application-writer`.
+
+## Browser readiness checks
+
+Review browser-assist artifacts if present:
+
+- application execution plan,
+- execution checklist,
+- form snapshot.
+
+If the target form is inaccessible due to login, bot detection, SPA behavior, or missing credentials, mark live submission as blocked.
+
+## Status and decision values
+
+Recommended `status` values:
+
+- `blocked`
+- `review_required`
+- `ready_for_human_approval`
+
+Recommended `decision` values:
+
+- `revise_artifacts`
+- `human_review_required`
+- `ready_for_explicit_approval`
+
+Never set `live_submission_allowed` to true unless all blockers are absent and the user has explicitly requested preparation for a live step.
+
+## Human approval boundary
+
+The review must include the exact lines:
+
+```text
 Do not submit by default.
 Stop before final submission.
-Require final human approval before any submit action.
-
-The decision JSON must be machine-readable and contain at least:
-
-- `job_id`
-- `company_name`
-- `job_title`
-- `ready_for_submission`
-- `requires_human_approval`
-- `blocking_issues`
-- `missing_items`
-- `recommended_next_action`
-- `review_timestamp`
+Explicit human approval is required before any submit action.
+```
 
 ## Procedure
 
-1. Read the target job JSON and identify the canonical job id, company, and title.
-2. Read all available downstream artifacts for that same job id.
-3. Check whether the artifact set is complete enough for submission review.
-4. Compare key facts across artifacts:
-   - company name
-   - job title
-   - language expectations
-   - targeted role emphasis
-   - recommended strengths and risks
-5. Check whether the application drafts appear aligned with the fit report and tailoring plan.
-6. Check whether the browser execution artifacts define a non-submission boundary and whether any form blockers remain.
-7. Produce a single markdown submission review package with the required headings.
-8. Produce a machine-readable decision JSON with an explicit readiness verdict.
-9. If there are missing files or unresolved blockers, set `ready_for_submission` to `false`.
-10. Never perform or simulate a final submission action.
-
-## Decision Rules
-
-Use conservative decision logic.
-
-Set `ready_for_submission` to `true` only if:
-- all required artifacts exist,
-- no blocking inconsistency is found,
-- browser execution artifacts indicate the next step is operationally feasible,
-- final human approval is still required.
-
-Set `requires_human_approval` to `true` in all normal cases.
-This should remain `true` unless the user explicitly redesigns the framework.
-
-Recommended decision values:
-
-- `ready_for_submission: false` when key artifacts are missing or inconsistent
-- `ready_for_submission: true` only when the package is complete and coherent
-- `recommended_next_action` should be one of:
-  - `revise_artifacts`
-  - `verify_form_access`
-  - `obtain_human_approval`
-  - `prepare_submission_session`
-
-## Style Requirements
-
-- Prefer concise operational language.
-- Separate facts from recommendations.
-- Do not invent evidence.
-- If an artifact is missing, state that it is missing.
-- If an item could not be verified, label it as unverified.
-- Keep the review file human-readable and directly actionable.
-
-## Pitfalls
-
-Avoid these mistakes:
-
-- treating draft generation as equivalent to submission readiness
-- claiming the application is ready when the form path was not verified
-- silently ignoring missing files
-- changing workspace paths or directory names
-- merging multiple jobs into one review package
-- performing any final submit action
+1. Read normalized job JSON.
+2. Read candidate profile.
+3. Check generated application artifacts.
+4. Read resume manifest if present.
+5. Verify resume and CV file paths from the manifest.
+6. Read tracker artifacts and check whether they reference the resume manifest.
+7. Check candidate identity consistency in application drafts.
+8. Check browser/form readiness.
+9. Produce the review Markdown.
+10. Produce the decision JSON.
+11. Keep live submission blocked unless all blockers are resolved and explicit human approval is required.
 
 ## Verification
 
-A correct result should satisfy all of the following:
+Run:
 
-- a markdown review file exists at `outputs/logs/<job>_submission_review.md`
-- a JSON decision file exists at `outputs/logs/<job>_submission_decision.json`
-- the markdown file contains all required headings
-- the markdown file contains the three exact submission-boundary lines
-- the JSON decision file contains an explicit human approval requirement
-- no submit action is taken
+```bash
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_submission_review_resume_awareness.py -q
+```
+
+Then run:
+
+```bash
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+```
+
+## Pitfalls
+
+- Do not depend on `submission-session-orchestrator`; it is not part of the frozen framework.
+- Do not reintroduce `output/`.
+- Do not claim a live submission is allowed merely because files exist.
+- Do not hide platform-level blockers such as inaccessible forms or missing login credentials.

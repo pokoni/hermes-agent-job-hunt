@@ -1,0 +1,47 @@
+{
+  "job_id": "avilen_semiconductor_cv_ai_intern_2026",
+  "job_basename": "02_avilen_semiconductor_cv_ai_intern_2026",
+  "resume_version": "0.1.0",
+  "created_at": "2026-04-28",
+  "resume_file": "outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_resume_ja.md",
+  "cv_file": "outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/02_avilen_semiconductor_cv_ai_intern_2026.json",
+    "outputs/fit_reports/02_avilen_semiconductor_cv_ai_intern_2026.md",
+    "outputs/tailored_resumes/02_avilen_semiconductor_cv_ai_intern_2026_tailor_plan.md"
+  ],
+  "human_review_required": true,
+  "review_checklist": [
+    "Verify Japanese expressions, keigo, and writing style are natural and correct",
+    "Confirm Sony internship work details do not violate confidentiality",
+    "Check technical details of projects are accurate (specific quantization methods, evaluation metrics)",
+    "Validate JLPT N2 description and how the N2 vs N1 gap is addressed",
+    "Verify author order and contribution descriptions in publications are accurate",
+    "Confirm weekly availability matches current academic schedule",
+    "Check contact info and affiliation have no errors",
+    "Pass through submission-review-gate skill before final submission"
+  ],
+  "target_role": {
+    "company": "株式会社AVILEN",
+    "title": "半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験",
+    "employment_type": "internship",
+    "location": "Tokyo, Japan"
+  },
+  "candidate_snapshot": {
+    "name": "HU YAOHUA",
+    "affiliation": "九州大学大学院 システム情報科学府 情報理工専攻 Pangu Research Lab",
+    "japanese_level": "JLPT N2",
+    "english_level": "TOEIC 750",
+    "availability": "28 hrs/week (regular), 40+ hrs/week (vacation)"
+  },
+  "tailoring_decisions": {
+    "lead_experience": "Sony Semiconductor Solutions Edge AI Internship",
+    "de_emphasized": ["agentic AI / LLM work", "LangGraph/LlamaIndex tasks"],
+    "positioning": "practical algorithm engineer with industry experience",
+    "keyword_strategy": "image processing, object detection, model compression, inference optimization",
+    "language_gap_acknowledged": true,
+    "manufacturing_domain_acknowledged_as_growth_area": true
+  }
+}

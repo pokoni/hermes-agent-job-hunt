@@ -1,167 +1,191 @@
 # Live Submission Adapter Prompt
 
-You are preparing a controlled live submission dry-run package for the Hermes Japan job-hunting workspace.
+You are working inside the frozen Hermes Japan job-hunt workspace.
 
-Use the fixed project structure:
+## Frozen pipeline
 
-- Candidate data: `data/candidate_profile.json`
-- Experience data: `data/master_experiences.json`
-- Normalized jobs: `data/jobs/`
-- Generated artifacts: `outputs/`
-- Logs and execution artifacts: `outputs/logs/`
+```text
+job-normalizer
+→ job-fit-scorer
+→ resume-tailor
+→ jp-application-writer
+→ application-tracker
+→ browser-apply-assistant
+→ submission-review-gate
+→ live-submission-adapter
+```
 
-Do not use `output/`.
-Do not create new top-level directories.
+There is no `submission-session-orchestrator`.
 
-## Current Frozen Workflow
+## Goal
 
-The current workflow ends with:
+Create a controlled live submission dry-run package for one job basename.
 
-- `submission-review-gate`
-- `live-submission-adapter`
+This is a dry run only. Do not perform a real submission. Do not click any submit button.
 
-There is no `submission-session-orchestrator` in this project.
-Do not require it.
-Do not mention it.
-Do not block on it.
+## Required inputs
 
-## Primary Goal
+Read:
 
-Create a safe, reviewable dry-run package for one job application.
-The package must help the user understand exactly what would happen during a supervised application attempt.
+```text
+data/jobs/<job_basename>.json
+outputs/logs/<job_basename>_submission_review.md
+outputs/logs/<job_basename>_submission_decision.json
+```
 
-The default state is not submission.
-The default state is dry-run preparation.
+If available, also read:
 
-## Mandatory Boundary
+```text
+outputs/resumes/<job_basename>_resume_manifest.json
+outputs/logs/<job_basename>_application_execution_plan.md
+outputs/logs/<job_basename>_application_execution_checklist.md
+outputs/logs/<job_basename>_application_form_snapshot.md
+```
 
-Every live submission package must include these statements:
+## Required outputs
 
-- Do not submit by default.
-- Stop before final submission.
-- Require explicit human approval before any submit action.
-- This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
+Write exactly:
 
-## Required Upstream Artifacts
+```text
+outputs/logs/<job_basename>_live_submission_dry_run_plan.md
+outputs/logs/<job_basename>_live_submission_field_mapping.md
+outputs/logs/<job_basename>_live_submission_authorization_request.md
+outputs/logs/<job_basename>_live_submission_result_stub.json
+```
 
-Check for these real upstream artifacts:
+## Dry-run plan required content
 
-- `outputs/fit_reports/<job_basename>.md`
-- `outputs/tailored_resumes/<job_basename>_tailor_plan.md`
-- `outputs/application_drafts/<job_basename>_motivation_ja.md`
-- `outputs/application_drafts/<job_basename>_self_pr_ja.md`
-- `outputs/application_drafts/<job_basename>_application_mail_ja.md`
-- `outputs/logs/<job_basename>_application_execution_plan.md`
-- `outputs/logs/<job_basename>_application_execution_checklist.md`
-- `outputs/logs/<job_basename>_application_form_snapshot.md`
-- `outputs/logs/<job_basename>_submission_review.md`
-- `outputs/logs/<job_basename>_submission_decision.json`
+The dry-run plan must include both exact titles:
 
-If any required artifact is missing, do not fail silently.
-Produce a blocked package and list the missing artifacts.
-
-If the submission decision indicates blocking issues, keep the package blocked.
-
-## Output 1: Dry Run Plan
-
-Create:
-
-`outputs/logs/<job_basename>_live_submission_dry_run_plan.md`
-
-It must contain exactly these section headings:
-
+```md
 # Live Submission Dry Run Plan
+# Live Submission Dry-Run Plan
+```
 
+Then include all of these headings:
+
+```md
 ## Target Job
-
 ## Application URL
-
 ## Required Prior Artifacts
-
 ## Dry Run Browser Steps
-
 ## Stop Conditions
-
 ## Human Approval Boundary
-
 ## Expected Outputs
+## Submission Review Source
+## Resume Artifact Source
+## Current Live Status
+## Live Preconditions
+## Planned Live Steps
+## Blocking Issues
+## Result Stub Summary
+```
 
-## Output 2: Field Mapping
+The dry-run plan must contain:
 
-Create:
+```text
+Do not submit by default.
+Stop before final submission.
+Require explicit human approval before any submit action.
+This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
+Explicit human approval is required before any submit action.
+```
 
-`outputs/logs/<job_basename>_live_submission_field_mapping.md`
+## Field mapping required content
 
-It must contain exactly these section headings:
+The field mapping must include:
 
+```md
 # Live Submission Field Mapping
 
+## Target Job
+## Source Artifacts
+## Candidate Fields
+## Resume and CV Files
+## Application Draft Fields
+## Form Field Mapping
+## Missing or Unverified Fields
+## Human Review Required
+
 ## Candidate Identity Fields
-
 ## Contact Fields
-
 ## Education Fields
-
 ## Experience Fields
-
 ## Motivation and Self-PR Fields
-
 ## Upload Fields
-
 ## Fields Requiring Human Input
-
 ## Mapping Risks
+```
 
-## Output 3: Authorization Request
+## Authorization request required content
 
-Create:
+The authorization request must include:
 
-`outputs/logs/<job_basename>_live_submission_authorization_request.md`
-
-It must contain exactly these section headings:
-
+```md
 # Live Submission Authorization Request
 
-## Submission Status
-
-## Materials to Review
-
+## Target Job
+## Current Status
+## Required Human Decision
+## Submission Boundary
 ## Blocking Issues
+## Files That Would Be Used
+## Authorization Checklist
 
+## Submission Status
+## Materials to Review
 ## Human Approval Boundary
-
 ## Approval Checklist
-
 ## Authorization Phrase
+```
 
-## Output 4: Result Stub JSON
+It must contain:
 
-Create:
+```text
+Explicit approval is required.
+Do not submit by default.
+Stop before final submission.
+Require explicit human approval before any submit action.
+This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
+Explicit human approval is required before any submit action.
+```
 
-`outputs/logs/<job_basename>_live_submission_result_stub.json`
+## Result stub JSON required keys
 
-Use this structure:
+The result stub must include:
 
 ```json
 {
-  "job_basename": "<job_basename>",
-  "status": "dry_run_prepared",
+  "job_id": "",
+  "job_basename": "",
+  "status": "",
   "live_submission_performed": false,
-  "human_approval_required": true,
+  "submit_button_clicked": false,
   "final_submit_clicked": false,
-  "missing_artifacts": [],
-  "blocking_sources": [],
-  "notes": []
+  "resume_file": "",
+  "cv_file": "",
+  "resume_version": "",
+  "blocking_issues": [],
+  "human_approval_required": true,
+  "explicit_approval_received": false
 }
 ```
 
-If blocked, set `status` to `blocked` and list missing artifacts and blocking sources.
+## Resume-aware behavior
 
-## Writing Rules
+Use resume artifact fields from `submission_decision.json`:
 
-- Do not invent candidate facts.
-- Do not invent unavailable form fields.
-- Use `requires human input` for unknown fields.
-- Prefer explicit checklists over vague prose.
-- Keep the human approval boundary visible and repeated.
-- Do not mention nonexistent intermediate workflow stages.
+- `resume_version`
+- `resume_file`
+- `cv_file`
+- `resume_manifest`
+
+If those file paths exist, do not report resume/CV missing.
+
+## Safety
+
+- Never submit by default.
+- Never click the final submit button.
+- Keep blockers visible.
+- Keep platform-access blockers visible.
+- Require explicit human approval.

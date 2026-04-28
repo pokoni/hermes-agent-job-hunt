@@ -1,304 +1,212 @@
----
-name: resume-tailor
-description: Generate a truthful, evidence-based resume tailoring plan for a specific Japanese job posting using the candidate profile, master experience inventory, and an existing fit report. Use this skill when the user wants to customize resume emphasis for a target role, especially after a fit analysis has already been completed.
-allowed-tools: Read, Write, Edit, Glob, Grep
----
-
 # resume-tailor
 
 ## Purpose
 
-Use this skill to create a **tailoring plan** for a target job before generating any final resume or application document.
+Use this skill to convert a job-specific fit report and candidate evidence into a truthful, role-targeted resume tailoring plan and application-ready resume artifacts for the Hermes Japan job-hunt workspace.
 
-This skill does **not** directly rewrite the candidate's canonical source data. It produces an intermediate planning artifact that explains:
+This skill belongs to the frozen `job-hunt/` pipeline:
 
-- which experiences should be emphasized,
-- how the summary should be adjusted,
-- how the technology stack should be reordered,
-- which bullets should be weakened or omitted,
-- which keywords should be incorporated.
+```text
+job-normalizer
+→ job-fit-scorer
+→ resume-tailor
+→ jp-application-writer
+→ application-tracker
+→ browser-apply-assistant
+→ submission-review-gate
+→ live-submission-adapter
+```
 
-The goal is to improve relevance for a target role in the Japanese market **without fabricating or exaggerating any facts**.
+Do not introduce a new pipeline component for resume file generation. Resume artifact generation is handled as an extension of this existing `resume-tailor` skill.
 
 ## When to use
 
-Use this skill when all or most of the following are true:
+Use this skill when the user asks to:
 
-- `data/candidate_profile.json` exists,
-- `data/master_experiences.json` exists (optional; if missing, fall back to candidate_profile.json's work_experience and projects),
-- a normalized target job JSON already exists under `data/jobs/`,
-- a fit analysis report already exists under `outputs/fit_reports/`,
-- the user wants guidance on how to adapt their resume for that job.
+- create a job-specific resume tailoring plan,
+- decide which experiences to emphasize for a target job,
+- generate application-ready resume artifacts for a specific job,
+- refresh resume/CV artifacts after candidate profile updates,
+- remove blockers such as missing resume/CV files from the submission stage.
 
-Use this skill **before**:
+## Inputs
 
-- generating a tailored resume draft,
-- generating Japanese motivation statements,
-- generating self-PR text,
-- preparing application email copy.
-
-## When not to use
-
-Do **not** use this skill when:
-
-- the target job has not yet been normalized,
-- the fit report has not yet been created,
-- the user wants to change factual profile data,
-- the task is to submit an application automatically,
-- the request is only to score fit rather than propose resume emphasis changes.
-
-If the fit report does not exist yet, first use the job-fit stage.
-
-## Required inputs
-
-This skill expects the following workspace structure inside `job-hunt/`:
-
-- `data/candidate_profile.json` (required)
-- `data/master_experiences.json` (optional; if missing, fall back to work_experience and projects from candidate_profile.json)
-- `data/jobs/<job_file>.json` (required)
-- `outputs/fit_reports/<job_report>.md` (required)
-
-## Output location
-
-Write the result to:
-
-- `outputs/tailored_resumes/<job_slug>_tailor_plan.md`
-
-Create `outputs/tailored_resumes/` if it does not already exist.
-
-## Core rules
-
-1. **Never invent facts.**
-   - Do not fabricate projects, metrics, degrees, employers, publications, or language levels.
-2. **Preserve canonical truth.**
-   - Use `data/candidate_profile.json` as the primary source of truth; if `data/master_experiences.json` exists, use it for richer evidence mapping.
-3. **Prefer reordering over rewriting.**
-   - Move emphasis toward the most relevant evidence before trying to rephrase aggressively.
-4. **Every recommendation must be evidence-based.**
-   - Each suggested emphasis change must be traceable to an actual experience entry.
-5. **Be explicit about gaps.**
-   - If the job asks for something the candidate does not clearly have, say so.
-6. **Separate facts from recommendations.**
-   - State what the candidate has versus what should be emphasized.
-7. **Optimize for Japanese-market relevance.**
-   - Favor concrete outcomes, deployed work, collaboration, measurable results, and role fit.
-
-## Procedure
-
-### Step 1: Read required inputs
-
-Read these files:
-
-- `data/candidate_profile.json` (required)
-- `data/master_experiences.json` (optional; if missing, use work_experience and projects from candidate_profile.json)
-- the target file under `data/jobs/` (required)
-- the corresponding fit report under `outputs/fit_reports/` (required)
-
-If one of these is missing, stop and report the missing dependency clearly.
-
-### Step 2: Identify the target role requirements
-
-Extract the most important job-side signals from the normalized job JSON and fit report, including:
-
-- role objective,
-- required skills,
-- preferred skills,
-- domain or product context,
-- language expectations,
-- location or work style constraints,
-- strongest reasons the role fits,
-- biggest gaps or risks.
-
-### Step 3: Map the role to candidate evidence
-
-Search `data/master_experiences.json` for the best supporting evidence.
-
-For each recommendation, identify:
-
-- experience title,
-- organization,
-- relevant technologies,
-- measurable outcomes,
-- evidence keywords,
-- why that experience supports the target role.
-
-Prefer the strongest 2 to 4 evidence units rather than listing everything.
-
-### Step 4: Build the tailoring strategy
-
-Generate a plan covering these sections:
-
-1. **Target role summary**
-   - one short paragraph describing what the job is seeking.
-2. **Top experiences to emphasize**
-   - 3 items maximum.
-3. **Resume summary adjustment**
-   - how to reposition the opening summary.
-4. **Skills / technology ordering adjustment**
-   - what should move up, down, or be grouped differently.
-5. **Bullet-level emphasis guidance**
-   - which bullets should be highlighted, compressed, or omitted.
-6. **Keyword insertion guidance**
-   - exact role-relevant keywords already supported by real evidence.
-7. **Risk and gap notes**
-   - what remains missing or weaker.
-8. **Suggested application decision**
-   - one of: `high priority apply`, `apply with tailoring`, `low priority`, `not recommended`.
-
-### Step 5: Write the output file
-
-Write a Markdown file to:
-
-- `outputs/tailored_resumes/<job_slug>_tailor_plan.md`
-
-The output must be human-readable and concise, but specific.
-
-## Required output format
-
-Use this structure:
-
-```md
-# Tailor Plan: <job title>
-
-## 1. Target Role Summary
-...
-
-## 2. Top Experiences to Emphasize
-### Experience 1
-- Evidence source:
-- Why it matters:
-- Recommended emphasis:
-
-### Experience 2
-...
-
-### Experience 3
-...
-
-## 3. Resume Summary Adjustment
-- Current positioning:
-- Recommended positioning:
-- Reason:
-
-## 4. Skills and Technology Ordering
-- Move up:
-- Keep but de-emphasize:
-- Add only if already evidenced:
-
-## 5. Bullet-Level Guidance
-- Highlight:
-- Compress:
-- Omit or reduce:
-
-## 6. Keyword Guidance
-- Keywords to include:
-- Keywords to avoid claiming without evidence:
-
-## 7. Risks and Gaps
-- ...
-
-## 8. Recommendation
-- Decision:
-- Confidence:
-- Notes:
-```
-
-## Naming guidance
-
-Use the normalized job filename stem as `<job_slug>`.
-
-Examples:
-
-- job JSON: `data/jobs/01_pfn_st01_plamo_translation_2026.json`
-- fit report: `outputs/fit_reports/01_pfn_st01_plamo_translation_2026.md`
-- tailor plan output: `outputs/tailored_resumes/01_pfn_st01_plamo_translation_2026_tailor_plan.md`
-
-## Verification checklist
-
-Before finishing, verify all of the following:
-
-- the output path is under `outputs/tailored_resumes/`,
-- no invented experiences were introduced,
-- each recommended emphasis can be traced to real candidate evidence,
-- the guidance is specific to the target role,
-- the recommendation section includes rationale,
-- the plan distinguishes strong matches from weak or missing areas.
-
-### Automated verification (recommended)
-
-After writing the plan, run an automated check via `execute_code` to catch issues a manual review might miss:
-
-```python
-from hermes_tools import read_file
-
-result = read_file('outputs/tailored_resumes/<job_slug>_tailor_plan.md')
-content = result['content']
-
-# 1. Check all required headings are present
-sections = [
-    '## 1. Target Role Summary',
-    '## 2. Top Experiences to Emphasize',
-    '## 3. Resume Summary Adjustment',
-    '## 4. Skills and Technology Ordering',
-    '## 5. Bullet-Level Guidance',
-    '## 6. Keyword Guidance',
-    '## 7. Risks and Gaps',
-    '## 8. Recommendation',
-]
-missing = [s for s in sections if s not in content]
-if missing:
-    print(f'MISSING SECTIONS: {missing}')
-else:
-    print('All 8 required sections present.')
-
-# 2. Scan for fabricated-claim warning signs
-fabrication_triggers = ['fabricate', 'invent', 'speculative', 'make up']
-for phrase in fabrication_triggers:
-    if phrase in content.lower():
-        print(f'WARNING: Possible fabricated claim detected: "{phrase}"')
-
-# 3. Check evidence traceability
-has_evidence = 'Evidence source:' in content
-print(f'Evidence traceable to source: {has_evidence}')
-
-# 4. Check role specificity (customize these check strings per job)
-has_role_specific = '<company_name>' in content or '<job_title>' in content
-print(f'Guidance specific to target role: {has_role_specific}')
-
-# 5. Check recommendation section has decision + confidence
-has_decision = 'Decision:' in content
-has_confidence = 'Confidence:' in content
-print(f'Recommendation has decision: {has_decision}, confidence: {has_confidence}')
-
-# 6. Check strong vs weak areas are distinguished
-has_risks = '## 7. Risks and Gaps' in content
-has_highlight = 'Highlight' in content
-has_compress = 'Compress' in content or 'Omit' in content or 'reduce' in content
-print(f'Strong vs weak areas distinguished: {has_risks and has_highlight and has_compress}')
-```
-
-Replace `<company_name>` and `<job_title>` with actual expected text fragments from the target job before running. Run this script and confirm zero failures before declaring the task complete.
-
-## Common pitfalls
-
-Avoid these mistakes:
-
-- rewriting the entire resume instead of producing a plan,
-- copying the fit report without adding evidence mapping,
-- suggesting unsupported keywords,
-- recommending claims that cannot be proven from candidate data,
-- using vague advice such as “make it more relevant” without concrete actions,
-- writing to `output/` instead of `outputs/`.
-
-## Example invocation
-
-If Hermes is started from the `job-hunt/` directory, use relative workspace paths like these:
+Typical inputs are:
 
 - `data/candidate_profile.json`
 - `data/master_experiences.json`
-- `data/jobs/01_pfn_st01_plamo_translation_2026.json`
-- `outputs/fit_reports/01_pfn_st01_plamo_translation_2026.md`
+- `data/jobs/<job_basename>.json`
+- `outputs/fit_reports/<job_basename>.md`
 
-Example task:
+Optional inputs:
 
-> Create a tailoring plan using `data/candidate_profile.json`, `data/master_experiences.json`, `data/jobs/01_pfn_st01_plamo_translation_2026.json`, and `outputs/fit_reports/01_pfn_st01_plamo_translation_2026.md`, then write the result to `outputs/tailored_resumes/01_pfn_st01_plamo_translation_2026_tailor_plan.md`.
+- existing tailoring plan under `outputs/tailored_resumes/<job_basename>_tailor_plan.md`
+- existing application drafts under `outputs/application_drafts/`
+- user-provided formatting requirements
+
+## Outputs
+
+### Required tailoring-plan output
+
+Write the job-specific tailoring plan to:
+
+```text
+outputs/tailored_resumes/<job_basename>_tailor_plan.md
+```
+
+### Required resume artifact outputs
+
+When asked to generate application-ready resume artifacts, write:
+
+```text
+outputs/resumes/<job_basename>_resume_ja.md
+outputs/resumes/<job_basename>_cv_ja.md
+outputs/resumes/<job_basename>_resume_manifest.json
+```
+
+These are Markdown and JSON artifacts by default. Do not claim they are official Japanese PDF/Docx files unless an actual document export step has been performed.
+
+## Required resume artifact contract
+
+The resume artifact set must include:
+
+1. Japanese resume-style artifact:
+   - `outputs/resumes/<job_basename>_resume_ja.md`
+
+2. Japanese CV / 職務経歴-style artifact:
+   - `outputs/resumes/<job_basename>_cv_ja.md`
+
+3. Machine-readable manifest:
+   - `outputs/resumes/<job_basename>_resume_manifest.json`
+
+The manifest must include top-level keys:
+
+```json
+{
+  "job_id": "...",
+  "job_basename": "...",
+  "resume_version": "...",
+  "resume_file": "...",
+  "cv_file": "...",
+  "status": "...",
+  "source_inputs": [],
+  "human_review_required": true
+}
+```
+
+The `status` field must be one of these three values (enforced by `test_resume_artifact_outputs.py`):
+
+- `draft_requires_review` — artifacts generated but not yet reviewed by a human
+- `ready_for_submission_review` — human has reviewed and signed off on artifacts
+- `blocked_missing_information` — cannot proceed because required data is missing
+
+Do NOT use bare values like `"draft"` or `"complete"` — the test will reject them.
+
+## Truthfulness rules
+
+- Never invent candidate experience, employment history, publications, metrics, degrees, certifications, Japanese level, visa status, or weekly availability.
+- Preserve all dates exactly as provided.
+- If a value is missing, mark it as missing rather than guessing.
+- The current affiliation must remain consistent with `data/candidate_profile.json`.
+- The candidate email must remain consistent with `data/candidate_profile.json`.
+- Do not claim business-level Japanese unless explicitly present in the profile.
+- Do not claim final submission readiness; downstream review is handled by `submission-review-gate`.
+
+## Japanese market guidance
+
+For Japanese-market resume artifacts:
+
+- Keep wording polite, professional, and natural.
+- Use concrete technical evidence from `master_experiences.json`.
+- Emphasize development-oriented research, implementation, and deployment evidence.
+- Prefer role-relevant ordering over chronological overemphasis.
+- For internship applications, make availability and learning motivation clear if present in profile.
+- Include Japanese language level truthfully.
+
+## Procedure
+
+1. Read candidate profile and master experiences.
+2. Read normalized job JSON.
+3. Read fit report if available.
+4. Identify the three most relevant evidence blocks.
+5. Produce or refresh the tailoring plan.
+6. If asked to generate resume artifacts:
+   - create `outputs/resumes/` if missing,
+   - write the Japanese resume-style Markdown artifact,
+   - write the Japanese CV / 職務経歴-style Markdown artifact,
+   - write the machine-readable manifest.
+7. Explicitly mark outputs as requiring human review.
+8. Do not export PDF/Docx unless explicitly requested.
+
+## Required headings for tailoring plan
+
+The tailoring plan should include these headings:
+
+```md
+# Resume Tailoring Plan
+
+## Target Job
+## Recommended Positioning
+## Top Experiences to Emphasize
+## Resume Summary Changes
+## Technical Skills Ordering
+## Bullets to Strengthen
+## Bullets to De-emphasize or Remove
+## Keywords to Add
+## Risks and Missing Information
+## Human Review Notes
+```
+
+## Required headings for resume artifact
+
+The resume Markdown should include:
+
+```md
+# Japanese Resume Artifact
+
+## Candidate Snapshot
+## Education
+## Skills
+## Research and Work Experience
+## Publications
+## Application-Specific Emphasis
+## Human Review Required
+```
+
+## Required headings for CV artifact
+
+The CV Markdown should include:
+
+```md
+# Japanese CV Artifact
+
+## Profile Summary
+## Core Skills
+## Professional / Research Experience
+## Selected Projects
+## Publications
+## Fit to Target Role
+## Human Review Required
+```
+
+## Verification
+
+After generating artifacts, run:
+
+```bash
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_resume_artifact_outputs.py -q
+```
+
+Then run the full test suite:
+
+```bash
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+```
+
+## Pitfalls
+
+- Do not write to `output/`; the frozen directory is `outputs/`.
+- Do not create a new skill for resume artifact export unless the user explicitly changes the framework.
+- Do not place resume artifacts under `outputs/tailored_resumes/`; final application materials belong under `outputs/resumes/`.
+- Do not overwrite the master profile or master experiences.
+- Do not use bare `status` values like `"draft"` in the manifest — the test suite only accepts `draft_requires_review`, `ready_for_submission_review`, or `blocked_missing_information`.
