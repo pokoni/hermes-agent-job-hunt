@@ -71,3 +71,6 @@ result
 website/static/api/skills-index.json
 .idea/
 models-dev-upstream/
+
+# Keep job-hunt resume DOCX exporter tracked
+!job-hunt/skills/resume-tailor/scripts/export_resume_artifacts.py
