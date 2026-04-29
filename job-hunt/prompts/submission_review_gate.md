@@ -19,7 +19,9 @@ There is no `submission-session-orchestrator` in this framework.
 
 ## Goal
 
-Create the final pre-submission review package for one job basename. The review must decide whether the application is blocked, requires human review, or is ready for explicit human approval.
+Create the final pre-submission review package for one job basename.
+
+The review must decide whether the application is blocked, requires human review, or is ready for explicit human approval.
 
 ## Required outputs
 
@@ -39,6 +41,8 @@ outputs/logs/<job_basename>_submission_decision.json
 ## Candidate Identity Check
 ## Required Artifacts
 ## Resume Artifacts
+## DOCX Export Artifacts
+## PDF Export Artifacts
 ## Application Draft Consistency
 ## Browser / Form Readiness
 ## Blocking Issues
@@ -61,6 +65,14 @@ outputs/logs/<job_basename>_submission_decision.json
   "resume_file": "",
   "cv_file": "",
   "resume_manifest": "",
+  "resume_docx_file": "",
+  "cv_docx_file": "",
+  "docx_export_manifest": "",
+  "docx_human_layout_review_required": true,
+  "resume_pdf_file": "",
+  "cv_pdf_file": "",
+  "pdf_export_manifest": "",
+  "pdf_human_visual_review_required": true,
   "blocking_issues": [],
   "warnings": [],
   "next_actions": [],
@@ -70,7 +82,7 @@ outputs/logs/<job_basename>_submission_decision.json
 }
 ```
 
-## Resume artifact logic
+## Markdown resume artifact logic
 
 If the resume manifest exists:
 
@@ -83,16 +95,45 @@ read it and propagate:
 - `resume_version`
 - `resume_file`
 - `cv_file`
+- `resume_manifest`
 
-Do not say resume/CV files are missing if the manifest exists and both files exist.
+Do not say Markdown resume/CV files are missing if the manifest exists and both files exist.
 
-If tracker records have stale `resume_version: null` but the manifest exists, report:
+## DOCX export artifact logic
+
+If the DOCX export manifest exists:
 
 ```text
-Tracker may be stale; rerun application-tracker.
+outputs/resumes/<job_basename>_docx_export_manifest.json
 ```
 
-Do not report this as missing resume files.
+read it and propagate:
+
+- `resume_docx_file`
+- `cv_docx_file`
+- `docx_export_manifest`
+- `docx_human_layout_review_required: true`
+
+If DOCX files exist, do not report them as missing.
+
+## PDF export artifact logic
+
+If the PDF export manifest exists:
+
+```text
+outputs/resumes/<job_basename>_pdf_export_manifest.json
+```
+
+read it and propagate:
+
+- `resume_pdf_file`
+- `cv_pdf_file`
+- `pdf_export_manifest`
+- `pdf_human_visual_review_required: true`
+
+If PDF files exist, do not report them as missing.
+
+If the PDF export manifest is missing, warn rather than block unless the target platform explicitly requires PDF upload.
 
 ## Candidate consistency logic
 

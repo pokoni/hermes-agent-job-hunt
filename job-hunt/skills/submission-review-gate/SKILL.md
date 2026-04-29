@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this skill to create the final pre-submission review package for the Hermes Japan job-hunt workspace.
+Create the final pre-submission review package for the frozen Hermes Japan job-hunt workspace.
 
 This skill belongs to the frozen `job-hunt/` pipeline:
 
@@ -17,16 +17,23 @@ job-normalizer
 → live-submission-adapter
 ```
 
-Do not introduce a new intermediate submission component between `submission-review-gate` and `live-submission-adapter`.
+Do not introduce a new intermediate component between `submission-review-gate` and `live-submission-adapter`.
 
-## When to use
+## Current role in the project
 
-Use this skill when the user asks to:
+`submission-review-gate` is the final quality and safety checkpoint before `live-submission-adapter`.
 
-- generate a final submission review package,
-- verify whether all generated application artifacts are ready for human review,
-- check consistency across candidate profile, drafts, tracker, resume artifacts, and browser execution artifacts,
-- decide whether the application is blocked, review-ready, or ready for explicit human approval.
+It must verify:
+
+- candidate identity consistency,
+- application draft consistency,
+- Markdown resume/CV artifacts,
+- DOCX resume/CV export artifacts if present,
+- PDF resume/CV export artifacts if present,
+- tracker linkage,
+- browser/form readiness,
+- remaining blockers,
+- explicit human approval boundary.
 
 ## Inputs
 
@@ -42,6 +49,12 @@ Typical inputs:
 - `outputs/resumes/<job_basename>_resume_ja.md`
 - `outputs/resumes/<job_basename>_cv_ja.md`
 - `outputs/resumes/<job_basename>_resume_manifest.json`
+- `outputs/resumes/<job_basename>_resume_ja.docx`
+- `outputs/resumes/<job_basename>_cv_ja.docx`
+- `outputs/resumes/<job_basename>_docx_export_manifest.json`
+- `outputs/resumes/<job_basename>_resume_ja.pdf`
+- `outputs/resumes/<job_basename>_cv_ja.pdf`
+- `outputs/resumes/<job_basename>_pdf_export_manifest.json`
 - `outputs/logs/application_tracker.jsonl`
 - `outputs/logs/application_tracker_latest.md`
 - browser-assist artifacts under `outputs/logs/`
@@ -68,6 +81,8 @@ The review Markdown must include these headings:
 ## Candidate Identity Check
 ## Required Artifacts
 ## Resume Artifacts
+## DOCX Export Artifacts
+## PDF Export Artifacts
 ## Application Draft Consistency
 ## Browser / Form Readiness
 ## Blocking Issues
@@ -92,6 +107,14 @@ The decision JSON must be valid JSON and include these top-level keys:
   "resume_file": "",
   "cv_file": "",
   "resume_manifest": "",
+  "resume_docx_file": "",
+  "cv_docx_file": "",
+  "docx_export_manifest": "",
+  "docx_human_layout_review_required": true,
+  "resume_pdf_file": "",
+  "cv_pdf_file": "",
+  "pdf_export_manifest": "",
+  "pdf_human_visual_review_required": true,
   "blocking_issues": [],
   "warnings": [],
   "next_actions": [],
@@ -101,19 +124,13 @@ The decision JSON must be valid JSON and include these top-level keys:
 }
 ```
 
-## Resume artifact awareness
+## Markdown resume artifact awareness
 
-If this file exists:
-
-```text
-outputs/resumes/<job_basename>_resume_manifest.json
-```
-
-then:
+If `outputs/resumes/<job_basename>_resume_manifest.json` exists:
 
 - read it,
 - copy `resume_version`, `resume_file`, and `cv_file` into the decision JSON,
-- do not list “resume/CV files missing” as a blocker if both files exist,
+- do not list Markdown resume/CV files as missing if both referenced files exist,
 - if either file path from the manifest is missing, list that exact missing file as a blocker.
 
 If the manifest is absent, add a blocker:
@@ -122,7 +139,52 @@ If the manifest is absent, add a blocker:
 Resume manifest missing under outputs/resumes/
 ```
 
-If `application_tracker_latest.md` or the latest JSONL record still says `resume_version` is null, but the resume manifest exists, treat it as a tracker-refresh warning and recommend rerunning `application-tracker` instead of claiming resume files are missing.
+## DOCX export artifact awareness
+
+If `outputs/resumes/<job_basename>_docx_export_manifest.json` exists:
+
+- read it,
+- copy the `resume_ja` DOCX path into `resume_docx_file`,
+- copy the `cv_ja` DOCX path into `cv_docx_file`,
+- copy the manifest path into `docx_export_manifest`,
+- set `docx_human_layout_review_required` to true,
+- do not report DOCX files as missing if the referenced files exist,
+- if a referenced DOCX file is missing, add a blocker with the exact missing path.
+
+If the DOCX export manifest is absent, warn rather than block unless the target platform explicitly requires DOCX upload.
+
+## PDF export artifact awareness
+
+If `outputs/resumes/<job_basename>_pdf_export_manifest.json` exists:
+
+- read it,
+- copy the `resume_ja` PDF path into `resume_pdf_file`,
+- copy the `cv_ja` PDF path into `cv_pdf_file`,
+- copy the manifest path into `pdf_export_manifest`,
+- set `pdf_human_visual_review_required` to true,
+- do not report PDF files as missing if the referenced files exist,
+- if a referenced PDF file is missing, add a blocker with the exact missing path.
+
+If the PDF export manifest is absent, warn rather than block unless the target platform explicitly requires PDF upload.
+
+Reason: some application flows accept DOCX or form text. PDF absence should not block the review by default unless the target platform or user explicitly requires PDF submission.
+
+## Tracker consistency checks
+
+Read:
+
+```text
+outputs/logs/application_tracker.jsonl
+outputs/logs/application_tracker_latest.md
+```
+
+If PDF export artifacts exist but the latest tracker does not mention them, add a warning:
+
+```text
+Tracker may be stale; rerun application-tracker to link PDF export artifacts.
+```
+
+Do not claim PDF files are missing if the actual files exist.
 
 ## Candidate consistency checks
 
@@ -178,22 +240,26 @@ Explicit human approval is required before any submit action.
 
 1. Read normalized job JSON.
 2. Read candidate profile.
-3. Check generated application artifacts.
-4. Read resume manifest if present.
-5. Verify resume and CV file paths from the manifest.
-6. Read tracker artifacts and check whether they reference the resume manifest.
-7. Check candidate identity consistency in application drafts.
-8. Check browser/form readiness.
-9. Produce the review Markdown.
-10. Produce the decision JSON.
-11. Keep live submission blocked unless all blockers are resolved and explicit human approval is required.
+3. Check generated application drafts.
+4. Read Markdown resume manifest if present.
+5. Verify Markdown resume and CV file paths.
+6. Read DOCX export manifest if present.
+7. Verify DOCX resume and CV file paths.
+8. Read PDF export manifest if present.
+9. Verify PDF resume and CV file paths.
+10. Read tracker artifacts and check whether they reference Markdown, DOCX, and PDF artifacts.
+11. Check candidate identity consistency in application drafts.
+12. Check browser/form readiness.
+13. Produce the review Markdown.
+14. Produce the decision JSON.
+15. Keep live submission blocked unless all blockers are resolved and explicit human approval is required.
 
 ## Verification
 
 Run:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_submission_review_resume_awareness.py -q
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_submission_review_pdf_awareness.py -q
 ```
 
 Then run:
@@ -205,6 +271,7 @@ JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/
 ## Pitfalls
 
 - Do not depend on `submission-session-orchestrator`; it is not part of the frozen framework.
-- Do not reintroduce `output/`.
-- Do not claim a live submission is allowed merely because files exist.
+- Do not write to `output/`.
+- Do not claim a live submission is allowed merely because Markdown/DOCX/PDF files exist.
 - Do not hide platform-level blockers such as inaccessible forms or missing login credentials.
+- Do not treat PDF files as final without human visual review.

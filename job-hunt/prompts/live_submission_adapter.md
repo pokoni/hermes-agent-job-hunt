@@ -37,6 +37,7 @@ If available, also read:
 
 ```text
 outputs/resumes/<job_basename>_resume_manifest.json
+outputs/resumes/<job_basename>_docx_export_manifest.json
 outputs/logs/<job_basename>_application_execution_plan.md
 outputs/logs/<job_basename>_application_execution_checklist.md
 outputs/logs/<job_basename>_application_form_snapshot.md
@@ -74,6 +75,7 @@ Then include all of these headings:
 ## Expected Outputs
 ## Submission Review Source
 ## Resume Artifact Source
+## DOCX Export Artifact Source
 ## Current Live Status
 ## Live Preconditions
 ## Planned Live Steps
@@ -102,6 +104,7 @@ The field mapping must include:
 ## Source Artifacts
 ## Candidate Fields
 ## Resume and CV Files
+## DOCX Upload Files
 ## Application Draft Fields
 ## Form Field Mapping
 ## Missing or Unverified Fields
@@ -130,6 +133,7 @@ The authorization request must include:
 ## Submission Boundary
 ## Blocking Issues
 ## Files That Would Be Used
+## DOCX Files That Would Be Used
 ## Authorization Checklist
 
 ## Submission Status
@@ -165,22 +169,28 @@ The result stub must include:
   "resume_file": "",
   "cv_file": "",
   "resume_version": "",
+  "resume_docx_file": "",
+  "cv_docx_file": "",
+  "docx_export_manifest": "",
+  "docx_human_layout_review_required": true,
   "blocking_issues": [],
   "human_approval_required": true,
   "explicit_approval_received": false
 }
 ```
 
-## Resume-aware behavior
+## DOCX-aware behavior
 
-Use resume artifact fields from `submission_decision.json`:
+Use DOCX fields from `submission_decision.json`:
 
-- `resume_version`
-- `resume_file`
-- `cv_file`
-- `resume_manifest`
+- `resume_docx_file`
+- `cv_docx_file`
+- `docx_export_manifest`
+- `docx_human_layout_review_required`
 
-If those file paths exist, do not report resume/CV missing.
+If those file paths exist, do not report DOCX missing.
+
+Keep `docx_human_layout_review_required` true until a human explicitly reviews and approves the layout.
 
 ## Safety
 

@@ -19,6 +19,22 @@ job-normalizer
 
 Do not introduce or depend on `submission-session-orchestrator`.
 
+## Current role in the project
+
+`live-submission-adapter` is the final dry-run and authorization layer.
+
+It must:
+
+- consume `submission-review-gate` outputs,
+- consume Markdown resume/CV references,
+- consume DOCX resume/CV references if present,
+- create a form-field mapping,
+- create an authorization request,
+- create a result stub,
+- preserve the no-submit boundary.
+
+It must not perform a real submission by default.
+
 ## Inputs
 
 Typical inputs:
@@ -31,9 +47,8 @@ Typical inputs:
 - `outputs/logs/<job_basename>_application_execution_checklist.md`
 - `outputs/logs/<job_basename>_application_form_snapshot.md`
 - `outputs/resumes/<job_basename>_resume_manifest.json`
-- `outputs/application_drafts/<job_basename>_motivation_ja.md`
-- `outputs/application_drafts/<job_basename>_self_pr_ja.md`
-- `outputs/application_drafts/<job_basename>_application_mail_ja.md`
+- `outputs/resumes/<job_basename>_docx_export_manifest.json`
+- application drafts under `outputs/application_drafts/`
 
 ## Outputs
 
@@ -50,23 +65,16 @@ Do not write to `output/`.
 
 ## Critical compatibility requirement
 
-The current test suite contains both older live-submission tests and newer resume-aware tests. Therefore, the generated outputs must include **all legacy and newer required headings**.
+The current test suite contains both older live-submission tests and newer resume/DOCX-aware tests. Therefore, generated outputs must include all legacy and newer required headings.
 
 Do not choose one heading style over the other. Include both when needed.
 
 ## Required dry-run plan contract
 
-The dry-run plan must include all of the following headings/strings.
-
-### Legacy title required by `tests/test_live_submission_adapter.py`
+The dry-run plan must include both exact titles:
 
 ```md
 # Live Submission Dry Run Plan
-```
-
-### Resume-aware title required by `tests/test_live_submission_resume_awareness.py`
-
-```md
 # Live Submission Dry-Run Plan
 ```
 
@@ -84,6 +92,7 @@ Both exact strings must appear somewhere in the file.
 ## Expected Outputs
 ## Submission Review Source
 ## Resume Artifact Source
+## DOCX Export Artifact Source
 ## Current Live Status
 ## Live Preconditions
 ## Planned Live Steps
@@ -114,6 +123,7 @@ The field mapping must include all of these headings:
 ## Source Artifacts
 ## Candidate Fields
 ## Resume and CV Files
+## DOCX Upload Files
 ## Application Draft Fields
 ## Form Field Mapping
 ## Missing or Unverified Fields
@@ -129,7 +139,12 @@ The field mapping must include all of these headings:
 ## Mapping Risks
 ```
 
-It is acceptable to include overlapping content under both newer and legacy headings.
+Under `## DOCX Upload Files`, include:
+
+- resume DOCX file path,
+- CV DOCX file path,
+- DOCX export manifest path,
+- human layout review warning.
 
 ## Required authorization request contract
 
@@ -144,6 +159,7 @@ The authorization request must include all of these headings:
 ## Submission Boundary
 ## Blocking Issues
 ## Files That Would Be Used
+## DOCX Files That Would Be Used
 ## Authorization Checklist
 
 ## Submission Status
@@ -179,6 +195,10 @@ The result stub must be valid JSON and include all of these top-level keys:
   "resume_file": "",
   "cv_file": "",
   "resume_version": "",
+  "resume_docx_file": "",
+  "cv_docx_file": "",
+  "docx_export_manifest": "",
+  "docx_human_layout_review_required": true,
   "blocking_issues": [],
   "human_approval_required": true,
   "explicit_approval_received": false
@@ -189,7 +209,7 @@ Both `submit_button_clicked` and `final_submit_clicked` must be false by default
 
 Do not set `live_submission_performed`, `submit_button_clicked`, or `final_submit_clicked` to true unless the user explicitly confirms a real submission in the current session.
 
-## Resume-aware behavior
+## Markdown resume-aware behavior
 
 Read:
 
@@ -204,11 +224,31 @@ If it contains:
 - `cv_file`
 - `resume_manifest`
 
-and those referenced files exist, do not report resume/CV files as missing.
+and those referenced files exist, do not report Markdown resume/CV files as missing.
 
 If any referenced file path is missing, report the exact missing path.
 
-If the decision JSON is stale but `outputs/resumes/<job_basename>_resume_manifest.json` exists, treat this as a review-gate freshness warning and recommend rerunning `submission-review-gate`.
+## DOCX-aware behavior
+
+If `submission_decision.json` contains:
+
+- `resume_docx_file`
+- `cv_docx_file`
+- `docx_export_manifest`
+- `docx_human_layout_review_required`
+
+then:
+
+- copy these values into the live result stub,
+- mention these files in the dry-run plan,
+- mention these files in the field mapping,
+- mention these files in the authorization request,
+- do not report DOCX files as missing if the referenced files exist,
+- keep `docx_human_layout_review_required` true unless a human has explicitly approved the layout.
+
+If DOCX fields are absent but `outputs/resumes/<job_basename>_docx_export_manifest.json` exists, treat this as a review-gate freshness warning and recommend rerunning `submission-review-gate`.
+
+Do not block live dry-run solely because DOCX layout review is required. Instead, keep final live submission blocked or review-required until a human checks the layout.
 
 ## Review-gate dependency
 
@@ -239,20 +279,21 @@ If blockers are absent, output `READY_FOR_HUMAN_APPROVAL`, but still do not subm
 1. Read the normalized job JSON.
 2. Read candidate profile.
 3. Read submission review and decision JSON.
-4. Read resume/CV references from the decision JSON and verify file existence.
-5. Read browser-assist artifacts if available.
-6. Generate the dry-run plan with both legacy and resume-aware headings.
-7. Generate the field mapping with both legacy and resume-aware headings.
-8. Generate the authorization request with both legacy and resume-aware headings.
-9. Generate the result stub JSON with both `submit_button_clicked` and `final_submit_clicked`.
-10. Preserve the no-submit boundary.
+4. Read Markdown resume/CV references from the decision JSON and verify file existence.
+5. Read DOCX resume/CV references from the decision JSON and verify file existence.
+6. Read browser-assist artifacts if available.
+7. Generate the dry-run plan with both legacy and DOCX-aware headings.
+8. Generate the field mapping with both legacy and DOCX-aware headings.
+9. Generate the authorization request with both legacy and DOCX-aware headings.
+10. Generate the result stub JSON with submit flags set to false.
+11. Preserve the no-submit boundary.
 
 ## Verification
 
 Run:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_submission_adapter.py tests/test_live_submission_resume_awareness.py tests/test_pipeline_regression.py -q
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_submission_docx_awareness.py -q
 ```
 
 Then run:
@@ -260,3 +301,13 @@ Then run:
 ```bash
 JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
 ```
+
+## Pitfalls
+
+- Do not reintroduce `submission-session-orchestrator`.
+- Do not report Markdown resume/CV missing if the review decision links existing resume artifacts.
+- Do not report DOCX missing if the review decision links existing DOCX artifacts.
+- Do not infer that files being present means submission is allowed.
+- Do not attempt to bypass platform login, bot detection, or inaccessible forms.
+- Do not click submit by default.
+- Do not treat DOCX files as final without human layout review.

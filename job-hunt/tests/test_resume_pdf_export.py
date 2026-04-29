@@ -1,0 +1,105 @@
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+
+def _basename() -> str:
+    return os.environ.get("JOB_HUNT_TEST_BASENAME", "01_pfn_st01_plamo_translation_2026")
+
+
+def _root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def _script_path() -> Path:
+    return _root() / "skills" / "resume-tailor" / "scripts" / "export_resume_pdfs.py"
+
+
+def _assert_exists(rel_path: str) -> Path:
+    path = _root() / rel_path
+    assert path.exists(), f"Expected file does not exist: {rel_path}"
+    assert path.stat().st_size > 0, f"Expected file is empty: {rel_path}"
+    return path
+
+
+def test_resume_pdf_export_script_exists() -> None:
+    path = _script_path()
+    assert path.exists(), "Missing resume PDF export script"
+    assert path.stat().st_size > 0, "Resume PDF export script is empty"
+
+
+def test_resume_pdf_export_dry_run_contract() -> None:
+    b = _basename()
+
+    _assert_exists(f"outputs/resumes/{b}_resume_ja.docx")
+    _assert_exists(f"outputs/resumes/{b}_cv_ja.docx")
+    _assert_exists(f"outputs/resumes/{b}_docx_export_manifest.json")
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(_script_path()),
+            "--workspace",
+            str(_root()),
+            "--basename",
+            b,
+            "--dry-run",
+        ],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    result = json.loads(completed.stdout)
+    assert result["job_basename"] == b
+    assert "converter_available" in result
+    assert "targets" in result
+    assert result["missing_inputs"] == []
+
+    output_paths = {item["output_pdf"] for item in result["targets"]}
+    assert f"outputs/resumes/{b}_resume_ja.pdf" in output_paths
+    assert f"outputs/resumes/{b}_cv_ja.pdf" in output_paths
+
+
+def test_export_resume_artifacts_to_pdf_when_converter_available() -> None:
+    if not (shutil.which("libreoffice") or shutil.which("soffice")):
+        pytest.skip("LibreOffice is not installed; PDF export runtime test skipped.")
+
+    b = _basename()
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script_path()),
+            "--workspace",
+            str(_root()),
+            "--basename",
+            b,
+        ],
+        check=True,
+    )
+
+    resume_pdf = _assert_exists(f"outputs/resumes/{b}_resume_ja.pdf")
+    cv_pdf = _assert_exists(f"outputs/resumes/{b}_cv_ja.pdf")
+    manifest_path = _assert_exists(f"outputs/resumes/{b}_pdf_export_manifest.json")
+
+    for pdf_path in [resume_pdf, cv_pdf]:
+        assert pdf_path.read_bytes().startswith(b"%PDF"), f"Invalid PDF header: {pdf_path}"
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["job_basename"] == b
+    assert manifest["export_type"] == "pdf"
+    assert manifest["status"] == "created"
+    assert manifest["human_review_required"] is True
+
+    generated_paths = {item["output_pdf"] for item in manifest["generated_files"]}
+    assert f"outputs/resumes/{b}_resume_ja.pdf" in generated_paths
+    assert f"outputs/resumes/{b}_cv_ja.pdf" in generated_paths
