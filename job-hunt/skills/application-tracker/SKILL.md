@@ -1,3 +1,8 @@
+---
+name: application-tracker
+description: Create and refresh structured application tracking records for the frozen Hermes Japan job-hunt workspace.
+---
+
 # application-tracker
 
 ## Purpose
@@ -31,6 +36,7 @@ It must record:
 - Japanese application drafts,
 - Markdown resume/CV artifacts,
 - DOCX resume/CV artifacts if exported,
+- PDF resume/CV artifacts if exported,
 - current status,
 - blockers,
 - next actions,
@@ -49,6 +55,7 @@ Typical inputs:
 - `outputs/application_drafts/<job_basename>_application_mail_ja.md`
 - `outputs/resumes/<job_basename>_resume_manifest.json`
 - `outputs/resumes/<job_basename>_docx_export_manifest.json`
+- `outputs/resumes/<job_basename>_pdf_export_manifest.json`
 
 ## Outputs
 
@@ -65,6 +72,8 @@ outputs/logs/application_tracker_latest.md
 ```
 
 Do not write to `output/`.
+
+**PITFALL — append, don't overwrite:** The `write_file` tool overwrites the entire file. To append a new JSONL record, use `terminal` with `echo '...' >> <path>` (or `cat >>`). If you accidentally overwrite with `write_file`, you must reconstruct the file with all previous records plus the new one before proceeding.
 
 ## Required JSONL record contract
 
@@ -91,6 +100,9 @@ Each record should include at least these top-level keys:
   "resume_docx_file": "",
   "cv_docx_file": "",
   "docx_export_manifest": "",
+  "resume_pdf_file": "",
+  "cv_pdf_file": "",
+  "pdf_export_manifest": "",
   "blocking_issues": [],
   "warnings": [],
   "next_actions": [],
@@ -143,6 +155,35 @@ If the export manifest does not exist, do not fail the tracker. Instead, add a w
 DOCX export manifest missing; Markdown resume artifacts are available but DOCX files have not been exported.
 ```
 
+## PDF export artifact linkage
+
+If this file exists:
+
+```text
+outputs/resumes/<job_basename>_pdf_export_manifest.json
+```
+
+read it and copy the generated PDF files into:
+
+- `resume_pdf_file`
+- `cv_pdf_file`
+- `pdf_export_manifest`
+
+The PDF export manifest contains a `generated_files` array. Use the item with:
+
+- `document_type == "resume_ja"` as `resume_pdf_file`
+- `document_type == "cv_ja"` as `cv_pdf_file`
+
+Record the `converter` field (e.g. `"/usr/bin/libreoffice"`) in the dashboard notes.
+
+If the export manifest exists but either PDF file is missing, add a blocking issue with the exact missing path.
+
+If the export manifest does not exist, do not fail the tracker. Instead, add a warning:
+
+```text
+PDF export manifest missing; DOCX artifacts are available but PDF files have not been exported.
+```
+
 ## Required dashboard contract
 
 `outputs/logs/application_tracker_latest.md` must use these exact headings so both legacy and newer tests pass:
@@ -157,6 +198,7 @@ DOCX export manifest missing; Markdown resume artifacts are available but DOCX f
 ## Application Details
 ## Resume Artifacts
 ## DOCX Export Artifacts
+## PDF Export Artifacts
 ## Linked Artifacts
 ## Blocking Issues
 ## Next Actions
@@ -176,6 +218,14 @@ Under `## DOCX Export Artifacts`, include:
 - DOCX CV file path,
 - DOCX export manifest path,
 - human layout review warning.
+
+Under `## PDF Export Artifacts`, include:
+
+- PDF resume file path,
+- PDF CV file path,
+- PDF export manifest path,
+- converter tool used (from the manifest's `converter` field),
+- human visual review warning.
 
 ## Status guidance
 
@@ -215,10 +265,11 @@ Do not mark an application as `submitted` unless the user explicitly confirms ac
    - application drafts,
    - Markdown resume artifacts and resume manifest,
    - DOCX export manifest and DOCX files,
+   - PDF export manifest and PDF files,
    - submission review artifacts if present,
    - live submission dry-run artifacts if present.
 4. Build one JSON tracking record.
-5. Append it to `outputs/logs/application_tracker.jsonl`.
+5. Append it to `outputs/logs/application_tracker.jsonl`. Use `terminal echo '...' >> <path>` — do NOT use `write_file` which overwrites the entire file.
 6. Regenerate `outputs/logs/application_tracker_latest.md` using the required dashboard contract.
 7. Keep `human_review_required` true unless the user explicitly requests a different state after real review.
 
