@@ -1,0 +1,202 @@
+{
+  "version": "2026-05-10",
+  "project_name": "Hermes Japan Job-Hunt Agent",
+  "framework_status": "frozen_for_core_application_pipeline",
+  "workspace_root": "job-hunt",
+  "output_root": "outputs",
+  "forbidden_output_root": "output",
+  "core_principle": "Automate discovery, scoring, material preparation, review, notification, and supervised handoff. Do not automate final submission by default.",
+  "layers": [
+    {
+      "layer_id": "discovery_notification_layer",
+      "status": "planned",
+      "purpose": "Continuously discover jobs, deduplicate them, score them, rank them, and notify the user through terminal/chat integrations such as Telegram.",
+      "components": [
+        "job-source-monitor",
+        "job-deduplicator",
+        "batch-fit-scorer",
+        "job-ranking-gate",
+        "telegram-notifier",
+        "job-watch-scheduler",
+        "user-action-router"
+      ],
+      "allowed_to_create_raw_jobs": true,
+      "allowed_to_trigger_existing_pipeline": true,
+      "allowed_to_submit_applications": false
+    },
+    {
+      "layer_id": "application_pipeline",
+      "status": "frozen",
+      "purpose": "Process a known job into scored reports, tailored materials, review packages, handoff packages, rehearsal packages, and supervised protocol artifacts.",
+      "components": [
+        "job-normalizer",
+        "job-fit-scorer",
+        "resume-tailor",
+        "jp-application-writer",
+        "application-tracker",
+        "browser-apply-assistant",
+        "submission-review-gate",
+        "live-submission-adapter"
+      ],
+      "allowed_to_create_raw_jobs": false,
+      "allowed_to_trigger_existing_pipeline": true,
+      "allowed_to_submit_applications": false
+    }
+  ],
+  "frozen_components": [
+    "job-normalizer",
+    "job-fit-scorer",
+    "resume-tailor",
+    "jp-application-writer",
+    "application-tracker",
+    "browser-apply-assistant",
+    "submission-review-gate",
+    "live-submission-adapter"
+  ],
+  "planned_components": [
+    "job-source-monitor",
+    "job-deduplicator",
+    "batch-fit-scorer",
+    "job-ranking-gate",
+    "telegram-notifier",
+    "job-watch-scheduler",
+    "user-action-router"
+  ],
+  "forbidden_components": [
+    "submission-session-orchestrator",
+    "auto-submit-agent",
+    "credential-store-agent",
+    "captcha-bypass-agent"
+  ],
+  "stable_paths": {
+    "raw_jobs": "data/raw_jobs",
+    "normalized_jobs": "data/jobs",
+    "candidate_profile": "data/candidate_profile.json",
+    "master_experiences": "data/master_experiences.json",
+    "job_sources": "data/job_sources.json",
+    "jobs_seen": "data/jobs_seen.jsonl",
+    "outputs": "outputs",
+    "logs": "outputs/logs",
+    "resumes": "outputs/resumes",
+    "fit_reports": "outputs/fit_reports",
+    "application_drafts": "outputs/application_drafts"
+  },
+  "privacy_rules": [
+    "Do not commit data/candidate_profile.json.",
+    "Do not commit data/master_experiences.json unless the user explicitly requests it.",
+    "Do not commit secrets, tokens, Telegram bot tokens, chat IDs, browser cookies, or credentials.",
+    "Keep TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in environment variables or ~/.hermes/.env."
+  ],
+  "submission_safety_rules": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action.",
+    "Do not store credentials.",
+    "Do not bypass CAPTCHA, bot detection, login walls, or access controls.",
+    "The final submit/apply/send click belongs to the user-controlled browser session only."
+  ],
+  "final_capability_definition": [
+    "Continuously discover jobs from configured sources.",
+    "Deduplicate and normalize discovered jobs.",
+    "Score each job against the user's candidate profile.",
+    "Rank jobs and notify the user when score/constraints pass thresholds.",
+    "On user approval, generate tailored resume/CV/application materials.",
+    "Generate review, dry-run, handoff, rehearsal, and supervised protocol artifacts.",
+    "Record post-submission status only after the user manually confirms actual submission."
+  ],
+  "development_phases": [
+    {
+      "phase": 0,
+      "name": "framework-freeze",
+      "status": "current",
+      "deliverables": [
+        "project framework contract",
+        "architecture freeze document",
+        "development roadmap",
+        "contract validation script",
+        "contract test"
+      ]
+    },
+    {
+      "phase": 1,
+      "name": "job-source-registry",
+      "status": "next",
+      "deliverables": [
+        "job_sources.schema.json",
+        "data/job_sources.json",
+        "validate_job_sources.py",
+        "test_job_sources.py"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "job-source-monitor",
+      "status": "planned",
+      "deliverables": [
+        "fetch_job_sources.py",
+        "raw job snapshot writer",
+        "source monitor run report"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "job-deduplicator",
+      "status": "planned",
+      "deliverables": [
+        "jobs_seen.jsonl",
+        "job hash rules",
+        "deduplication report"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "batch-normalize-score-rank",
+      "status": "planned",
+      "deliverables": [
+        "batch normalizer wrapper",
+        "batch fit scoring report",
+        "ranking gate decision"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "telegram-notifier",
+      "status": "planned",
+      "deliverables": [
+        "Telegram message renderer",
+        "notification delivery logger",
+        "dry-run notification mode"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "job-watch-scheduler",
+      "status": "planned",
+      "deliverables": [
+        "scheduled run command",
+        "cron/systemd timer docs",
+        "failure-resilient run report"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "user-action-router",
+      "status": "planned",
+      "deliverables": [
+        "approve/reject/generate/defer actions",
+        "action log",
+        "pipeline trigger to existing material chain"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "post-submission-recorder",
+      "status": "planned",
+      "deliverables": [
+        "manual submission result recorder",
+        "tracker status updater",
+        "follow-up reminder metadata"
+      ]
+    }
+  ]
+}

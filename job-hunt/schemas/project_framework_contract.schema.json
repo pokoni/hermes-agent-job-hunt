@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Job-Hunt Project Framework Contract",
+  "type": "object",
+  "required": [
+    "version",
+    "project_name",
+    "framework_status",
+    "workspace_root",
+    "output_root",
+    "layers",
+    "frozen_components",
+    "planned_components",
+    "forbidden_components",
+    "stable_paths",
+    "submission_safety_rules",
+    "development_phases"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "framework_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workspace_root": {
+      "type": "string",
+      "const": "job-hunt"
+    },
+    "output_root": {
+      "type": "string",
+      "const": "outputs"
+    },
+    "forbidden_output_root": {
+      "type": "string",
+      "const": "output"
+    },
+    "core_principle": {
+      "type": "string"
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 2
+    },
+    "frozen_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 8
+    },
+    "planned_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "forbidden_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stable_paths": {
+      "type": "object"
+    },
+    "privacy_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "submission_safety_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "final_capability_definition": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "development_phases": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}
