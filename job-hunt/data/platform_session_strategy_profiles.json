@@ -1,0 +1,142 @@
+{
+  "version": "2026-05-10",
+  "human_approval_required": true,
+  "submission_boundary": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action."
+  ],
+  "platforms": [
+    {
+      "platform_id": "wantedly",
+      "platform_name": "Wantedly",
+      "access_mode": "account_login",
+      "login_strategy": "Require user-controlled authenticated browser session. Do not store credentials in the workspace.",
+      "automation_allowed": false,
+      "manual_intervention_required": true,
+      "form_discovery_strategy": "Use browser-assist artifacts only for page reading and field observation after the user opens the page.",
+      "artifact_upload_strategy": "Prepare field mapping and candidate files; require user confirmation before any upload or submit step.",
+      "stop_conditions": [
+        "Login wall appears.",
+        "Bot detection or JavaScript SPA prevents reliable field inspection.",
+        "Credential prompt appears.",
+        "Any submit, apply, send, entry, or final confirmation button is visible.",
+        "Terms, consent, or privacy confirmation appears."
+      ],
+      "allowed_actions": [
+        "Open target URL under user supervision.",
+        "Read visible field labels.",
+        "Prepare field mapping.",
+        "Prepare manual upload checklist.",
+        "Stop before final submission."
+      ],
+      "forbidden_actions": [
+        "Do not store credentials.",
+        "Do not bypass bot detection.",
+        "Do not solve CAPTCHA.",
+        "Do not click submit/apply/send/final confirmation.",
+        "Do not upload files without explicit human approval."
+      ],
+      "notes": [
+        "Use manual browser session handoff when account login is required.",
+        "Keep live-submission-adapter as dry-run unless explicit approval is received."
+      ]
+    },
+    {
+      "platform_id": "email_submission",
+      "platform_name": "Email submission",
+      "access_mode": "email_submission",
+      "login_strategy": "Use user-owned email client or explicit Gmail draft/send flow only when requested.",
+      "automation_allowed": true,
+      "manual_intervention_required": true,
+      "form_discovery_strategy": "No browser form. Prepare email subject, body, attachments, and final review checklist.",
+      "artifact_upload_strategy": "Attach files only in a draft unless the user explicitly asks to send.",
+      "stop_conditions": [
+        "Recipient address is missing or ambiguous.",
+        "Required attachment is missing.",
+        "User has not approved final email content.",
+        "Any send action is requested without explicit confirmation."
+      ],
+      "allowed_actions": [
+        "Prepare email draft content.",
+        "List candidate attachments.",
+        "Create review checklist.",
+        "Create draft if user requests a draft."
+      ],
+      "forbidden_actions": [
+        "Do not submit or send by default.",
+        "Do not send by default.",
+        "Do not attach wrong or unreviewed files.",
+        "Do not use stale resume artifacts.",
+        "Do not infer approval from test success."
+      ],
+      "notes": [
+        "Use polished PDF first when a PDF attachment is expected.",
+        "Keep human visual review required before sending."
+      ]
+    },
+    {
+      "platform_id": "generic_public_form",
+      "platform_name": "Generic public application form",
+      "access_mode": "public_form",
+      "login_strategy": "No stored credentials. Access only publicly available form pages.",
+      "automation_allowed": false,
+      "manual_intervention_required": true,
+      "form_discovery_strategy": "Observe field labels and create a mapping; stop before upload or final confirmation.",
+      "artifact_upload_strategy": "Recommend files for upload but require user action/approval for actual upload.",
+      "stop_conditions": [
+        "Submit button appears.",
+        "File upload field appears.",
+        "Consent checkbox appears.",
+        "Unexpected required field appears.",
+        "Page content differs from saved form snapshot."
+      ],
+      "allowed_actions": [
+        "Read form labels.",
+        "Map candidate data to fields.",
+        "Identify missing data.",
+        "Create dry-run result stub."
+      ],
+      "forbidden_actions": [
+        "Do not click submit.",
+        "Do not check consent boxes.",
+        "Do not upload files without explicit approval.",
+        "Do not alter candidate facts."
+      ],
+      "notes": [
+        "Prefer dry-run field mapping over automated filling.",
+        "Use live-submission-adapter to preserve the no-submit boundary."
+      ]
+    },
+    {
+      "platform_id": "unknown_or_blocked",
+      "platform_name": "Unknown or blocked platform",
+      "access_mode": "unknown_or_blocked",
+      "login_strategy": "Treat as blocked until the user provides access details or a reachable URL.",
+      "automation_allowed": false,
+      "manual_intervention_required": true,
+      "form_discovery_strategy": "Do not infer fields. Ask user to provide screenshot, form text, or manual field labels.",
+      "artifact_upload_strategy": "Prepare candidate material package only.",
+      "stop_conditions": [
+        "URL is unreachable.",
+        "Platform blocks headless browser.",
+        "Required account state is unknown.",
+        "Application deadline or job availability is unclear.",
+        "Any submit or final confirmation step is unreachable or cannot be verified safely."
+      ],
+      "allowed_actions": [
+        "Prepare offline submission package.",
+        "List unresolved access blockers.",
+        "Create authorization request."
+      ],
+      "forbidden_actions": [
+        "Do not bypass access controls.",
+        "Do not guess hidden form fields.",
+        "Do not submit or simulate submission."
+      ],
+      "notes": [
+        "This is the safest default when form access is unreliable."
+      ]
+    }
+  ]
+}

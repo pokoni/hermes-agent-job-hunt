@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Job Hunt Platform Session Strategy Profiles",
+  "type": "object",
+  "required": [
+    "version",
+    "human_approval_required",
+    "submission_boundary",
+    "platforms"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "human_approval_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "submission_boundary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 3
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "platform_id",
+          "platform_name",
+          "access_mode",
+          "login_strategy",
+          "automation_allowed",
+          "manual_intervention_required",
+          "stop_conditions",
+          "allowed_actions",
+          "forbidden_actions"
+        ],
+        "properties": {
+          "platform_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "platform_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "access_mode": {
+            "type": "string",
+            "enum": [
+              "public_form",
+              "account_login",
+              "email_submission",
+              "unknown_or_blocked"
+            ]
+          },
+          "login_strategy": {
+            "type": "string",
+            "minLength": 1
+          },
+          "automation_allowed": {
+            "type": "boolean"
+          },
+          "manual_intervention_required": {
+            "type": "boolean"
+          },
+          "form_discovery_strategy": {
+            "type": "string"
+          },
+          "artifact_upload_strategy": {
+            "type": "string"
+          },
+          "stop_conditions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "allowed_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "forbidden_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
