@@ -1,6 +1,6 @@
 # Submission Review Gate Prompt
 
-You are working inside the frozen Hermes Japan job-hunt workspace.
+Use the frozen Hermes Japan job-hunt workspace.
 
 ## Frozen pipeline
 
@@ -15,7 +15,7 @@ job-normalizer
 → live-submission-adapter
 ```
 
-There is no `submission-session-orchestrator` in this framework.
+There is no `submission-session-orchestrator`.
 
 ## Goal
 
@@ -24,8 +24,6 @@ Create the final pre-submission review package for one job basename.
 The review must decide whether the application is blocked, requires human review, or is ready for explicit human approval.
 
 ## Required outputs
-
-Write:
 
 ```text
 outputs/logs/<job_basename>_submission_review.md
@@ -43,6 +41,8 @@ outputs/logs/<job_basename>_submission_decision.json
 ## Resume Artifacts
 ## DOCX Export Artifacts
 ## PDF Export Artifacts
+## Polished DOCX Artifacts
+## Polished PDF Artifacts
 ## Application Draft Consistency
 ## Browser / Form Readiness
 ## Blocking Issues
@@ -51,99 +51,65 @@ outputs/logs/<job_basename>_submission_decision.json
 ## Human Approval Boundary
 ```
 
-## Required decision JSON keys
+## Polished artifact behavior
 
-```json
-{
-  "job_id": "",
-  "job_basename": "",
-  "company_name": "",
-  "job_title": "",
-  "status": "",
-  "decision": "",
-  "resume_version": "",
-  "resume_file": "",
-  "cv_file": "",
-  "resume_manifest": "",
-  "resume_docx_file": "",
-  "cv_docx_file": "",
-  "docx_export_manifest": "",
-  "docx_human_layout_review_required": true,
-  "resume_pdf_file": "",
-  "cv_pdf_file": "",
-  "pdf_export_manifest": "",
-  "pdf_human_visual_review_required": true,
-  "blocking_issues": [],
-  "warnings": [],
-  "next_actions": [],
-  "human_review_required": true,
-  "explicit_human_approval_required": true,
-  "live_submission_allowed": false
-}
-```
-
-## Markdown resume artifact logic
-
-If the resume manifest exists:
+Read these manifests if present:
 
 ```text
-outputs/resumes/<job_basename>_resume_manifest.json
+outputs/resumes/<job_basename>_polished_docx_manifest.json
+outputs/resumes/<job_basename>_polished_pdf_manifest.json
 ```
 
-read it and propagate:
-
-- `resume_version`
-- `resume_file`
-- `cv_file`
-- `resume_manifest`
-
-Do not say Markdown resume/CV files are missing if the manifest exists and both files exist.
-
-## DOCX export artifact logic
-
-If the DOCX export manifest exists:
+Propagate these fields into `submission_decision.json`:
 
 ```text
-outputs/resumes/<job_basename>_docx_export_manifest.json
+rirekisho_polished_docx
+shokumukeirekisho_polished_docx
+polished_docx_manifest
+rirekisho_polished_pdf
+shokumukeirekisho_polished_pdf
+polished_pdf_manifest
+polished_human_review_required
 ```
 
-read it and propagate:
+If referenced polished files exist, do not report them as missing.
 
-- `resume_docx_file`
-- `cv_docx_file`
-- `docx_export_manifest`
-- `docx_human_layout_review_required: true`
+Polished files still require human review before submission.
 
-If DOCX files exist, do not report them as missing.
+## Required decision keys
 
-## PDF export artifact logic
-
-If the PDF export manifest exists:
+The decision JSON must include standard Markdown/DOCX/PDF fields and polished artifact fields:
 
 ```text
-outputs/resumes/<job_basename>_pdf_export_manifest.json
+status
+decision
+resume_version
+resume_file
+cv_file
+resume_manifest
+resume_docx_file
+cv_docx_file
+docx_export_manifest
+docx_human_layout_review_required
+resume_pdf_file
+cv_pdf_file
+pdf_export_manifest
+pdf_human_visual_review_required
+rirekisho_polished_docx
+shokumukeirekisho_polished_docx
+polished_docx_manifest
+rirekisho_polished_pdf
+shokumukeirekisho_polished_pdf
+polished_pdf_manifest
+polished_human_review_required
+human_review_required
+explicit_human_approval_required
+live_submission_allowed
 ```
-
-read it and propagate:
-
-- `resume_pdf_file`
-- `cv_pdf_file`
-- `pdf_export_manifest`
-- `pdf_human_visual_review_required: true`
-
-If PDF files exist, do not report them as missing.
-
-If the PDF export manifest is missing, warn rather than block unless the target platform explicitly requires PDF upload.
-
-## Candidate consistency logic
-
-Check candidate email and current affiliation from `data/candidate_profile.json` against application drafts.
-
-If a draft contains old or mismatched values, mark it as a blocker and recommend rerunning `jp-application-writer`.
 
 ## Human approval boundary
 
-The review must contain these exact lines:
+Include exactly:
 
 ```text
 Do not submit by default.
@@ -153,4 +119,4 @@ Explicit human approval is required before any submit action.
 
 ## Safety
 
-Do not set `live_submission_allowed` to true unless there are no blockers. Even then, final submission still requires explicit human approval.
+Do not set `live_submission_allowed` to true unless there are no blockers and the user has explicitly requested preparation for a live step.

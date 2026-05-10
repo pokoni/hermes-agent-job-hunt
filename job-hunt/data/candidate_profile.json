@@ -1,0 +1,427 @@
+{
+  "version": "0.1.0",
+  "last_updated": "2026-04-22",
+  "basic_info": {
+    "full_name": "HU YAOHUA",
+    "preferred_name": "",
+    "email": "yoward.hu@gmail.com",
+    "phone": "070-9180-2452",
+    "location_city": "Fukuoka",
+    "location_country": "Japan",
+    "nationality": "China",
+    "visa_status": "学生",
+    "available_from": "",
+    "portfolio_url": "",
+    "github_url": "https://github.com/pokoni",
+    "linkedin_url": ""
+  },
+  "target_preferences": {
+    "target_roles": [
+      "Machine Learning Engineer",
+      "Computer Vision Engineer",
+      "Edge AI Engineer",
+      "Multimodal AI Engineer",
+      "LLM Engineer"
+    ],
+    "target_regions": [
+      "Japan"
+    ],
+    "employment_types": [
+      "Internship",
+      "New Grad",
+      "Full-time"
+    ],
+    "preferred_industries": [
+      "AI",
+      "Computer Vision",
+      "Multimodal AI",
+      "AI Agent",
+      "Developer Tools"
+    ],
+    "salary_expectation_jpy_min": null,
+    "remote_preference": "",
+    "visa_sponsorship_required": null
+  },
+  "languages": [
+    {
+      "language": "Chinese",
+      "level": "Native",
+      "proof": ""
+    },
+    {
+      "language": "Japanese",
+      "level": "JLPT N2",
+      "proof": "JLPT N2"
+    },
+    {
+      "language": "English",
+      "level": "TOEIC 750",
+      "proof": "TOEIC 750"
+    }
+  ],
+  "education": [
+    {
+      "school": "Kyushu University Graduate School of Systems Information Science",
+      "degree": "M.S.",
+      "major": "Information Science and Technology (システム情報科学府 情報理工専攻)",
+      "start_date": "2026-04",
+      "end_date": "2028-03",
+      "gpa": "",
+      "lab_or_supervisor": "Pangu Research Lab",
+      "coursework_keywords": [
+        "Machine Learning",
+        "Computer Vision",
+        "Multimodal Information Processing"
+      ]
+    },
+    {
+      "school": "Kyushu University Graduate School of Information Science",
+      "degree": "Research Student",
+      "major": "Information Science",
+      "start_date": "2024-10",
+      "end_date": "2026-04",
+      "gpa": "",
+      "lab_or_supervisor": "Pangu Research Lab",
+      "coursework_keywords": [
+        "Machine Learning",
+        "Computer Vision",
+        "Agentic AI"
+      ]
+    },
+    {
+      "school": "Shanghai Polytechnic University",
+      "degree": "B.S.",
+      "major": "Intelligence Science and Technology",
+      "start_date": "2019-09",
+      "end_date": "2024-06",
+      "gpa": "3.2/5.0",
+      "lab_or_supervisor": "",
+      "coursework_keywords": [
+        "Machine Learning",
+        "Computer Vision",
+        "Image Processing"
+      ]
+    }
+  ],
+  "work_experience": [
+    {
+      "company": "Kyushu University Pangu Research Lab",
+      "team": "Intelligent Software Engineering Laboratory",
+      "title": "Graduate Researcher",
+      "employment_type": "Research",
+      "start_date": "2024-10",
+      "end_date": "present",
+      "location": "Fukuoka, Japan",
+      "summary": "Working on development-oriented research at the intersection of software engineering and AI, with a focus on machine learning, computer vision, multimodal processing, and agent-related technologies.",
+      "responsibilities": [
+        "Implemented research-oriented ML/CV workflows",
+        "Explored multimodal processing and agent-related technologies",
+        "Studied task design using LangGraph and LlamaIndex"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "LangGraph",
+        "LlamaIndex"
+      ],
+      "achievements": [
+        {
+          "metric": "research_focus",
+          "value": "ML/CV + multimodal + agentic AI",
+          "description": "Expanded research scope from CV to multimodal information processing and agent-related task design."
+        }
+      ]
+    },
+    {
+      "company": "Shanghai Polytechnic University",
+      "team": "Computer Vision Research",
+      "title": "Student Researcher",
+      "employment_type": "Research",
+      "start_date": "2022-09",
+      "end_date": "2024-06",
+      "location": "Shanghai, China",
+      "summary": "Worked on lightweight computer vision model design and validation, including framework design, experiment setup, data collection, analysis, and paper-writing support.",
+      "responsibilities": [
+        "Designed and evaluated lightweight CV models",
+        "Built research frameworks and experimental settings",
+        "Collected and analyzed data",
+        "Contributed to paper writing"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "OpenCV",
+        "Object Detection",
+        "Model Compression"
+      ],
+      "achievements": [
+        {
+          "metric": "publications",
+          "value": "3",
+          "description": "Co-authored multiple papers on object detection, lightweight backbones, and low-latency inference."
+        }
+      ]
+    },
+    {
+      "company": "Sony Semiconductor Solutions (Shanghai)",
+      "team": "Edge AI",
+      "title": "Edge AI Engineer Intern",
+      "employment_type": "Internship",
+      "start_date": "2023-07",
+      "end_date": "2024-04",
+      "location": "Shanghai, China",
+      "summary": "Developed object recognition algorithms for edge devices such as smart cameras and smart glasses, focusing on data preparation, evaluation, and lightweight deployment.",
+      "responsibilities": [
+        "Prepared training data and performed data augmentation",
+        "Evaluated object recognition models",
+        "Applied quantization and pruning for model compression",
+        "Optimized model size and inference speed under limited compute resources"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "OpenCV",
+        "Quantization",
+        "Pruning",
+        "Edge AI"
+      ],
+      "achievements": [
+        {
+          "metric": "commercial_deployment",
+          "value": "shipped",
+          "description": "Part of the evaluated solution was implemented as an object recognition function for a commercial smart-glasses product."
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "project_name": "Edge-device Object Recognition Optimization",
+      "role": "Edge AI Engineer Intern",
+      "period": "2023-07 to 2024-04",
+      "domain": "Computer Vision / Edge AI",
+      "target_devices": [
+        "smart camera",
+        "smart glasses"
+      ],
+      "problem_statement": "Deploy object recognition on edge devices with limited compute resources while maintaining recognition accuracy.",
+      "responsibilities": [
+        "Prepared training datasets and augmentation pipelines",
+        "Evaluated object recognition models",
+        "Applied quantization and pruning",
+        "Optimized model size and inference speed"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "OpenCV",
+        "Quantization",
+        "Pruning"
+      ],
+      "quantified_results": [
+        {
+          "metric": "model_size_reduction",
+          "before": "",
+          "after": "",
+          "unit": "%"
+        },
+        {
+          "metric": "latency",
+          "before": "",
+          "after": "",
+          "unit": "ms"
+        }
+      ],
+      "resume_bullets_en": [
+        "Worked on object recognition algorithms for smart cameras and smart glasses deployed on edge devices with limited compute resources.",
+        "Handled data preparation, augmentation, model evaluation, and lightweight optimization through quantization and pruning.",
+        "Contributed to a solution whose results were partially implemented in a commercial smart-glasses product."
+      ],
+      "resume_bullets_ja": [
+        "スマートカメラやスマートグラスなどのエッジデバイス向け物体認識アルゴリズムの開発に従事。",
+        "学習データ整備、データ拡張、モデル評価、量子化・枝刈りによる軽量化を担当。",
+        "検討成果の一部はスマートグラス向けの物体認識機能として商用製品に実装。"
+      ],
+      "evidence_links": [
+        ""
+      ]
+    },
+    {
+      "project_name": "Lightweight Visual Backbone Research",
+      "role": "Student Researcher / Co-author",
+      "period": "2022-09 to 2024-06",
+      "domain": "Computer Vision / Lightweight Models",
+      "target_devices": [],
+      "problem_statement": "Improve lightweight computer vision backbones while balancing accuracy, efficiency, and deployability.",
+      "responsibilities": [
+        "Participated in research framework design",
+        "Set up experiments",
+        "Collected and analyzed data"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "OpenCV",
+        "Computer Vision"
+      ],
+      "quantified_results": [
+        {
+          "metric": "publications",
+          "before": "",
+          "after": "1",
+          "unit": "paper"
+        }
+      ],
+      "resume_bullets_en": [
+        "Contributed as second author to a Neurocomputing paper on a lightweight visual backbone with context-aware dual attention.",
+        "Participated in framework design, experiment setup, and data analysis."
+      ],
+      "resume_bullets_ja": [
+        "軽量 visual backbone に関する Neurocomputing 論文に第二著者として参加。",
+        "研究フレームワーク設計、実験設定、データ収集・分析を担当。"
+      ],
+      "evidence_links": [
+        "https://doi.org/10.1016/j.neucom.2025.129449"
+      ]
+    },
+    {
+      "project_name": "YOLOv5 Detection Latency Reduction for Lightweight Robots",
+      "role": "Student Researcher / Co-author",
+      "period": "2022-09 to 2024-06",
+      "domain": "Object Detection / Real-time Inference",
+      "target_devices": [
+        "lightweight robots"
+      ],
+      "problem_statement": "Reduce detection latency in YOLOv5 to prevent real-time tracking failures in lightweight robotic scenarios.",
+      "responsibilities": [
+        "Supported experiment design",
+        "Performed data analysis"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "YOLOv5",
+        "Object Detection"
+      ],
+      "quantified_results": [
+        {
+          "metric": "publications",
+          "before": "",
+          "after": "1",
+          "unit": "paper"
+        }
+      ],
+      "resume_bullets_en": [
+        "Co-authored a paper on reducing YOLOv5 detection latency for lightweight robots.",
+        "Contributed to experiment design and data analysis."
+      ],
+      "resume_bullets_ja": [
+        "YOLOv5 の検出遅延低減に関する論文に共著者として参加。",
+        "実験設計とデータ分析を担当。"
+      ],
+      "evidence_links": [
+        "https://doi.org/10.1145/3671016.3671392"
+      ]
+    }
+  ],
+  "skills": {
+    "programming_languages": [
+      "Python"
+    ],
+    "ml_frameworks": [
+      "PyTorch"
+    ],
+    "cv_edge_ai": [
+      "Computer Vision",
+      "Object Detection",
+      "Model Compression",
+      "Quantization",
+      "Pruning",
+      "Inference Optimization",
+      "Image Processing"
+    ],
+    "infra_tools": [],
+    "other_keywords": [
+      "OpenCV",
+      "LangGraph",
+      "LlamaIndex",
+      "Multimodal Information Processing",
+      "Agentic AI",
+      "Data Analysis",
+      "Experimental Design"
+    ]
+  },
+  "certifications": [
+    {
+      "name": "JLPT N2",
+      "issuer": "JLPT",
+      "date": ""
+    },
+    {
+      "name": "TOEIC 750",
+      "issuer": "TOEIC",
+      "date": ""
+    }
+  ],
+  "publications_or_competitions": [
+    {
+      "title": "Lightweight visual backbone network with enhanced comprehensive strength through context-aware dual attention mechanism",
+      "type": "journal paper",
+      "date": "2025",
+      "url": "https://doi.org/10.1016/j.neucom.2025.129449"
+    },
+    {
+      "title": "Reduce Detection Latency of YOLOv5 to Prevent Real-Time Tracking Failures for Lightweight Robots",
+      "type": "conference paper",
+      "date": "2024",
+      "url": "https://doi.org/10.1145/3671016.3671392"
+    },
+    {
+      "title": "Less-activated visual networks to enhance friendly following ability of lightweight robots",
+      "type": "journal paper",
+      "date": "2025",
+      "url": "https://doi.org/10.1007/s10664-025-10679-1"
+    }
+  ],
+  "self_intro_assets": {
+    "one_line_pitch_ja": "軽量モデル設計・物体検出・高速推論を強みとする、CV/ML志向の研究開発人材。",
+    "one_line_pitch_en": "CV/ML-focused researcher-engineer with strengths in lightweight models, object detection, and fast inference.",
+    "short_bio_ja": "コンピュータビジョンと機械学習を基盤に、軽量モデル設計、物体検出、高速推論、画像処理の研究と実装に取り組んできました。エッジデバイス向け物体認識アルゴリズムの学習・評価・軽量化を経験し、最近は LangGraph・LlamaIndex を用いた agent 関連タスクや LLM・マルチモーダル情報処理にも関心を広げています。",
+    "short_bio_en": "I have worked on research and implementation in computer vision and machine learning, with strengths in lightweight model design, object detection, fast inference, and image processing. I also gained experience in training, evaluating, and compressing object-recognition algorithms for edge devices, and have recently expanded my interests toward agent-related tasks using LangGraph and LlamaIndex, as well as LLM and multimodal information processing.",
+    "strength_keywords": [
+      "computer vision",
+      "machine learning",
+      "edge ai",
+      "lightweight models",
+      "object detection",
+      "inference optimization",
+      "multimodal ai"
+    ]
+  },
+  "constraints": {
+    "must_not_claim": [
+      "Do not invent unavailable years of experience",
+      "Do not claim business-level Japanese unless confirmed",
+      "Do not fabricate production ownership"
+    ],
+    "must_keep_facts": [
+      "Actual graduation timeline",
+      "Actual internship/project dates",
+      "Real metrics only"
+    ]
+  },
+  "documents": {
+    "master_resume_path": "job-hunt/inputs/master_resume.docx",
+    "japanese_resume_path": "job-hunt/outputs/resumes/rirekisho_latest.docx",
+    "cv_path": "job-hunt/outputs/resumes/shokumukeirekisho_latest.docx"
+  },
+  "visa_status": "学生",
+  "weekly_availability": "通常期: 28 hours/week; 休暇中: 40+ hours/week",
+  "email": "yoward.hu@gmail.com",
+  "current_affiliation": "九州大学 システム情報科学府 情報理工専攻",
+  "availability": {
+    "regular_term": "28 hours/week",
+    "summer_vacation": "40+ hours/week",
+    "notes": "通常期は週28時間程度、休暇中は週40時間以上対応可能。"
+  }
+}

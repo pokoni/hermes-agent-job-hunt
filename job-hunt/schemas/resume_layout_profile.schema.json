@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Japanese Resume Layout Profile",
+  "type": "object",
+  "required": [
+    "profile_name",
+    "version",
+    "language",
+    "documents",
+    "global_rules",
+    "human_review_required"
+  ],
+  "properties": {
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "ja"
+      ]
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "global_rules": {
+      "type": "object",
+      "required": [
+        "paper_size",
+        "font_family",
+        "date_format",
+        "submission_boundary"
+      ],
+      "properties": {
+        "paper_size": {
+          "type": "string",
+          "enum": [
+            "A4"
+          ]
+        },
+        "font_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "font_size_pt": {
+          "type": "number",
+          "minimum": 8,
+          "maximum": 14
+        },
+        "date_format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "submission_boundary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 3
+        }
+      },
+      "additionalProperties": true
+    },
+    "documents": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "document_type",
+          "title",
+          "required_sections",
+          "layout_rules"
+        ],
+        "properties": {
+          "document_type": {
+            "type": "string",
+            "enum": [
+              "rirekisho",
+              "shokumukeirekisho"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_sections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 3
+          },
+          "layout_rules": {
+            "type": "object",
+            "required": [
+              "page_target",
+              "section_order_strict",
+              "review_focus"
+            ],
+            "properties": {
+              "page_target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "section_order_strict": {
+                "type": "boolean"
+              },
+              "review_focus": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

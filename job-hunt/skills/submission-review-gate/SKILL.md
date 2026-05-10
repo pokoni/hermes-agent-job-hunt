@@ -4,7 +4,7 @@
 
 Create the final pre-submission review package for the frozen Hermes Japan job-hunt workspace.
 
-This skill belongs to the frozen `job-hunt/` pipeline:
+Frozen pipeline:
 
 ```text
 job-normalizer
@@ -17,9 +17,9 @@ job-normalizer
 → live-submission-adapter
 ```
 
-Do not introduce a new intermediate component between `submission-review-gate` and `live-submission-adapter`.
+Do not introduce or depend on `submission-session-orchestrator`.
 
-## Current role in the project
+## Current role
 
 `submission-review-gate` is the final quality and safety checkpoint before `live-submission-adapter`.
 
@@ -27,9 +27,9 @@ It must verify:
 
 - candidate identity consistency,
 - application draft consistency,
-- Markdown resume/CV artifacts,
-- DOCX resume/CV export artifacts if present,
-- PDF resume/CV export artifacts if present,
+- standard Markdown resume/CV artifacts,
+- standard DOCX/PDF resume/CV artifacts,
+- polished Japanese 履歴書 / 職務経歴書 DOCX/PDF artifacts,
 - tracker linkage,
 - browser/form readiness,
 - remaining blockers,
@@ -39,25 +39,23 @@ It must verify:
 
 Typical inputs:
 
-- `data/jobs/<job_basename>.json`
-- `data/candidate_profile.json`
-- `outputs/fit_reports/<job_basename>.md`
-- `outputs/tailored_resumes/<job_basename>_tailor_plan.md`
-- `outputs/application_drafts/<job_basename>_motivation_ja.md`
-- `outputs/application_drafts/<job_basename>_self_pr_ja.md`
-- `outputs/application_drafts/<job_basename>_application_mail_ja.md`
-- `outputs/resumes/<job_basename>_resume_ja.md`
-- `outputs/resumes/<job_basename>_cv_ja.md`
-- `outputs/resumes/<job_basename>_resume_manifest.json`
-- `outputs/resumes/<job_basename>_resume_ja.docx`
-- `outputs/resumes/<job_basename>_cv_ja.docx`
-- `outputs/resumes/<job_basename>_docx_export_manifest.json`
-- `outputs/resumes/<job_basename>_resume_ja.pdf`
-- `outputs/resumes/<job_basename>_cv_ja.pdf`
-- `outputs/resumes/<job_basename>_pdf_export_manifest.json`
-- `outputs/logs/application_tracker.jsonl`
-- `outputs/logs/application_tracker_latest.md`
-- browser-assist artifacts under `outputs/logs/`
+```text
+data/jobs/<job_basename>.json
+data/candidate_profile.json
+outputs/fit_reports/<job_basename>.md
+outputs/tailored_resumes/<job_basename>_tailor_plan.md
+outputs/application_drafts/<job_basename>_motivation_ja.md
+outputs/application_drafts/<job_basename>_self_pr_ja.md
+outputs/application_drafts/<job_basename>_application_mail_ja.md
+outputs/resumes/<job_basename>_resume_manifest.json
+outputs/resumes/<job_basename>_docx_export_manifest.json
+outputs/resumes/<job_basename>_pdf_export_manifest.json
+outputs/resumes/<job_basename>_polished_docx_manifest.json
+outputs/resumes/<job_basename>_polished_pdf_manifest.json
+outputs/logs/application_tracker.jsonl
+outputs/logs/application_tracker_latest.md
+browser-assist artifacts under outputs/logs/
+```
 
 ## Outputs
 
@@ -83,6 +81,8 @@ The review Markdown must include these headings:
 ## Resume Artifacts
 ## DOCX Export Artifacts
 ## PDF Export Artifacts
+## Polished DOCX Artifacts
+## Polished PDF Artifacts
 ## Application Draft Consistency
 ## Browser / Form Readiness
 ## Blocking Issues
@@ -115,6 +115,13 @@ The decision JSON must be valid JSON and include these top-level keys:
   "cv_pdf_file": "",
   "pdf_export_manifest": "",
   "pdf_human_visual_review_required": true,
+  "rirekisho_polished_docx": "",
+  "shokumukeirekisho_polished_docx": "",
+  "polished_docx_manifest": "",
+  "rirekisho_polished_pdf": "",
+  "shokumukeirekisho_polished_pdf": "",
+  "polished_pdf_manifest": "",
+  "polished_human_review_required": true,
   "blocking_issues": [],
   "warnings": [],
   "next_actions": [],
@@ -124,50 +131,78 @@ The decision JSON must be valid JSON and include these top-level keys:
 }
 ```
 
-## Markdown resume artifact awareness
+## Standard artifact awareness
 
-If `outputs/resumes/<job_basename>_resume_manifest.json` exists:
-
-- read it,
-- copy `resume_version`, `resume_file`, and `cv_file` into the decision JSON,
-- do not list Markdown resume/CV files as missing if both referenced files exist,
-- if either file path from the manifest is missing, list that exact missing file as a blocker.
-
-If the manifest is absent, add a blocker:
+Read these manifests if present and verify referenced files:
 
 ```text
-Resume manifest missing under outputs/resumes/
+outputs/resumes/<job_basename>_resume_manifest.json
+outputs/resumes/<job_basename>_docx_export_manifest.json
+outputs/resumes/<job_basename>_pdf_export_manifest.json
 ```
 
-## DOCX export artifact awareness
+Propagate:
 
-If `outputs/resumes/<job_basename>_docx_export_manifest.json` exists:
+- `resume_version`
+- `resume_file`
+- `cv_file`
+- `resume_manifest`
+- `resume_docx_file`
+- `cv_docx_file`
+- `docx_export_manifest`
+- `resume_pdf_file`
+- `cv_pdf_file`
+- `pdf_export_manifest`
 
-- read it,
-- copy the `resume_ja` DOCX path into `resume_docx_file`,
-- copy the `cv_ja` DOCX path into `cv_docx_file`,
-- copy the manifest path into `docx_export_manifest`,
-- set `docx_human_layout_review_required` to true,
-- do not report DOCX files as missing if the referenced files exist,
-- if a referenced DOCX file is missing, add a blocker with the exact missing path.
+Do not report a file as missing if the referenced file exists.
 
-If the DOCX export manifest is absent, warn rather than block unless the target platform explicitly requires DOCX upload.
+## Polished DOCX artifact awareness
 
-## PDF export artifact awareness
+If this file exists:
 
-If `outputs/resumes/<job_basename>_pdf_export_manifest.json` exists:
+```text
+outputs/resumes/<job_basename>_polished_docx_manifest.json
+```
 
-- read it,
-- copy the `resume_ja` PDF path into `resume_pdf_file`,
-- copy the `cv_ja` PDF path into `cv_pdf_file`,
-- copy the manifest path into `pdf_export_manifest`,
-- set `pdf_human_visual_review_required` to true,
-- do not report PDF files as missing if the referenced files exist,
-- if a referenced PDF file is missing, add a blocker with the exact missing path.
+read it and copy:
 
-If the PDF export manifest is absent, warn rather than block unless the target platform explicitly requires PDF upload.
+- `rirekisho_polished_docx`
+- `shokumukeirekisho_polished_docx`
+- `polished_docx_manifest`
+- `polished_human_review_required: true`
 
-Reason: some application flows accept DOCX or form text. PDF absence should not block the review by default unless the target platform or user explicitly requires PDF submission.
+The manifest contains a `generated_files` array. Use:
+
+- `document_type == "rirekisho"` as `rirekisho_polished_docx`
+- `document_type == "shokumukeirekisho"` as `shokumukeirekisho_polished_docx`
+
+If the manifest exists but either referenced DOCX file is missing, add a blocker with the exact missing path.
+
+If the polished DOCX manifest is absent, warn rather than block unless the target platform explicitly requires polished Japanese layout files.
+
+## Polished PDF artifact awareness
+
+If this file exists:
+
+```text
+outputs/resumes/<job_basename>_polished_pdf_manifest.json
+```
+
+read it and copy:
+
+- `rirekisho_polished_pdf`
+- `shokumukeirekisho_polished_pdf`
+- `polished_pdf_manifest`
+- `polished_human_review_required: true`
+
+The manifest contains a `generated_files` array. Use:
+
+- `document_type == "rirekisho"` as `rirekisho_polished_pdf`
+- `document_type == "shokumukeirekisho"` as `shokumukeirekisho_polished_pdf`
+
+If the manifest exists but either referenced PDF file is missing, add a blocker with the exact missing path.
+
+If the polished PDF manifest is absent, warn rather than block unless the target platform explicitly requires polished PDF upload.
 
 ## Tracker consistency checks
 
@@ -178,13 +213,13 @@ outputs/logs/application_tracker.jsonl
 outputs/logs/application_tracker_latest.md
 ```
 
-If PDF export artifacts exist but the latest tracker does not mention them, add a warning:
+If polished artifacts exist but the latest tracker does not mention them, add a warning:
 
 ```text
-Tracker may be stale; rerun application-tracker to link PDF export artifacts.
+Tracker may be stale; rerun application-tracker to link polished artifacts.
 ```
 
-Do not claim PDF files are missing if the actual files exist.
+Do not claim polished files are missing if the actual files exist.
 
 ## Candidate consistency checks
 
@@ -241,25 +276,22 @@ Explicit human approval is required before any submit action.
 1. Read normalized job JSON.
 2. Read candidate profile.
 3. Check generated application drafts.
-4. Read Markdown resume manifest if present.
-5. Verify Markdown resume and CV file paths.
-6. Read DOCX export manifest if present.
-7. Verify DOCX resume and CV file paths.
-8. Read PDF export manifest if present.
-9. Verify PDF resume and CV file paths.
-10. Read tracker artifacts and check whether they reference Markdown, DOCX, and PDF artifacts.
-11. Check candidate identity consistency in application drafts.
-12. Check browser/form readiness.
-13. Produce the review Markdown.
-14. Produce the decision JSON.
-15. Keep live submission blocked unless all blockers are resolved and explicit human approval is required.
+4. Read standard resume/DOCX/PDF manifests if present.
+5. Read polished DOCX/PDF manifests if present.
+6. Verify all referenced file paths.
+7. Read tracker artifacts and check whether they reference polished artifacts.
+8. Check candidate identity consistency in application drafts.
+9. Check browser/form readiness.
+10. Produce the review Markdown.
+11. Produce the decision JSON.
+12. Keep live submission blocked unless all blockers are resolved and explicit human approval is required.
 
 ## Verification
 
 Run:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_submission_review_pdf_awareness.py -q
+JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_submission_review_polished_artifact_awareness.py -q
 ```
 
 Then run:
@@ -267,11 +299,3 @@ Then run:
 ```bash
 JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
 ```
-
-## Pitfalls
-
-- Do not depend on `submission-session-orchestrator`; it is not part of the frozen framework.
-- Do not write to `output/`.
-- Do not claim a live submission is allowed merely because Markdown/DOCX/PDF files exist.
-- Do not hide platform-level blockers such as inaccessible forms or missing login credentials.
-- Do not treat PDF files as final without human visual review.

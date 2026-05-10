@@ -2,21 +2,6 @@
 
 Use the frozen Hermes Japan job-hunt workspace.
 
-## Frozen pipeline
-
-```text
-job-normalizer
-→ job-fit-scorer
-→ resume-tailor
-→ jp-application-writer
-→ application-tracker
-→ browser-apply-assistant
-→ submission-review-gate
-→ live-submission-adapter
-```
-
-There is no `submission-session-orchestrator`.
-
 ## Goal
 
 Create a controlled live submission dry-run package. Do not perform a real submission and do not click any submit button.
@@ -29,8 +14,6 @@ outputs/logs/<job_basename>_submission_review.md
 outputs/logs/<job_basename>_submission_decision.json
 ```
 
-Also read available browser-assist artifacts and resume manifests under `outputs/`.
-
 ## Required outputs
 
 ```text
@@ -40,24 +23,42 @@ outputs/logs/<job_basename>_live_submission_authorization_request.md
 outputs/logs/<job_basename>_live_submission_result_stub.json
 ```
 
-## Required PDF behavior
+## Polished artifact behavior
 
 Read these fields from `submission_decision.json` and propagate them into all live outputs:
 
 ```text
-resume_pdf_file
-cv_pdf_file
-pdf_export_manifest
-pdf_human_visual_review_required
+rirekisho_polished_docx
+shokumukeirekisho_polished_docx
+polished_docx_manifest
+rirekisho_polished_pdf
+shokumukeirekisho_polished_pdf
+polished_pdf_manifest
+polished_human_review_required
 ```
 
-The field mapping must include `## PDF Upload Files`.
+The dry-run plan must include:
 
-The authorization request must include `## PDF Files That Would Be Used`.
+```md
+## Polished DOCX Artifact Source
+## Polished PDF Artifact Source
+```
 
-The dry-run plan must include `## PDF Export Artifact Source`.
+The field mapping must include:
 
-The result stub must include all PDF fields and keep all submit flags false.
+```md
+## Polished DOCX Upload Files
+## Polished PDF Upload Files
+```
+
+The authorization request must include:
+
+```md
+## Polished DOCX Files That Would Be Used
+## Polished PDF Files That Would Be Used
+```
+
+The result stub must include all polished artifact fields and keep all submit flags false.
 
 ## Boundary lines
 

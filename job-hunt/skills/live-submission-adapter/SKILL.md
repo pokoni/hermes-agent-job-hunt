@@ -34,6 +34,8 @@ outputs/logs/<job_basename>_application_form_snapshot.md
 outputs/resumes/<job_basename>_resume_manifest.json
 outputs/resumes/<job_basename>_docx_export_manifest.json
 outputs/resumes/<job_basename>_pdf_export_manifest.json
+outputs/resumes/<job_basename>_polished_docx_manifest.json
+outputs/resumes/<job_basename>_polished_pdf_manifest.json
 ```
 
 ## Outputs
@@ -72,21 +74,13 @@ It must include these headings:
 ## Resume Artifact Source
 ## DOCX Export Artifact Source
 ## PDF Export Artifact Source
+## Polished DOCX Artifact Source
+## Polished PDF Artifact Source
 ## Current Live Status
 ## Live Preconditions
 ## Planned Live Steps
 ## Blocking Issues
 ## Result Stub Summary
-```
-
-It must contain these boundary lines:
-
-```text
-Do not submit by default.
-Stop before final submission.
-Require explicit human approval before any submit action.
-This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
-Explicit human approval is required before any submit action.
 ```
 
 ## Required field mapping contract
@@ -102,6 +96,8 @@ The field mapping must include:
 ## Resume and CV Files
 ## DOCX Upload Files
 ## PDF Upload Files
+## Polished DOCX Upload Files
+## Polished PDF Upload Files
 ## Application Draft Fields
 ## Form Field Mapping
 ## Missing or Unverified Fields
@@ -116,8 +112,6 @@ The field mapping must include:
 ## Fields Requiring Human Input
 ## Mapping Risks
 ```
-
-Under `## PDF Upload Files`, include the resume PDF path, CV PDF path, PDF export manifest path, and human visual review warning.
 
 ## Required authorization request contract
 
@@ -134,6 +128,8 @@ The authorization request must include:
 ## Files That Would Be Used
 ## DOCX Files That Would Be Used
 ## PDF Files That Would Be Used
+## Polished DOCX Files That Would Be Used
+## Polished PDF Files That Would Be Used
 ## Authorization Checklist
 
 ## Submission Status
@@ -143,20 +139,9 @@ The authorization request must include:
 ## Authorization Phrase
 ```
 
-The authorization request must contain:
-
-```text
-Explicit approval is required.
-Do not submit by default.
-Stop before final submission.
-Require explicit human approval before any submit action.
-This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
-Explicit human approval is required before any submit action.
-```
-
 ## Required result stub JSON contract
 
-The result stub must be valid JSON and include:
+The result stub must include:
 
 ```json
 {
@@ -177,6 +162,13 @@ The result stub must be valid JSON and include:
   "cv_pdf_file": "",
   "pdf_export_manifest": "",
   "pdf_human_visual_review_required": true,
+  "rirekisho_polished_docx": "",
+  "shokumukeirekisho_polished_docx": "",
+  "polished_docx_manifest": "",
+  "rirekisho_polished_pdf": "",
+  "shokumukeirekisho_polished_pdf": "",
+  "polished_pdf_manifest": "",
+  "polished_human_review_required": true,
   "blocking_issues": [],
   "human_approval_required": true,
   "explicit_approval_received": false
@@ -185,63 +177,47 @@ The result stub must be valid JSON and include:
 
 All submit flags must be false by default.
 
-## PDF-aware behavior
+## Polished artifact behavior
 
-Use these fields from `outputs/logs/<job_basename>_submission_decision.json`:
+Read these fields from `outputs/logs/<job_basename>_submission_decision.json`:
 
 ```text
-resume_pdf_file
-cv_pdf_file
-pdf_export_manifest
-pdf_human_visual_review_required
+rirekisho_polished_docx
+shokumukeirekisho_polished_docx
+polished_docx_manifest
+rirekisho_polished_pdf
+shokumukeirekisho_polished_pdf
+polished_pdf_manifest
+polished_human_review_required
 ```
 
-If the referenced files exist:
+If referenced files exist:
 
-- copy them into the result stub,
+- copy them into the live result stub,
 - mention them in the dry-run plan,
 - mention them in the field mapping,
 - mention them in the authorization request,
-- do not report PDF files as missing.
+- do not report polished files as missing.
 
-If PDF fields are absent but `outputs/resumes/<job_basename>_pdf_export_manifest.json` exists, warn that `submission-review-gate` may be stale and recommend rerunning it.
+Keep `polished_human_review_required` true unless a human explicitly approves the polished layout.
 
-Keep `pdf_human_visual_review_required` true until a human explicitly approves the PDF visual layout.
+## Human approval boundary
 
-## Review-gate dependency
-
-This skill depends directly on:
+All live outputs must include these lines or phrases:
 
 ```text
-outputs/logs/<job_basename>_submission_review.md
-outputs/logs/<job_basename>_submission_decision.json
-```
-
-It must not require or mention:
-
-```text
-submission-session-orchestrator
-submission_session_plan
-submission_session_manifest
-submission_session_ready_check
+Explicit approval is required.
+Do not submit by default.
+Stop before final submission.
+Require explicit human approval before any submit action.
+This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
+Explicit human approval is required before any submit action.
 ```
 
 ## Safety
 
 - Never submit by default.
 - Never click the final submit button.
-- Keep platform and form blockers visible.
-- Do not infer that files being present means submission is allowed.
-- Do not treat PDF files as final without human visual review.
-
-## Verification
-
-```bash
-JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_submission_pdf_awareness.py -q
-```
-
-Then:
-
-```bash
-JOB_HUNT_TEST_BASENAME=<job_basename> /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
-```
+- Keep platform-access blockers visible.
+- Require explicit human approval.
+- Do not treat polished files as final without human review.

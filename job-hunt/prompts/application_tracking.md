@@ -19,7 +19,7 @@ job-normalizer
 
 Create or refresh a tracker record and dashboard for a normalized job.
 
-The tracker must connect the job with all generated application artifacts, including Markdown resume/CV artifacts and DOCX export artifacts.
+The tracker must connect the job with all generated application artifacts, including Markdown, standard DOCX/PDF, and polished Japanese 履歴書 / 職務経歴書 DOCX/PDF artifacts.
 
 ## Required input
 
@@ -43,26 +43,34 @@ outputs/resumes/<job_basename>_resume_manifest.json
 outputs/resumes/<job_basename>_resume_ja.docx
 outputs/resumes/<job_basename>_cv_ja.docx
 outputs/resumes/<job_basename>_docx_export_manifest.json
+outputs/resumes/<job_basename>_resume_ja.pdf
+outputs/resumes/<job_basename>_cv_ja.pdf
+outputs/resumes/<job_basename>_pdf_export_manifest.json
+outputs/resumes/<job_basename>_rirekisho_polished.docx
+outputs/resumes/<job_basename>_shokumukeirekisho_polished.docx
+outputs/resumes/<job_basename>_polished_docx_manifest.json
+outputs/resumes/<job_basename>_rirekisho_polished.pdf
+outputs/resumes/<job_basename>_shokumukeirekisho_polished.pdf
+outputs/resumes/<job_basename>_polished_pdf_manifest.json
 ```
 
-## Markdown resume linkage
+## Polished DOCX linkage
 
-If `outputs/resumes/<job_basename>_resume_manifest.json` exists, read it and copy:
+If `outputs/resumes/<job_basename>_polished_docx_manifest.json` exists, read it and copy:
 
-- `resume_version`
-- `resume_file`
-- `cv_file`
-- `resume_manifest`
+- `rirekisho_polished_docx`
+- `shokumukeirekisho_polished_docx`
+- `polished_docx_manifest`
+- `polished_human_review_required: true`
 
-## DOCX linkage
+## Polished PDF linkage
 
-If `outputs/resumes/<job_basename>_docx_export_manifest.json` exists, read it and copy:
+If `outputs/resumes/<job_basename>_polished_pdf_manifest.json` exists, read it and copy:
 
-- resume DOCX path into `resume_docx_file`
-- CV DOCX path into `cv_docx_file`
-- manifest path into `docx_export_manifest`
-
-If DOCX files exist, include them in the dashboard under `## DOCX Export Artifacts`.
+- `rirekisho_polished_pdf`
+- `shokumukeirekisho_polished_pdf`
+- `polished_pdf_manifest`
+- `polished_human_review_required: true`
 
 ## Required outputs
 
@@ -85,6 +93,9 @@ Use these exact headings:
 ## Application Details
 ## Resume Artifacts
 ## DOCX Export Artifacts
+## PDF Export Artifacts
+## Polished DOCX Artifacts
+## Polished PDF Artifacts
 ## Linked Artifacts
 ## Blocking Issues
 ## Next Actions
@@ -94,4 +105,4 @@ Use these exact headings:
 ## Safety
 
 Never mark as submitted unless the user explicitly confirms actual submission.
-DOCX files require human layout review before submission.
+Polished DOCX/PDF files require human review before submission.

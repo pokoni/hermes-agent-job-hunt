@@ -1,0 +1,83 @@
+{
+  "profile_name": "japanese_internship_resume_layout_profile",
+  "version": "2026-05-10",
+  "language": "ja",
+  "human_review_required": true,
+  "global_rules": {
+    "paper_size": "A4",
+    "font_family": "Yu Gothic",
+    "font_size_pt": 10.5,
+    "date_format": "YYYY年M月D日",
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ],
+    "plain_style_policy": [
+      "Avoid decorative formatting.",
+      "Prefer readable spacing over dense compression.",
+      "Keep Japanese business tone natural and conservative.",
+      "Do not alter candidate facts during layout polishing."
+    ]
+  },
+  "documents": [
+    {
+      "document_type": "rirekisho",
+      "title": "履歴書",
+      "required_sections": [
+        "基本情報",
+        "学歴",
+        "職歴・研究経験",
+        "免許・資格",
+        "志望動機",
+        "本人希望欄",
+        "人間による確認"
+      ],
+      "layout_rules": {
+        "page_target": "A4 1 page preferred; A4 2 pages acceptable when research/publication details are necessary.",
+        "section_order_strict": true,
+        "review_focus": [
+          "氏名・メール・所属の一致",
+          "日付の形式",
+          "大学院所属表記",
+          "余白と行間",
+          "提出前の写真要否"
+        ],
+        "avoid": [
+          "excessive bold text",
+          "AI-like overly polished claims",
+          "unverified availability or visa statements"
+        ]
+      }
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "title": "職務経歴書",
+      "required_sections": [
+        "職務要約",
+        "活かせる経験・スキル",
+        "研究・開発経験",
+        "技術スキル",
+        "論文・成果",
+        "自己PR",
+        "人間による確認"
+      ],
+      "layout_rules": {
+        "page_target": "A4 1-2 pages.",
+        "section_order_strict": true,
+        "review_focus": [
+          "成果と根拠の対応",
+          "技術スタックの表記統一",
+          "応募職種との関連性",
+          "職務経歴と研究経験の区別",
+          "PDF化後の改ページ"
+        ],
+        "avoid": [
+          "long paragraphs",
+          "unsupported impact claims",
+          "mixing English and Japanese without purpose"
+        ]
+      }
+    }
+  ]
+}
