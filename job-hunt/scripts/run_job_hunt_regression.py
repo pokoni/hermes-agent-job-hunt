@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
 """Local regression wrapper for the Hermes Japan job-hunt workspace.
 
-This script does not create submissions, access websites, upload files, or click
-buttons. It only checks local artifacts and optionally runs pytest commands.
+This wrapper is intentionally conservative. It does not submit applications,
+access websites, upload files, or click buttons.
+
+It can:
+- print a regression plan,
+- check expected local artifacts,
+- enforce live artifact references from submission_decision.json,
+- verify human approval boundaries,
+- run targeted tests,
+- run full tests,
+- write local regression reports.
 
 Typical use:
 
+  python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --plan
   python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --check-only
-  python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --targeted
-  python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --full
+  python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --enforce-live-artifacts --targeted
+  python scripts/run_job_hunt_regression.py --workspace . --basename 03_regnio_ml_iot_engineer_fukuoka_2026 --enforce-live-artifacts --full
 """
 
 from __future__ import annotations
@@ -39,12 +49,19 @@ TARGETED_TESTS = [
     "tests/test_resume_layout_lint.py",
     "tests/test_polished_resume_docx_render.py",
     "tests/test_polished_resume_pdf_export.py",
+    "tests/test_polished_layout_quality.py",
     "tests/test_application_tracker_polished_artifact_linkage.py",
     "tests/test_submission_review_polished_artifact_awareness.py",
+    "tests/test_live_submission_resume_awareness.py",
+    "tests/test_live_submission_docx_awareness.py",
+    "tests/test_live_submission_pdf_awareness.py",
     "tests/test_live_submission_polished_artifact_awareness.py",
+    "tests/test_live_artifact_reference_enforcer.py",
     "tests/test_platform_session_strategy.py",
     "tests/test_platform_dry_run_checklist.py",
+    "tests/test_browser_handoff_package.py",
     "tests/test_final_human_approval_package.py",
+    "tests/test_real_submission_readiness_gate.py",
 ]
 
 
@@ -57,10 +74,6 @@ class Check:
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
-def rel(path: Path, root: Path) -> str:
-    return str(path.resolve().relative_to(root.resolve()))
 
 
 def build_required_checks(basename: str) -> list[Check]:
@@ -83,6 +96,8 @@ def build_required_checks(basename: str) -> list[Check]:
         Check("polished_pdf", f"outputs/resumes/{basename}_rirekisho_polished.pdf"),
         Check("polished_pdf", f"outputs/resumes/{basename}_shokumukeirekisho_polished.pdf"),
         Check("polished_pdf", f"outputs/resumes/{basename}_polished_pdf_manifest.json"),
+        Check("polished_layout_quality", f"outputs/logs/{basename}_polished_layout_quality_report.json", required=False),
+        Check("polished_layout_quality", f"outputs/logs/{basename}_polished_layout_quality_report.md", required=False),
         Check("tracker", "outputs/logs/application_tracker.jsonl"),
         Check("tracker", "outputs/logs/application_tracker_latest.md"),
         Check("submission_review", f"outputs/logs/{basename}_submission_review.md"),
@@ -95,8 +110,12 @@ def build_required_checks(basename: str) -> list[Check]:
         Check("platform_strategy", "outputs/logs/platform_session_strategy_validation.json", required=False),
         Check("platform_dry_run", f"outputs/logs/{basename}_wantedly_platform_dry_run.json", required=False),
         Check("platform_dry_run", f"outputs/logs/{basename}_wantedly_platform_dry_run.md", required=False),
+        Check("browser_handoff", f"outputs/logs/{basename}_wantedly_browser_handoff_package.json", required=False),
+        Check("browser_handoff", f"outputs/logs/{basename}_wantedly_browser_handoff_package.md", required=False),
         Check("final_approval", f"outputs/logs/{basename}_final_human_approval_request.json"),
         Check("final_approval", f"outputs/logs/{basename}_final_human_approval_request.md"),
+        Check("real_submission_readiness", f"outputs/logs/{basename}_wantedly_real_submission_readiness_report.json", required=False),
+        Check("real_submission_readiness", f"outputs/logs/{basename}_wantedly_real_submission_readiness_report.md", required=False),
     ]
 
 
@@ -133,10 +152,16 @@ def boundary_check(workspace: Path, basename: str) -> dict:
         f"outputs/logs/{basename}_live_submission_authorization_request.md",
         f"outputs/logs/{basename}_final_human_approval_request.md",
     ]
+    optional_files = [
+        f"outputs/logs/{basename}_wantedly_real_submission_readiness_report.md",
+        f"outputs/logs/{basename}_wantedly_browser_handoff_package.md",
+    ]
     results = []
     missing = []
-    for rel_path in files:
+    for rel_path in files + optional_files:
         path = workspace / rel_path
+        if not path.exists() and rel_path in optional_files:
+            continue
         text = path.read_text(encoding="utf-8") if path.exists() else ""
         absent = [line for line in BOUNDARY_LINES if line not in text]
         results.append({"path": rel_path, "missing_boundary_lines": absent})
@@ -155,12 +180,14 @@ def build_plan(workspace: Path, basename: str, python_executable: str) -> dict:
         "basename": basename,
         "python": python_executable,
         "targeted_tests": TARGETED_TESTS,
-        "full_test_command": [
+        "full_test_command": [python_executable, "-m", "pytest", "tests", "-q"],
+        "live_artifact_enforcer_command": [
             python_executable,
-            "-m",
-            "pytest",
-            "tests",
-            "-q",
+            "skills/live-submission-adapter/scripts/enforce_live_artifact_references.py",
+            "--workspace",
+            ".",
+            "--basename",
+            basename,
         ],
         "environment": {
             "JOB_HUNT_TEST_BASENAME": basename,
@@ -175,10 +202,9 @@ def build_plan(workspace: Path, basename: str, python_executable: str) -> dict:
     }
 
 
-def run_pytest(workspace: Path, basename: str, python_executable: str, tests: list[str]) -> dict:
+def run_command(workspace: Path, basename: str, cmd: list[str]) -> dict:
     env = os.environ.copy()
     env["JOB_HUNT_TEST_BASENAME"] = basename
-    cmd = [python_executable, "-m", "pytest", *tests, "-q"]
     completed = subprocess.run(
         cmd,
         cwd=workspace,
@@ -197,6 +223,24 @@ def run_pytest(workspace: Path, basename: str, python_executable: str, tests: li
     }
 
 
+def run_pytest(workspace: Path, basename: str, python_executable: str, tests: list[str]) -> dict:
+    return run_command(workspace, basename, [python_executable, "-m", "pytest", *tests, "-q"])
+
+
+def run_live_artifact_enforcer(workspace: Path, basename: str, python_executable: str, verify_only: bool = False) -> dict:
+    cmd = [
+        python_executable,
+        "skills/live-submission-adapter/scripts/enforce_live_artifact_references.py",
+        "--workspace",
+        ".",
+        "--basename",
+        basename,
+    ]
+    if verify_only:
+        cmd.append("--verify-only")
+    return run_command(workspace, basename, cmd)
+
+
 def write_report(workspace: Path, basename: str, report: dict) -> None:
     out = workspace / "outputs" / "logs"
     out.mkdir(parents=True, exist_ok=True)
@@ -213,24 +257,26 @@ def write_report(workspace: Path, basename: str, report: dict) -> None:
         f"- Status: `{report['status']}`",
         f"- Created at: `{report['created_at']}`",
         "",
-        "## Missing Required Artifacts",
+        "## Live Artifact Enforcer",
         "",
     ]
-    missing = report["artifact_check"]["missing_required"]
-    if missing:
-        lines.extend(f"- `{item}`" for item in missing)
+    if report.get("live_artifact_enforcer_result"):
+        result = report["live_artifact_enforcer_result"]
+        lines.append(f"- Status: `{result['status']}` returncode={result['returncode']}")
     else:
-        lines.append("- None.")
+        lines.append("- Not run.")
+
+    lines += ["", "## Missing Required Artifacts", ""]
+    missing = report["artifact_check"]["missing_required"]
+    lines += [f"- `{item}`" for item in missing] if missing else ["- None."]
 
     lines += ["", "## Missing Optional Artifacts", ""]
     optional = report["artifact_check"]["missing_optional"]
-    if optional:
-        lines.extend(f"- `{item}`" for item in optional)
-    else:
-        lines.append("- None.")
+    lines += [f"- `{item}`" for item in optional] if optional else ["- None."]
 
     lines += ["", "## Human Approval Boundary", ""]
-    lines.extend(BOUNDARY_LINES)
+    lines += BOUNDARY_LINES
+
     lines += ["", "## Test Results", ""]
     for key in ["targeted_result", "full_result"]:
         result = report.get(key)
@@ -247,10 +293,12 @@ def main() -> int:
     parser.add_argument("--workspace", default=".")
     parser.add_argument("--basename", default=os.environ.get("JOB_HUNT_TEST_BASENAME", DEFAULT_BASENAME))
     parser.add_argument("--python", default=sys.executable)
-    parser.add_argument("--plan", action="store_true", help="Print regression plan only.")
-    parser.add_argument("--check-only", action="store_true", help="Check artifacts and boundary files only.")
-    parser.add_argument("--targeted", action="store_true", help="Run targeted regression tests.")
-    parser.add_argument("--full", action="store_true", help="Run full job-hunt test suite.")
+    parser.add_argument("--plan", action="store_true")
+    parser.add_argument("--check-only", action="store_true")
+    parser.add_argument("--enforce-live-artifacts", action="store_true")
+    parser.add_argument("--verify-live-artifacts", action="store_true")
+    parser.add_argument("--targeted", action="store_true")
+    parser.add_argument("--full", action="store_true")
     args = parser.parse_args()
 
     workspace = Path(args.workspace).resolve()
@@ -260,6 +308,15 @@ def main() -> int:
     if args.plan:
         print(json.dumps(plan, ensure_ascii=False, indent=2))
         return 0
+
+    live_artifact_result = None
+    if args.enforce_live_artifacts or args.verify_live_artifacts:
+        live_artifact_result = run_live_artifact_enforcer(
+            workspace,
+            basename,
+            args.python,
+            verify_only=args.verify_live_artifacts and not args.enforce_live_artifacts,
+        )
 
     artifact = check_artifacts(workspace, basename)
     boundary = boundary_check(workspace, basename)
@@ -271,6 +328,7 @@ def main() -> int:
         "plan": plan,
         "artifact_check": artifact,
         "boundary_check": boundary,
+        "live_artifact_enforcer_result": live_artifact_result,
         "targeted_result": None,
         "full_result": None,
         "human_review_required": True,
@@ -278,6 +336,9 @@ def main() -> int:
 
     if artifact["status"] != "passed" or boundary["status"] != "passed":
         report["status"] = "blocked"
+
+    if live_artifact_result and live_artifact_result["status"] != "passed":
+        report["status"] = "failed"
 
     if args.targeted:
         result = run_pytest(workspace, basename, args.python, TARGETED_TESTS)
@@ -294,9 +355,7 @@ def main() -> int:
     write_report(workspace, basename, report)
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
-    if args.check_only and report["status"] == "blocked":
-        return 1
-    if report["status"] in {"failed", "blocked"} and (args.targeted or args.full):
+    if report["status"] in {"failed", "blocked"} and (args.check_only or args.targeted or args.full or args.enforce_live_artifacts or args.verify_live_artifacts):
         return 1
     return 0
 
