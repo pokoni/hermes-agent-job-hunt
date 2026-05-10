@@ -102,9 +102,15 @@ def convert_docx_to_pdf(converter: str, source_docx: Path, output_pdf: Path) -> 
     output_pdf.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="job_hunt_pdf_export_") as tmp:
         tmp_dir = Path(tmp)
+        profile_dir = tmp_dir / "lo-profile"
+        profile_dir.mkdir(parents=True, exist_ok=True)
+
         cmd = [
             converter,
+            f"-env:UserInstallation={profile_dir.as_uri()}",
             "--headless",
+            "--nologo",
+            "--nofirststartwizard",
             "--convert-to",
             "pdf",
             "--outdir",
