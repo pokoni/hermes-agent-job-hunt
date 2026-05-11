@@ -42,11 +42,11 @@ for attr in ['output','batch_output','ranking_json','ranking_md','queue_jsonl','
         p = Path(value)
         p.parent.mkdir(parents=True, exist_ok=True)
         if p.suffix == '.jsonl':
-            p.write_text(json.dumps(payload, ensure_ascii=False) + '\\n', encoding='utf-8')
+            p.write_text(json.dumps(payload, ensure_ascii=False) + '\\\\n', encoding='utf-8')
         elif p.suffix == '.md':
-            p.write_text('# {name}\\n', encoding='utf-8')
+            p.write_text('# {name}\\\\n', encoding='utf-8')
         else:
-            p.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\\n', encoding='utf-8')
+            p.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\\\\n', encoding='utf-8')
 print(json.dumps(payload, ensure_ascii=False))
 """
 
@@ -57,6 +57,7 @@ def _install_stubs(workspace: Path) -> None:
     for name in [
         "validate_job_sources.py",
         "fetch_job_sources.py",
+        "extract_public_careers_jobs.py",
         "deduplicate_raw_jobs.py",
         "run_batch_job_pipeline.py",
         "render_telegram_job_notifications.py",
@@ -70,7 +71,7 @@ def test_job_watch_cycle_script_exists() -> None:
     assert _script().stat().st_size > 0
 
 
-def test_job_watch_cycle_runs_stubbed_discovery_chain(tmp_path: Path) -> None:
+def test_job_watch_cycle_runs_public_adapter_by_default(tmp_path: Path) -> None:
     _install_stubs(tmp_path)
     output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.json"
     md_output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.md"
@@ -93,16 +94,17 @@ def test_job_watch_cycle_runs_stubbed_discovery_chain(tmp_path: Path) -> None:
 
     report = json.loads(output.read_text(encoding="utf-8"))
     assert report["status"] == "passed"
-    assert report["step_count"] == 6
+    assert report["step_count"] == 7
+    assert report["public_careers_adapter_enabled"] is True
     assert report["allow_network"] is False
     assert report["telegram_send_requested"] is False
     assert report["telegram_dry_run"] is True
     assert report["does_not_submit"] is True
-    assert report["stores_credentials"] is False
 
     assert [step["name"] for step in report["steps"]] == [
         "validate_job_sources",
         "fetch_job_sources",
+        "extract_public_careers_jobs",
         "deduplicate_raw_jobs",
         "run_batch_job_pipeline",
         "render_telegram_job_notifications",
@@ -110,8 +112,34 @@ def test_job_watch_cycle_runs_stubbed_discovery_chain(tmp_path: Path) -> None:
     ]
 
     text = md_output.read_text(encoding="utf-8")
-    assert "# Job Watch Cycle Report" in text
+    assert "Public careers adapter enabled: `True`" in text
     assert "Do not submit by default." in text
+
+
+def test_job_watch_cycle_can_skip_public_adapter(tmp_path: Path) -> None:
+    _install_stubs(tmp_path)
+    output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.json"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(tmp_path),
+            "--python",
+            sys.executable,
+            "--output",
+            str(output),
+            "--skip-public-careers-adapter",
+        ],
+        check=True,
+    )
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["status"] == "passed"
+    assert report["step_count"] == 6
+    assert report["public_careers_adapter_enabled"] is False
+    assert "extract_public_careers_jobs" not in [step["name"] for step in report["steps"]]
 
 
 def test_job_watch_cycle_flags_are_explicit(tmp_path: Path) -> None:

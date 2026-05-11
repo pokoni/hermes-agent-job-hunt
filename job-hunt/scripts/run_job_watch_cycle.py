@@ -2,12 +2,13 @@
 """Run one conservative job-watch cycle.
 
 Chain:
-validate_job_sources -> fetch_job_sources -> deduplicate_raw_jobs ->
-run_batch_job_pipeline -> render_telegram_job_notifications ->
-send_telegram_job_notifications
+validate_job_sources -> fetch_job_sources -> extract_public_careers_jobs ->
+deduplicate_raw_jobs -> run_batch_job_pipeline ->
+render_telegram_job_notifications -> send_telegram_job_notifications
 
 Defaults:
 - no network unless --allow-network
+- run public careers adapter after fetch unless --skip-public-careers-adapter
 - no real Telegram send unless --send-telegram
 - no submission ever
 """
@@ -53,7 +54,7 @@ def run_step(workspace: Path, name: str, cmd: list[str], env: dict[str, str]) ->
     }
 
 
-def commands(py: str, allow_network: bool, send_telegram: bool) -> list[tuple[str, list[str]]]:
+def commands(py: str, allow_network: bool, send_telegram: bool, run_public_adapter: bool) -> list[tuple[str, list[str]]]:
     fetch = [
         py, "scripts/fetch_job_sources.py",
         "--workspace", ".",
@@ -72,13 +73,27 @@ def commands(py: str, allow_network: bool, send_telegram: bool) -> list[tuple[st
     if send_telegram:
         send.append("--send")
 
-    return [
+    steps: list[tuple[str, list[str]]] = [
         ("validate_job_sources", [
             py, "scripts/validate_job_sources.py",
             "--sources", "data/job_sources.json",
             "--output", "outputs/logs/job_sources_validation.json",
         ]),
         ("fetch_job_sources", fetch),
+    ]
+
+    if run_public_adapter:
+        steps.append((
+            "extract_public_careers_jobs",
+            [
+                py, "scripts/extract_public_careers_jobs.py",
+                "--workspace", ".",
+                "--raw-root", "data/raw_jobs",
+                "--output", "outputs/logs/public_careers_adapter_report.json",
+            ],
+        ))
+
+    steps.extend([
         ("deduplicate_raw_jobs", [
             py, "scripts/deduplicate_raw_jobs.py",
             "--workspace", ".",
@@ -104,7 +119,9 @@ def commands(py: str, allow_network: bool, send_telegram: bool) -> list[tuple[st
             "--report", "outputs/logs/telegram_notification_render_report.json",
         ]),
         ("send_telegram_job_notifications", send),
-    ]
+    ])
+
+    return steps
 
 
 def make_markdown(report: dict) -> str:
@@ -116,6 +133,7 @@ def make_markdown(report: dict) -> str:
         f"- Status: `{report['status']}`",
         f"- Run at: `{report['run_at']}`",
         f"- Allow network: `{report['allow_network']}`",
+        f"- Public careers adapter enabled: `{report['public_careers_adapter_enabled']}`",
         f"- Telegram send requested: `{report['telegram_send_requested']}`",
         f"- Telegram dry-run: `{report['telegram_dry_run']}`",
         "",
@@ -146,6 +164,7 @@ def main() -> int:
     parser.add_argument("--markdown-output", default="outputs/logs/job_watch_cycle_report.md")
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--send-telegram", action="store_true")
+    parser.add_argument("--skip-public-careers-adapter", action="store_true")
     parser.add_argument("--continue-on-error", action="store_true")
     args = parser.parse_args()
 
@@ -153,9 +172,11 @@ def main() -> int:
     env = os.environ.copy()
     env.setdefault("PYTHONUTF8", "1")
 
+    run_public_adapter = not args.skip_public_careers_adapter
     steps = []
     status = "passed"
-    for name, cmd in commands(args.python, args.allow_network, args.send_telegram):
+
+    for name, cmd in commands(args.python, args.allow_network, args.send_telegram, run_public_adapter):
         result = run_step(workspace, name, cmd, env)
         steps.append(result)
         if result["status"] != "passed":
@@ -168,6 +189,7 @@ def main() -> int:
         "run_at": now_iso(),
         "workspace": str(workspace),
         "allow_network": args.allow_network,
+        "public_careers_adapter_enabled": run_public_adapter,
         "telegram_send_requested": args.send_telegram,
         "telegram_dry_run": not args.send_telegram,
         "continue_on_error": args.continue_on_error,
@@ -186,9 +208,11 @@ def main() -> int:
     md = Path(args.markdown_output)
     if not md.is_absolute():
         md = workspace / md
+
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md.write_text(make_markdown(report), encoding="utf-8")
+
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0 if status == "passed" else 1
 
