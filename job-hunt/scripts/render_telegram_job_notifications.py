@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Render Telegram job notification messages.
 
-Phase 5 of the discovery / notification layer.
-
 Input:
   outputs/logs/job_ranking_gate_decision.json
 
 Outputs:
   outputs/logs/telegram_notifications.jsonl
   outputs/logs/telegram_notification_render_report.json
+
+Default behavior renders one compact digest message when there are multiple
+notification candidates. Use --individual to render one message per job.
 
 This script does not send network requests. It only renders notification payloads.
 """
@@ -56,6 +57,8 @@ def format_hits(row: dict) -> str:
     chunks = []
     for label, key in [
         ("Profile", "profile_keyword_hits"),
+        ("Topic", "high_value_topic_hits"),
+        ("Theme", "concrete_theme_marker_hits"),
         ("Source", "source_keyword_hits"),
         ("Location", "location_hits"),
     ]:
@@ -67,9 +70,14 @@ def format_hits(row: dict) -> str:
     return "\n".join(f"- {item}" for item in chunks) if chunks else "- No keyword details available."
 
 
-def render_message(row: dict, action_prefix: str) -> dict:
+def row_action_id(row: dict) -> str:
     fingerprint = clean(row.get("job_fingerprint"))
-    action_id = safe_action_token(fingerprint or row.get("raw_job_path", "job"))
+    return safe_action_token(fingerprint or row.get("raw_job_path", "job"))
+
+
+def render_single_message(row: dict, action_prefix: str) -> dict:
+    fingerprint = clean(row.get("job_fingerprint"))
+    action_id = row_action_id(row)
 
     score = row.get("fit_score", 0)
     title = clean(row.get("title")) or "Unknown role"
@@ -78,6 +86,7 @@ def render_message(row: dict, action_prefix: str) -> dict:
     raw_path = clean(row.get("raw_job_path"))
     source_id = clean(row.get("source_id"))
     decision = clean(row.get("ranking_decision"))
+    quality = clean(row.get("topic_quality_label"))
 
     message = f"""【Job Match {score}/100】
 
@@ -86,6 +95,7 @@ Role: {title}
 Location: {location}
 Source: {source_id}
 Decision: {decision}
+Quality: {quality}
 
 Why matched:
 {format_hits(row)}
@@ -106,10 +116,12 @@ Explicit human approval is required before any submit action.
 """
 
     return {
+        "notification_type": "single_job",
         "job_fingerprint": fingerprint,
         "action_id": action_id,
         "fit_score": score,
         "ranking_decision": decision,
+        "topic_quality_label": quality,
         "raw_job_path": raw_path,
         "source_id": source_id,
         "message": truncate(message),
@@ -121,16 +133,111 @@ Explicit human approval is required before any submit action.
     }
 
 
-def render_notifications(ranking: dict, action_prefix: str, include_hold: bool) -> dict:
+def short_title(row: dict, limit: int = 64) -> str:
+    title = clean(row.get("title")) or "Unknown role"
+    if len(title) <= limit:
+        return title
+    return title[: limit - 1].rstrip() + "…"
+
+
+def render_digest_message(rows: list[dict], action_prefix: str, max_items: int) -> dict:
+    selected = rows[:max_items]
+    omitted = max(0, len(rows) - len(selected))
+
+    lines = [
+        f"【Hermes Job Digest】{len(rows)} matched job(s)",
+        "",
+        "Top candidates:",
+    ]
+
+    for idx, row in enumerate(selected, start=1):
+        action_id = row_action_id(row)
+        score = row.get("fit_score", 0)
+        decision = clean(row.get("ranking_decision"))
+        quality = clean(row.get("topic_quality_label"))
+        title = short_title(row)
+        lines += [
+            "",
+            f"{idx}. {title}",
+            f"Score: {score}/100 | {decision} | {quality}",
+            f"Generate: /{action_prefix}_generate_{action_id}",
+            f"Track: /{action_prefix}_track_{action_id}",
+            f"Ignore: /{action_prefix}_ignore_{action_id}",
+        ]
+
+    if omitted:
+        lines += [
+            "",
+            f"...and {omitted} more candidate(s). Check outputs/logs/job_ranking_gate_report.md for details.",
+        ]
+
+    lines += [
+        "",
+        "Safety:",
+        "Do not submit by default.",
+        "Stop before final submission.",
+        "Explicit human approval is required before any submit action.",
+    ]
+
+    message = "\n".join(lines) + "\n"
+
+    return {
+        "notification_type": "digest",
+        "action_id": "digest",
+        "job_fingerprint": "",
+        "fit_score": max([row.get("fit_score", 0) for row in rows], default=0),
+        "ranking_decision": "digest",
+        "topic_quality_label": "digest",
+        "raw_job_path": "",
+        "source_id": "",
+        "candidate_count": len(rows),
+        "digest_item_count": len(selected),
+        "omitted_count": omitted,
+        "message": truncate(message),
+        "parse_mode": "",
+        "disable_web_page_preview": True,
+        "human_review_required": True,
+        "auto_apply_allowed": False,
+        "does_not_submit": True,
+    }
+
+
+def render_notifications(
+    ranking: dict,
+    action_prefix: str,
+    include_hold: bool,
+    individual: bool,
+    max_digest_items: int,
+) -> dict:
     candidates = list(ranking.get("notification_candidates", []))
     if include_hold:
         candidates.extend(ranking.get("hold_candidates", []))
 
-    notifications = [render_message(row, action_prefix) for row in candidates]
+    candidates.sort(
+        key=lambda row: (
+            row.get("ranking_decision") == "suggest_generate_materials_after_user_approval",
+            row.get("ranking_decision") == "notify_user",
+            row.get("fit_score", 0),
+            row.get("topic_quality_label") == "specific_research_or_job_theme",
+        ),
+        reverse=True,
+    )
+
+    if individual:
+        notifications = [render_single_message(row, action_prefix) for row in candidates]
+        render_mode = "individual"
+    elif candidates:
+        notifications = [render_digest_message(candidates, action_prefix, max_digest_items)]
+        render_mode = "digest"
+    else:
+        notifications = []
+        render_mode = "digest"
 
     return {
         "status": "passed",
         "rendered_at": now_iso(),
+        "render_mode": render_mode,
+        "candidate_count": len(candidates),
         "notification_count": len(notifications),
         "notifications": notifications,
         "human_review_required": True,
@@ -156,12 +263,20 @@ def main() -> int:
     parser.add_argument("--report", default="outputs/logs/telegram_notification_render_report.json")
     parser.add_argument("--action-prefix", default="job")
     parser.add_argument("--include-hold", action="store_true")
+    parser.add_argument("--individual", action="store_true", help="Render one Telegram message per job instead of one digest.")
+    parser.add_argument("--max-digest-items", type=int, default=7)
     args = parser.parse_args()
 
     ranking_path = Path(args.ranking)
     ranking = load_json(ranking_path)
 
-    report = render_notifications(ranking, args.action_prefix, args.include_hold)
+    report = render_notifications(
+        ranking=ranking,
+        action_prefix=args.action_prefix,
+        include_hold=args.include_hold,
+        individual=args.individual,
+        max_digest_items=args.max_digest_items,
+    )
 
     output_jsonl = Path(args.output_jsonl)
     report_path = Path(args.report)
