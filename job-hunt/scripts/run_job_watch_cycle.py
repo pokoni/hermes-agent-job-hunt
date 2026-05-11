@@ -9,6 +9,7 @@ render_telegram_job_notifications -> send_telegram_job_notifications
 Defaults:
 - no network unless --allow-network
 - run public careers adapter after fetch unless --skip-public-careers-adapter
+- render Telegram digest with short action aliases unless --disable-action-aliases
 - no real Telegram send unless --send-telegram
 - no submission ever
 """
@@ -54,7 +55,13 @@ def run_step(workspace: Path, name: str, cmd: list[str], env: dict[str, str]) ->
     }
 
 
-def commands(py: str, allow_network: bool, send_telegram: bool, run_public_adapter: bool) -> list[tuple[str, list[str]]]:
+def commands(
+    py: str,
+    allow_network: bool,
+    send_telegram: bool,
+    run_public_adapter: bool,
+    use_action_aliases: bool,
+) -> list[tuple[str, list[str]]]:
     fetch = [
         py, "scripts/fetch_job_sources.py",
         "--workspace", ".",
@@ -63,6 +70,16 @@ def commands(py: str, allow_network: bool, send_telegram: bool, run_public_adapt
     ]
     if allow_network:
         fetch.append("--allow-network")
+
+    render = [
+        py, "scripts/render_telegram_job_notifications.py",
+        "--ranking", "outputs/logs/job_ranking_gate_decision.json",
+        "--output-jsonl", "outputs/logs/telegram_notifications.jsonl",
+        "--report", "outputs/logs/telegram_notification_render_report.json",
+        "--alias-map", "outputs/logs/telegram_action_alias_map.json",
+    ]
+    if use_action_aliases:
+        render.append("--use-action-aliases")
 
     send = [
         py, "scripts/send_telegram_job_notifications.py",
@@ -112,12 +129,7 @@ def commands(py: str, allow_network: bool, send_telegram: bool, run_public_adapt
             "--ranking-md", "outputs/logs/job_ranking_gate_report.md",
             "--queue-jsonl", "outputs/logs/batch_normalization_queue.jsonl",
         ]),
-        ("render_telegram_job_notifications", [
-            py, "scripts/render_telegram_job_notifications.py",
-            "--ranking", "outputs/logs/job_ranking_gate_decision.json",
-            "--output-jsonl", "outputs/logs/telegram_notifications.jsonl",
-            "--report", "outputs/logs/telegram_notification_render_report.json",
-        ]),
+        ("render_telegram_job_notifications", render),
         ("send_telegram_job_notifications", send),
     ])
 
@@ -134,6 +146,7 @@ def make_markdown(report: dict) -> str:
         f"- Run at: `{report['run_at']}`",
         f"- Allow network: `{report['allow_network']}`",
         f"- Public careers adapter enabled: `{report['public_careers_adapter_enabled']}`",
+        f"- Telegram action aliases enabled: `{report['telegram_action_aliases_enabled']}`",
         f"- Telegram send requested: `{report['telegram_send_requested']}`",
         f"- Telegram dry-run: `{report['telegram_dry_run']}`",
         "",
@@ -165,6 +178,7 @@ def main() -> int:
     parser.add_argument("--allow-network", action="store_true")
     parser.add_argument("--send-telegram", action="store_true")
     parser.add_argument("--skip-public-careers-adapter", action="store_true")
+    parser.add_argument("--disable-action-aliases", action="store_true")
     parser.add_argument("--continue-on-error", action="store_true")
     args = parser.parse_args()
 
@@ -173,10 +187,17 @@ def main() -> int:
     env.setdefault("PYTHONUTF8", "1")
 
     run_public_adapter = not args.skip_public_careers_adapter
+    use_action_aliases = not args.disable_action_aliases
     steps = []
     status = "passed"
 
-    for name, cmd in commands(args.python, args.allow_network, args.send_telegram, run_public_adapter):
+    for name, cmd in commands(
+        args.python,
+        args.allow_network,
+        args.send_telegram,
+        run_public_adapter,
+        use_action_aliases,
+    ):
         result = run_step(workspace, name, cmd, env)
         steps.append(result)
         if result["status"] != "passed":
@@ -190,6 +211,7 @@ def main() -> int:
         "workspace": str(workspace),
         "allow_network": args.allow_network,
         "public_careers_adapter_enabled": run_public_adapter,
+        "telegram_action_aliases_enabled": use_action_aliases,
         "telegram_send_requested": args.send_telegram,
         "telegram_dry_run": not args.send_telegram,
         "continue_on_error": args.continue_on_error,
