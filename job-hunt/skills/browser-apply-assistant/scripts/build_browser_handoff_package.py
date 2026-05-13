@@ -33,7 +33,26 @@ def load_json(path: Path) -> dict:
 
 
 def maybe_load_json(path: Path) -> dict:
-    return load_json(path) if path.exists() else {}
+    """Load optional JSON artifacts defensively.
+
+    Optional browser-handoff artifacts may exist as empty placeholders during
+    local development or fixture runs. Treat missing, empty, malformed, or
+    non-object JSON as absent instead of crashing the handoff package builder.
+    Required artifacts should still use load_json() directly.
+    """
+    if not path.exists():
+        return {}
+
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        return {}
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        return {}
+
+    return data if isinstance(data, dict) else {}
 
 
 def read_text(path: Path) -> str:
