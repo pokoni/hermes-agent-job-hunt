@@ -313,7 +313,7 @@ def render_notifications(
         for entry in alias_map.get("aliases", [])
     }
 
-    if individual:
+    if individual or len(candidates) == 1:
         notifications = [
             render_single_message(row, action_prefix, aliases_by_action_id, use_aliases)
             for row in candidates

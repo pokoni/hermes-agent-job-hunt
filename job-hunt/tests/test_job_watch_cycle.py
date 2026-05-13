@@ -29,11 +29,12 @@ parser = argparse.ArgumentParser()
 for arg in [
     '--workspace','--sources','--output','--raw-root','--seen','--dedup-report',
     '--candidate-profile','--batch-output','--ranking-json','--ranking-md',
-    '--queue-jsonl','--ranking','--output-jsonl','--report','--notifications','--delivery-log'
+    '--queue-jsonl','--ranking','--output-jsonl','--report','--notifications','--delivery-log','--alias-map'
 ]:
     parser.add_argument(arg)
 parser.add_argument('--allow-network', action='store_true')
 parser.add_argument('--send', action='store_true')
+parser.add_argument('--use-action-aliases', action='store_true')
 args = parser.parse_args()
 payload = {json.dumps(payload, ensure_ascii=False)!r}
 for attr in ['output','batch_output','ranking_json','ranking_md','queue_jsonl','output_jsonl','report','delivery_log']:
