@@ -1,22 +1,11 @@
 #!/usr/bin/env python3
 """Execute or record an approved material-generation command plan.
 
-Input:
-  outputs/logs/<action_id>_material_generation_commands.json
+Concrete local stages currently supported:
+- job-normalizer via scripts/normalize_raw_job.py
+- job-fit-scorer via scripts/score_job_fit.py
 
-Outputs:
-  outputs/logs/<action_id>_material_command_execution_report.json
-  outputs/logs/<action_id>_material_command_execution_report.md
-  outputs/logs/approved_material_command_execution_log.jsonl
-
-Safety model:
-- Never submit applications.
-- Never upload files.
-- Never click external website buttons.
-- Slash commands are recorded as pending supervised skill execution by default.
-- With --execute --use-local-executors, only registered local executors are run.
-- The first concrete local stage is job-normalizer via scripts/normalize_raw_job.py.
-- Remaining stages stay pending_supervised_skill_execution until their executors are added.
+Remaining stages stay pending_supervised_skill_execution until their executors are added.
 """
 
 from __future__ import annotations
@@ -98,10 +87,8 @@ def validate_command_plan(plan: dict) -> list[str]:
 
     if plan.get("allowed_to_submit") is True:
         errors.append("Command plan unexpectedly allows submission; executor requires allowed_to_submit=false.")
-
     if plan.get("does_not_submit") is not True:
         errors.append("Command plan must include does_not_submit=true.")
-
     if plan.get("human_review_required") is not True:
         errors.append("Command plan must require human review.")
 
@@ -129,10 +116,7 @@ def validate_command_plan(plan: dict) -> list[str]:
 
 
 def classify_command(command: str) -> str:
-    stripped = command.strip()
-    if stripped.startswith("/"):
-        return "supervised_slash_command"
-    return "shell_command"
+    return "supervised_slash_command" if command.strip().startswith("/") else "shell_command"
 
 
 def registry_by_stage(registry: dict) -> dict[str, dict]:
@@ -149,8 +133,7 @@ def first_existing_script(workspace: Path, candidates: list[str]) -> str:
 
 def local_executor_for_stage(workspace: Path, registry: dict, stage: str) -> str:
     item = registry_by_stage(registry).get(stage, {})
-    candidates = item.get("candidate_scripts", [])
-    return first_existing_script(workspace, candidates)
+    return first_existing_script(workspace, item.get("candidate_scripts", []))
 
 
 def infer_raw_job_path(workspace: Path, plan: dict, item: dict) -> str:
@@ -160,13 +143,8 @@ def infer_raw_job_path(workspace: Path, plan: dict, item: dict) -> str:
         return raw_job
 
     command = str(item.get("command", ""))
-    # Expected generated command:
-    # /job-normalizer Normalize <raw_job_path> into data/jobs/<job_basename>.json.
     match = re.search(r"Normalize\s+(.+?)\s+into\s+(data/jobs/[^\s]+\.json)", command)
-    if match:
-        return match.group(1).strip()
-
-    return ""
+    return match.group(1).strip() if match else ""
 
 
 def infer_job_basename(plan: dict, item: dict) -> str:
@@ -180,19 +158,65 @@ def infer_job_basename(plan: dict, item: dict) -> str:
 
     command = str(item.get("command", ""))
     match = re.search(r"into\s+data/jobs/([^\s/]+)\.json", command)
+    return match.group(1) if match else "normalized_job"
+
+
+def infer_normalized_job_path(plan: dict, item: dict) -> str:
+    command = str(item.get("command", ""))
+    match = re.search(r"Score\s+(data/jobs/[^\s]+\.json)\s+against\s+", command)
     if match:
-        return match.group(1)
+        return match.group(1).strip()
 
-    return "normalized_job"
+    for output in item.get("expected_outputs", []):
+        value = str(output)
+        if value.startswith("data/jobs/") and value.endswith(".json"):
+            return value
+
+    return f"data/jobs/{plan.get('job_basename', 'normalized_job')}.json"
 
 
-def run_job_normalizer_local_executor(
-    workspace: Path,
-    python_bin: str,
-    plan: dict,
-    item: dict,
-    local_script: str,
-) -> dict:
+def infer_candidate_profile_path(item: dict) -> str:
+    command = str(item.get("command", ""))
+    match = re.search(r"against\s+([^\s]+candidate_profile\.json)", command)
+    if match:
+        return match.group(1).strip().rstrip(".")
+    match = re.search(r"Use\s+([^\s]+candidate_profile\.json)", command)
+    if match:
+        return match.group(1).strip().rstrip(".")
+    return "data/candidate_profile.json"
+
+
+def infer_fit_outputs(plan: dict, item: dict) -> tuple[str, str]:
+    score_output = ""
+    report_output = ""
+
+    for output in item.get("expected_outputs", []):
+        value = str(output)
+        if value.endswith("_fit_score.json"):
+            score_output = value
+        elif value.endswith("_fit_report.md"):
+            report_output = value
+
+    command = str(item.get("command", ""))
+
+    if not report_output:
+        match = re.search(r"Write\s+([^\s]+_fit_report\.md)", command)
+        if match:
+            report_output = match.group(1).strip()
+
+    if not score_output:
+        match = re.search(r"and\s+([^\s]+_fit_score\.json)", command)
+        if match:
+            score_output = match.group(1).strip().rstrip(".")
+
+    job_basename = plan.get("job_basename", "normalized_job")
+    return (
+        score_output or f"outputs/logs/{job_basename}_fit_score.json",
+        report_output or f"outputs/logs/{job_basename}_fit_report.md",
+    )
+
+
+def run_job_normalizer_local_executor(workspace: Path, python_bin: str, plan: dict, item: dict, local_script: str) -> dict:
     raw_job_path = infer_raw_job_path(workspace, plan, item)
     job_basename = infer_job_basename(plan, item)
     output_path = f"data/jobs/{job_basename}.json"
@@ -223,14 +247,7 @@ def run_job_normalizer_local_executor(
         report_path,
     ]
 
-    completed = subprocess.run(
-        cmd,
-        cwd=workspace,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    completed = subprocess.run(cmd, cwd=workspace, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
 
     return {
         "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
@@ -247,16 +264,44 @@ def run_job_normalizer_local_executor(
     }
 
 
-def execute_one(
-    workspace: Path,
-    item: dict,
-    plan: dict,
-    registry: dict,
-    python_bin: str,
-    execute: bool,
-    allow_shell: bool,
-    use_local_executors: bool,
-) -> dict:
+def run_job_fit_scorer_local_executor(workspace: Path, python_bin: str, plan: dict, item: dict, local_script: str) -> dict:
+    job_path = infer_normalized_job_path(plan, item)
+    candidate_profile = infer_candidate_profile_path(item)
+    score_output, report_output = infer_fit_outputs(plan, item)
+
+    cmd = [
+        python_bin,
+        rel(workspace, Path(local_script)),
+        "--workspace",
+        ".",
+        "--job",
+        job_path,
+        "--candidate-profile",
+        candidate_profile,
+        "--score-output",
+        score_output,
+        "--report-output",
+        report_output,
+    ]
+
+    completed = subprocess.run(cmd, cwd=workspace, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+
+    return {
+        "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "local_script": rel(workspace, Path(local_script)),
+        "local_executor_args": {
+            "job": job_path,
+            "candidate_profile": candidate_profile,
+            "score_output": score_output,
+            "report_output": report_output,
+        },
+    }
+
+
+def execute_one(workspace: Path, item: dict, plan: dict, registry: dict, python_bin: str, execute: bool, allow_shell: bool, use_local_executors: bool) -> dict:
     stage = str(item.get("stage", "unknown"))
     command = str(item.get("command", "")).strip()
     command_type = classify_command(command)
@@ -275,18 +320,9 @@ def execute_one(
     if execute and use_local_executors:
         local_script = local_executor_for_stage(workspace, registry, stage)
         if stage == "job-normalizer" and local_script:
-            result = run_job_normalizer_local_executor(
-                workspace=workspace,
-                python_bin=python_bin,
-                plan=plan,
-                item=item,
-                local_script=local_script,
-            )
-            return {
-                **base,
-                "execution_mode": "local_executor",
-                **result,
-            }
+            return {**base, "execution_mode": "local_executor", **run_job_normalizer_local_executor(workspace, python_bin, plan, item, local_script)}
+        if stage == "job-fit-scorer" and local_script:
+            return {**base, "execution_mode": "local_executor", **run_job_fit_scorer_local_executor(workspace, python_bin, plan, item, local_script)}
 
     if command_type == "supervised_slash_command":
         return {
@@ -318,15 +354,7 @@ def execute_one(
             "stderr": "Shell command execution requires --allow-shell.",
         }
 
-    completed = subprocess.run(
-        command,
-        cwd=workspace,
-        shell=True,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    completed = subprocess.run(command, cwd=workspace, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
 
     return {
         **base,
@@ -343,9 +371,7 @@ def determine_status(results: list[dict], execute: bool) -> str:
         return "blocked"
     if any(item["status"] in {"failed", "local_executor_failed"} for item in results):
         return "failed"
-    if execute:
-        return "execution_recorded"
-    return "planned"
+    return "execution_recorded" if execute else "planned"
 
 
 def markdown_report(report: dict) -> str:
@@ -436,16 +462,7 @@ def run_executor(
         return report
 
     results = [
-        execute_one(
-            workspace=workspace,
-            item=item,
-            plan=plan,
-            registry=registry,
-            python_bin=python_bin,
-            execute=execute,
-            allow_shell=allow_shell,
-            use_local_executors=use_local_executors,
-        )
+        execute_one(workspace, item, plan, registry, python_bin, execute, allow_shell, use_local_executors)
         for item in plan["commands"]
     ]
 
@@ -456,7 +473,7 @@ def run_executor(
         "action_id": action_id,
         "job_basename": plan.get("job_basename", ""),
         "commands": rel(workspace, commands_path),
-        "registry": rel(workspace, registry_path) if registry_path else "",
+        "registry": rel(workspace, registry_path),
         "report": rel(workspace, report_path),
         "markdown_report": rel(workspace, markdown_path),
         "execution_log": rel(workspace, execution_log),
@@ -505,17 +522,12 @@ def main() -> int:
 
     workspace = Path(args.workspace).resolve()
 
-    commands_path = resolve_workspace_path(workspace, args.commands)
-    registry_path = resolve_workspace_path(workspace, args.registry)
-    output_dir = resolve_workspace_path(workspace, args.output_dir)
-    execution_log = resolve_workspace_path(workspace, args.execution_log)
-
     report = run_executor(
         workspace=workspace,
-        commands_path=commands_path,
-        registry_path=registry_path,
-        output_dir=output_dir,
-        execution_log=execution_log,
+        commands_path=resolve_workspace_path(workspace, args.commands),
+        registry_path=resolve_workspace_path(workspace, args.registry),
+        output_dir=resolve_workspace_path(workspace, args.output_dir),
+        execution_log=resolve_workspace_path(workspace, args.execution_log),
         python_bin=args.python,
         execute=args.execute,
         allow_shell=args.allow_shell,
