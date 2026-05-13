@@ -4,8 +4,12 @@
 Concrete local stages currently supported:
 - job-normalizer via scripts/normalize_raw_job.py
 - job-fit-scorer via scripts/score_job_fit.py
+- resume-tailor via scripts/prepare_resume_tailor_plan.py
+- application-tracker via scripts/update_application_tracker.py
+- submission-review-gate via scripts/create_submission_review_gate.py
 
-Remaining stages stay pending_supervised_skill_execution until their executors are added.
+All five frozen material stages can now run locally, but the final stage still
+creates review-only artifacts and keeps allowed_to_submit=false.
 """
 
 from __future__ import annotations
@@ -87,8 +91,10 @@ def validate_command_plan(plan: dict) -> list[str]:
 
     if plan.get("allowed_to_submit") is True:
         errors.append("Command plan unexpectedly allows submission; executor requires allowed_to_submit=false.")
+
     if plan.get("does_not_submit") is not True:
         errors.append("Command plan must include does_not_submit=true.")
+
     if plan.get("human_review_required") is not True:
         errors.append("Command plan must require human review.")
 
@@ -157,15 +163,31 @@ def infer_job_basename(plan: dict, item: dict) -> str:
             return path.stem
 
     command = str(item.get("command", ""))
-    match = re.search(r"into\s+data/jobs/([^\s/]+)\.json", command)
-    return match.group(1) if match else "normalized_job"
+    basename_match = re.search(r"basename\s+([^.\s]+)", command)
+    if basename_match:
+        return basename_match.group(1).strip()
+
+    into_match = re.search(r"into\s+data/jobs/([^\s/]+)\.json", command)
+    if into_match:
+        return into_match.group(1)
+
+    for_match = re.search(r"for\s+data/jobs/([^\s/]+)\.json", command)
+    if for_match:
+        return for_match.group(1)
+
+    return "normalized_job"
 
 
 def infer_normalized_job_path(plan: dict, item: dict) -> str:
     command = str(item.get("command", ""))
-    match = re.search(r"Score\s+(data/jobs/[^\s]+\.json)\s+against\s+", command)
-    if match:
-        return match.group(1).strip()
+
+    score_match = re.search(r"Score\s+(data/jobs/[^\s]+\.json)\s+against\s+", command)
+    if score_match:
+        return score_match.group(1).strip()
+
+    for_match = re.search(r"for\s+(data/jobs/[^\s]+\.json)", command)
+    if for_match:
+        return for_match.group(1).strip().rstrip(".")
 
     for output in item.get("expected_outputs", []):
         value = str(output)
@@ -177,12 +199,15 @@ def infer_normalized_job_path(plan: dict, item: dict) -> str:
 
 def infer_candidate_profile_path(item: dict) -> str:
     command = str(item.get("command", ""))
-    match = re.search(r"against\s+([^\s]+candidate_profile\.json)", command)
-    if match:
-        return match.group(1).strip().rstrip(".")
-    match = re.search(r"Use\s+([^\s]+candidate_profile\.json)", command)
-    if match:
-        return match.group(1).strip().rstrip(".")
+
+    against_match = re.search(r"against\s+([^\s]+candidate_profile\.json)", command)
+    if against_match:
+        return against_match.group(1).strip().rstrip(".")
+
+    use_match = re.search(r"Use\s+([^\s]+candidate_profile\.json)", command)
+    if use_match:
+        return use_match.group(1).strip().rstrip(".")
+
     return "data/candidate_profile.json"
 
 
@@ -200,19 +225,39 @@ def infer_fit_outputs(plan: dict, item: dict) -> tuple[str, str]:
     command = str(item.get("command", ""))
 
     if not report_output:
-        match = re.search(r"Write\s+([^\s]+_fit_report\.md)", command)
-        if match:
-            report_output = match.group(1).strip()
+        report_match = re.search(r"Write\s+([^\s]+_fit_report\.md)", command)
+        if report_match:
+            report_output = report_match.group(1).strip()
 
     if not score_output:
-        match = re.search(r"and\s+([^\s]+_fit_score\.json)", command)
-        if match:
-            score_output = match.group(1).strip().rstrip(".")
+        score_match = re.search(r"and\s+([^\s]+_fit_score\.json)", command)
+        if score_match:
+            score_output = score_match.group(1).strip().rstrip(".")
 
-    job_basename = plan.get("job_basename", "normalized_job")
+    job_basename = infer_job_basename(plan, item)
     return (
         score_output or f"outputs/logs/{job_basename}_fit_score.json",
         report_output or f"outputs/logs/{job_basename}_fit_report.md",
+    )
+
+
+def infer_resume_tailor_outputs(plan: dict, item: dict) -> tuple[str, str, str]:
+    job_basename = infer_job_basename(plan, item)
+    return (
+        f"outputs/resumes/{job_basename}_resume_tailor_plan.md",
+        f"outputs/resumes/{job_basename}_resume_tailor_inputs.json",
+        f"outputs/logs/{job_basename}_resume_tailor_plan_report.json",
+    )
+
+
+def run_subprocess(workspace: Path, cmd: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        cmd,
+        cwd=workspace,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
     )
 
 
@@ -235,20 +280,14 @@ def run_job_normalizer_local_executor(workspace: Path, python_bin: str, plan: di
     cmd = [
         python_bin,
         rel(workspace, Path(local_script)),
-        "--workspace",
-        ".",
-        "--raw-job",
-        raw_job_path,
-        "--job-basename",
-        job_basename,
-        "--output",
-        output_path,
-        "--report",
-        report_path,
+        "--workspace", ".",
+        "--raw-job", raw_job_path,
+        "--job-basename", job_basename,
+        "--output", output_path,
+        "--report", report_path,
     ]
 
-    completed = subprocess.run(cmd, cwd=workspace, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-
+    completed = run_subprocess(workspace, cmd)
     return {
         "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
         "returncode": completed.returncode,
@@ -272,20 +311,14 @@ def run_job_fit_scorer_local_executor(workspace: Path, python_bin: str, plan: di
     cmd = [
         python_bin,
         rel(workspace, Path(local_script)),
-        "--workspace",
-        ".",
-        "--job",
-        job_path,
-        "--candidate-profile",
-        candidate_profile,
-        "--score-output",
-        score_output,
-        "--report-output",
-        report_output,
+        "--workspace", ".",
+        "--job", job_path,
+        "--candidate-profile", candidate_profile,
+        "--score-output", score_output,
+        "--report-output", report_output,
     ]
 
-    completed = subprocess.run(cmd, cwd=workspace, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-
+    completed = run_subprocess(workspace, cmd)
     return {
         "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
         "returncode": completed.returncode,
@@ -301,7 +334,151 @@ def run_job_fit_scorer_local_executor(workspace: Path, python_bin: str, plan: di
     }
 
 
-def execute_one(workspace: Path, item: dict, plan: dict, registry: dict, python_bin: str, execute: bool, allow_shell: bool, use_local_executors: bool) -> dict:
+def run_resume_tailor_plan_local_executor(workspace: Path, python_bin: str, plan: dict, item: dict, local_script: str) -> dict:
+    job_path = infer_normalized_job_path(plan, item)
+    candidate_profile = infer_candidate_profile_path(item)
+    job_basename = infer_job_basename(plan, item)
+    fit_score = f"outputs/logs/{job_basename}_fit_score.json"
+    fit_report = f"outputs/logs/{job_basename}_fit_report.md"
+    plan_output, inputs_output, report_output = infer_resume_tailor_outputs(plan, item)
+
+    cmd = [
+        python_bin,
+        rel(workspace, Path(local_script)),
+        "--workspace", ".",
+        "--job", job_path,
+        "--candidate-profile", candidate_profile,
+        "--fit-score", fit_score,
+        "--fit-report", fit_report,
+        "--job-basename", job_basename,
+        "--plan-output", plan_output,
+        "--inputs-output", inputs_output,
+        "--report-output", report_output,
+    ]
+
+    completed = run_subprocess(workspace, cmd)
+    return {
+        "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "local_script": rel(workspace, Path(local_script)),
+        "local_executor_args": {
+            "job": job_path,
+            "candidate_profile": candidate_profile,
+            "fit_score": fit_score,
+            "fit_report": fit_report,
+            "plan_output": plan_output,
+            "inputs_output": inputs_output,
+            "report_output": report_output,
+        },
+    }
+
+
+
+
+def run_application_tracker_local_executor(workspace: Path, python_bin: str, plan: dict, item: dict, local_script: str) -> dict:
+    job_path = infer_normalized_job_path(plan, item)
+    job_basename = infer_job_basename(plan, item)
+    records = "outputs/logs/application_tracker_records.jsonl"
+    dashboard = "outputs/logs/application_tracker_dashboard.md"
+    report = f"outputs/logs/{job_basename}_application_tracker_update_report.json"
+
+    cmd = [
+        python_bin,
+        rel(workspace, Path(local_script)),
+        "--workspace", ".",
+        "--job", job_path,
+        "--job-basename", job_basename,
+        "--fit-score", f"outputs/logs/{job_basename}_fit_score.json",
+        "--fit-report", f"outputs/logs/{job_basename}_fit_report.md",
+        "--resume-plan", f"outputs/resumes/{job_basename}_resume_tailor_plan.md",
+        "--resume-inputs", f"outputs/resumes/{job_basename}_resume_tailor_inputs.json",
+        "--records", records,
+        "--dashboard", dashboard,
+        "--report", report,
+    ]
+
+    completed = run_subprocess(workspace, cmd)
+    return {
+        "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "local_script": rel(workspace, Path(local_script)),
+        "local_executor_args": {
+            "job": job_path,
+            "job_basename": job_basename,
+            "records": records,
+            "dashboard": dashboard,
+            "report": report,
+        },
+    }
+
+
+def infer_submission_review_outputs(plan: dict, item: dict) -> tuple[str, str, str]:
+    job_basename = infer_job_basename(plan, item)
+    return (
+        f"outputs/logs/{job_basename}_submission_review.md",
+        f"outputs/logs/{job_basename}_submission_decision.json",
+        f"outputs/logs/{job_basename}_submission_review_gate_report.json",
+    )
+
+
+def run_submission_review_gate_local_executor(
+    workspace: Path,
+    python_bin: str,
+    plan: dict,
+    item: dict,
+    local_script: str,
+) -> dict:
+    job_path = infer_normalized_job_path(plan, item)
+    job_basename = infer_job_basename(plan, item)
+    review_output, decision_output, report_output = infer_submission_review_outputs(plan, item)
+
+    cmd = [
+        python_bin,
+        rel(workspace, Path(local_script)),
+        "--workspace", ".",
+        "--job", job_path,
+        "--job-basename", job_basename,
+        "--fit-score", f"outputs/logs/{job_basename}_fit_score.json",
+        "--fit-report", f"outputs/logs/{job_basename}_fit_report.md",
+        "--resume-plan", f"outputs/resumes/{job_basename}_resume_tailor_plan.md",
+        "--resume-inputs", f"outputs/resumes/{job_basename}_resume_tailor_inputs.json",
+        "--tracker-report", f"outputs/logs/{job_basename}_application_tracker_update_report.json",
+        "--review-output", review_output,
+        "--decision-output", decision_output,
+        "--report-output", report_output,
+    ]
+
+    completed = run_subprocess(workspace, cmd)
+
+    return {
+        "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "local_script": rel(workspace, Path(local_script)),
+        "local_executor_args": {
+            "job": job_path,
+            "job_basename": job_basename,
+            "review_output": review_output,
+            "decision_output": decision_output,
+            "report_output": report_output,
+        },
+    }
+
+def execute_one(
+    workspace: Path,
+    item: dict,
+    plan: dict,
+    registry: dict,
+    python_bin: str,
+    execute: bool,
+    allow_shell: bool,
+    use_local_executors: bool,
+) -> dict:
     stage = str(item.get("stage", "unknown"))
     command = str(item.get("command", "")).strip()
     command_type = classify_command(command)
@@ -323,6 +500,12 @@ def execute_one(workspace: Path, item: dict, plan: dict, registry: dict, python_
             return {**base, "execution_mode": "local_executor", **run_job_normalizer_local_executor(workspace, python_bin, plan, item, local_script)}
         if stage == "job-fit-scorer" and local_script:
             return {**base, "execution_mode": "local_executor", **run_job_fit_scorer_local_executor(workspace, python_bin, plan, item, local_script)}
+        if stage == "resume-tailor" and local_script:
+            return {**base, "execution_mode": "local_executor", **run_resume_tailor_plan_local_executor(workspace, python_bin, plan, item, local_script)}
+        if stage == "application-tracker" and local_script:
+            return {**base, "execution_mode": "local_executor", **run_application_tracker_local_executor(workspace, python_bin, plan, item, local_script)}
+        if stage == "submission-review-gate" and local_script:
+            return {**base, "execution_mode": "local_executor", **run_submission_review_gate_local_executor(workspace, python_bin, plan, item, local_script)}
 
     if command_type == "supervised_slash_command":
         return {
@@ -355,7 +538,6 @@ def execute_one(workspace: Path, item: dict, plan: dict, registry: dict, python_
         }
 
     completed = subprocess.run(command, cwd=workspace, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-
     return {
         **base,
         "execution_mode": "shell_command",
@@ -465,7 +647,6 @@ def run_executor(
         execute_one(workspace, item, plan, registry, python_bin, execute, allow_shell, use_local_executors)
         for item in plan["commands"]
     ]
-
     status = determine_status(results, execute=execute)
 
     report = {
