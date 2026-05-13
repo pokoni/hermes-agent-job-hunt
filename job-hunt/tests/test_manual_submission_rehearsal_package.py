@@ -1,0 +1,106 @@
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def _basename() -> str:
+    return os.environ.get("JOB_HUNT_TEST_BASENAME", "03_regnio_ml_iot_engineer_fukuoka_2026")
+
+
+def _root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
+def _script() -> Path:
+    return _root() / "skills" / "browser-apply-assistant" / "scripts" / "build_manual_submission_rehearsal_package.py"
+
+
+def _assert_exists(rel_path: str) -> Path:
+    path = _root() / rel_path
+    assert path.exists(), f"Expected file does not exist: {rel_path}"
+    assert path.stat().st_size > 0, f"Expected file is empty: {rel_path}"
+    return path
+
+
+def test_manual_submission_rehearsal_script_exists() -> None:
+    assert _script().exists(), "Missing build_manual_submission_rehearsal_package.py"
+    assert _script().stat().st_size > 0
+
+
+def test_manual_submission_rehearsal_package_generates_outputs() -> None:
+    b = _basename()
+
+    for rel in [
+        f"outputs/logs/{b}_wantedly_browser_handoff_package.json",
+        f"outputs/logs/{b}_wantedly_real_submission_readiness_report.json",
+        f"outputs/logs/{b}_final_human_approval_request.json",
+        f"outputs/logs/{b}_live_submission_result_stub.json",
+    ]:
+        _assert_exists(rel)
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(_root()),
+            "--basename",
+            b,
+            "--platform-id",
+            "wantedly",
+        ],
+        check=True,
+    )
+
+    js = _assert_exists(f"outputs/logs/{b}_wantedly_manual_submission_rehearsal_package.json")
+    md = _assert_exists(f"outputs/logs/{b}_wantedly_manual_submission_rehearsal_package.md")
+
+    package = json.loads(js.read_text(encoding="utf-8"))
+    assert package["job_basename"] == b
+    assert package["platform_id"] == "wantedly"
+    assert package["manual_browser_session_required"] is True
+    assert package["automation_allowed"] is False
+    assert package["human_approval_required"] is True
+    assert package["explicit_approval_received"] is False
+    assert package["live_submission_performed"] is False
+    assert package["submit_button_clicked"] is False
+    assert package["final_submit_clicked"] is False
+
+    fields = {item["field"] for item in package["materials_for_rehearsal"]}
+    assert "rirekisho_polished_pdf" in fields
+    assert "shokumukeirekisho_polished_pdf" in fields
+
+    text = md.read_text(encoding="utf-8")
+    required = [
+        "# Manual Submission Rehearsal Package",
+        "## Materials for Rehearsal",
+        "## Rehearsal Steps",
+        "## Stop Conditions",
+        "## Forbidden Actions",
+        "## Rehearsal Result Template",
+        "## Human Approval Boundary",
+        "Explicit approval is required.",
+        "Do not submit by default.",
+        "Stop before final submission.",
+        "Explicit human approval is required before any submit action.",
+        "No browser action was performed",
+    ]
+    for marker in required:
+        assert marker in text, f"Manual rehearsal markdown missing marker: {marker}"
+
+
+def test_manual_submission_rehearsal_package_never_enables_submit() -> None:
+    b = _basename()
+    package = json.loads(
+        _assert_exists(f"outputs/logs/{b}_wantedly_manual_submission_rehearsal_package.json").read_text(encoding="utf-8")
+    )
+    assert package["automation_allowed"] is False
+    assert package["live_submission_performed"] is False
+    assert package["submit_button_clicked"] is False
+    assert package["final_submit_clicked"] is False
+    forbidden = " ".join(package["forbidden_actions"]).lower()
+    assert "submit" in forbidden

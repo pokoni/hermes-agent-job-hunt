@@ -1,3 +1,8 @@
+---
+name: live-submission-adapter
+description: Create a controlled live submission dry-run package for the frozen Hermes Japan job-hunt workspace.
+---
+
 # live-submission-adapter
 
 ## Purpose
@@ -213,6 +218,23 @@ Require explicit human approval before any submit action.
 This skill prepares a controlled dry run unless the user explicitly authorizes a live submission step.
 Explicit human approval is required before any submit action.
 ```
+
+## Verification
+
+After writing all four output files, run the verification script to confirm contract compliance:
+
+```bash
+python3 scripts/verify_package.py <job_basename>
+```
+
+The script checks:
+- All 4 output files exist on disk
+- Dry-run plan: dual title + all 18 required headings
+- Field mapping: all 20 required headings
+- Authorization request: all 16 required headings + "Explicit approval is required." line
+- Result stub JSON: all required fields, false flags are false, true flags are true, polished paths contain the basename, blocking_issues is a list
+
+Exit code 0 = pass, 1 = errors found.
 
 ## Safety
 

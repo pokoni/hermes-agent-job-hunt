@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Japan Job-Hunt Job Source Registry",
+  "type": "object",
+  "required": [
+    "version",
+    "registry_name",
+    "human_review_required",
+    "submission_boundary",
+    "sources"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registry_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "submission_boundary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 3
+    },
+    "default_thresholds": {
+      "type": "object",
+      "properties": {
+        "min_fit_score_for_notification": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "min_fit_score_for_auto_material_suggestion": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "additionalProperties": true
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "source_name",
+          "source_type",
+          "enabled",
+          "fetch_mode",
+          "url",
+          "platform_id",
+          "priority",
+          "tags",
+          "keywords",
+          "locations",
+          "safety"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "source_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "company_careers",
+              "job_board_search",
+              "static_url",
+              "manual_snapshot",
+              "rss_or_feed",
+              "saved_search"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "fetch_mode": {
+            "type": "string",
+            "enum": [
+              "manual_snapshot",
+              "public_url_html",
+              "rss_or_feed",
+              "search_result_page",
+              "not_implemented"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "platform_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "cadence": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "negative_keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "min_fit_score_for_notification": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "safety": {
+            "type": "object",
+            "required": [
+              "requires_login",
+              "stores_credentials",
+              "allows_auto_apply",
+              "respect_robots_and_terms",
+              "manual_review_before_notification"
+            ],
+            "properties": {
+              "requires_login": {
+                "type": "boolean"
+              },
+              "stores_credentials": {
+                "type": "boolean",
+                "const": false
+              },
+              "allows_auto_apply": {
+                "type": "boolean",
+                "const": false
+              },
+              "respect_robots_and_terms": {
+                "type": "boolean",
+                "const": true
+              },
+              "manual_review_before_notification": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
