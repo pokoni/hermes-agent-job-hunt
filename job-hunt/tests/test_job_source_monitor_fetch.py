@@ -64,7 +64,14 @@ def test_fetch_job_sources_manual_snapshot_writes_raw_job() -> None:
     ]
     assert manual_written, "Expected at least one manual snapshot to be written"
 
-    written_path = _root() / manual_written[0]["path"]
+    sample_written = [
+        item for item in manual_written
+        if item.get("original_location", "").endswith("sample_ai_ml_internship.md")
+        or item.get("path", "").endswith("sample_ai_ml_internship_fa8468d26b38.md")
+    ]
+    assert sample_written, "Expected the sample manual snapshot to be written"
+
+    written_path = _root() / sample_written[0]["path"]
     assert written_path.exists()
     text = written_path.read_text(encoding="utf-8")
     assert "source_id: manual_job_snapshot_inbox" in text
