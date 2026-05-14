@@ -4,7 +4,11 @@
 *.pyc*
 __pycache__/
 .venv/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
 .env
 .env.local
 .env.development.local

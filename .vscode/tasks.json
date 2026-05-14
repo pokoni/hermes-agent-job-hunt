@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Hermes: setup environment",
+      "type": "shell",
+      "command": "${workspaceFolder}/setup-hermes.sh",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Hermes: run tests",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/run_tests.sh",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Hermes: run current test file",
+      "type": "shell",
+      "command": "${workspaceFolder}/scripts/run_tests.sh",
+      "args": ["${file}"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Hermes: ruff check",
+      "type": "shell",
+      "command": "PY=${workspaceFolder}/.venv/bin/python; if [ ! -x \"$PY\" ]; then PY=${workspaceFolder}/venv/bin/python; fi; if [ ! -x \"$PY\" ]; then PY=$HOME/.hermes/hermes-agent/venv/bin/python; fi; if [ ! -x \"$PY\" ]; then echo 'No Hermes virtualenv found. Run the \"Hermes: setup environment\" task first.' >&2; exit 1; fi; \"$PY\" -m ruff check .",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Hermes: type check",
+      "type": "shell",
+      "command": "PY=${workspaceFolder}/.venv/bin/python; if [ ! -x \"$PY\" ]; then PY=${workspaceFolder}/venv/bin/python; fi; if [ ! -x \"$PY\" ]; then PY=$HOME/.hermes/hermes-agent/venv/bin/python; fi; if [ ! -x \"$PY\" ]; then echo 'No Hermes virtualenv found. Run the \"Hermes: setup environment\" task first.' >&2; exit 1; fi; \"$PY\" -m ty check",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Git: fetch origin",
+      "type": "process",
+      "command": "git",
+      "args": ["fetch", "--prune", "origin"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Git: push current branch",
+      "type": "process",
+      "command": "git",
+      "args": ["push", "-u", "origin", "HEAD"],
+      "problemMatcher": []
+    }
+  ]
+}
