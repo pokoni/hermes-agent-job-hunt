@@ -41,7 +41,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/create_submission_review_gate.py \
   --workspace . \
   --job data/jobs/<job_basename>.json \

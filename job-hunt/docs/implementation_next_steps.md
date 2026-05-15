@@ -30,7 +30,7 @@ If you want Hermes to discover repo-local skills directly, add your repo path to
 Use one file from `data/raw_jobs/` and write one file to `data/jobs/`.
 
 ### 6. Run one manual fit analysis pass
-Use one file from `data/jobs/` with `data/candidate_profile.json` and write a report to `output/fit_reports/`.
+Use one file from `data/jobs/` with `data/candidate_profile.json` and write a report to `outputs/fit_reports/`.
 
 ## Success criterion
 

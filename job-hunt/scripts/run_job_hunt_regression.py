@@ -119,6 +119,103 @@ def build_required_checks(basename: str) -> list[Check]:
     ]
 
 
+REPO_STRUCTURE_DIRS = [
+    "data",
+    "data/raw_jobs",
+    "data/jobs",
+    "schemas",
+    "skills",
+    "prompts",
+    "outputs",
+    "docs",
+    "tests",
+    "scripts",
+]
+
+REPO_STRUCTURE_SKILLS = [
+    "job-normalizer",
+    "job-fit-scorer",
+    "resume-tailor",
+    "jp-application-writer",
+    "application-tracker",
+    "browser-apply-assistant",
+    "submission-review-gate",
+    "live-submission-adapter",
+]
+
+REPO_STRUCTURE_SCHEMAS = [
+    "candidate_profile.schema.json",
+    "job_posting.schema.json",
+    "application_record.schema.json",
+]
+
+REPO_STRUCTURE_DATA_FILES = [
+    "data/job_sources.json",
+    "data/material_stage_executors.json",
+    "data/candidate_profile.json",
+]
+
+REPO_STRUCTURE_SCRIPTS = [
+    "scripts/run_job_watch_cycle.py",
+    "scripts/control_job_search_runtime.py",
+    "scripts/parse_job_search_command.py",
+    "scripts/run_job_hunt_regression.py",
+]
+
+
+def check_repo_structure(workspace: Path) -> dict:
+    """Check that the workspace repo layout is intact.
+
+    This does NOT require any generated artifacts. It only checks
+    directories, skill folders, schemas, data configs, and key scripts.
+    Safe to run on a fresh clone.
+    """
+    checks = []
+    missing = []
+
+    for rel_path in REPO_STRUCTURE_DIRS:
+        path = workspace / rel_path
+        ok = path.exists() and path.is_dir()
+        checks.append({"type": "directory", "path": rel_path, "exists": ok})
+        if not ok:
+            missing.append(rel_path)
+
+    for name in REPO_STRUCTURE_SKILLS:
+        skill_dir = workspace / "skills" / name
+        skill_md = skill_dir / "SKILL.md"
+        ok = skill_dir.exists() and skill_md.exists()
+        checks.append({"type": "skill", "path": f"skills/{name}/SKILL.md", "exists": ok})
+        if not ok:
+            missing.append(f"skills/{name}/SKILL.md")
+
+    for filename in REPO_STRUCTURE_SCHEMAS:
+        path = workspace / "schemas" / filename
+        ok = path.exists() and path.stat().st_size > 0
+        checks.append({"type": "schema", "path": f"schemas/{filename}", "exists": ok})
+        if not ok:
+            missing.append(f"schemas/{filename}")
+
+    for rel_path in REPO_STRUCTURE_DATA_FILES:
+        path = workspace / rel_path
+        ok = path.exists() and path.stat().st_size > 0
+        checks.append({"type": "data_file", "path": rel_path, "exists": ok})
+        if not ok:
+            missing.append(rel_path)
+
+    for rel_path in REPO_STRUCTURE_SCRIPTS:
+        path = workspace / rel_path
+        ok = path.exists() and path.stat().st_size > 0
+        checks.append({"type": "script", "path": rel_path, "exists": ok})
+        if not ok:
+            missing.append(rel_path)
+
+    return {
+        "status": "passed" if not missing else "blocked",
+        "checks": checks,
+        "missing": missing,
+    }
+
+
 def check_artifacts(workspace: Path, basename: str) -> dict:
     checks = []
     missing_required = []
@@ -257,9 +354,20 @@ def write_report(workspace: Path, basename: str, report: dict) -> None:
         f"- Status: `{report['status']}`",
         f"- Created at: `{report['created_at']}`",
         "",
-        "## Live Artifact Enforcer",
+        "## Repo Structure Check",
         "",
     ]
+    sc = report.get("structure_check")
+    if sc:
+        lines.append(f"- Status: `{sc['status']}`")
+        if sc["missing"]:
+            lines += [f"- `{item}`" for item in sc["missing"]]
+        else:
+            lines.append("- All structure checks passed.")
+    else:
+        lines.append("- Not run.")
+
+    lines += ["", "## Live Artifact Enforcer", ""]
     if report.get("live_artifact_enforcer_result"):
         result = report["live_artifact_enforcer_result"]
         lines.append(f"- Status: `{result['status']}` returncode={result['returncode']}")
@@ -267,12 +375,19 @@ def write_report(workspace: Path, basename: str, report: dict) -> None:
         lines.append("- Not run.")
 
     lines += ["", "## Missing Required Artifacts", ""]
-    missing = report["artifact_check"]["missing_required"]
-    lines += [f"- `{item}`" for item in missing] if missing else ["- None."]
+    ac = report.get("artifact_check")
+    if ac:
+        missing = ac["missing_required"]
+        lines += [f"- `{item}`" for item in missing] if missing else ["- None."]
+    else:
+        lines.append("- Not run.")
 
     lines += ["", "## Missing Optional Artifacts", ""]
-    optional = report["artifact_check"]["missing_optional"]
-    lines += [f"- `{item}`" for item in optional] if optional else ["- None."]
+    if ac:
+        optional = ac["missing_optional"]
+        lines += [f"- `{item}`" for item in optional] if optional else ["- None."]
+    else:
+        lines.append("- Not run.")
 
     lines += ["", "## Human Approval Boundary", ""]
     lines += BOUNDARY_LINES
@@ -299,6 +414,7 @@ def main() -> int:
     parser.add_argument("--verify-live-artifacts", action="store_true")
     parser.add_argument("--targeted", action="store_true")
     parser.add_argument("--full", action="store_true")
+    parser.add_argument("--structure-only", action="store_true", help="Check repo structure only (no generated artifacts)")
     args = parser.parse_args()
 
     workspace = Path(args.workspace).resolve()
@@ -308,6 +424,26 @@ def main() -> int:
     if args.plan:
         print(json.dumps(plan, ensure_ascii=False, indent=2))
         return 0
+
+    structure = check_repo_structure(workspace)
+
+    if args.structure_only:
+        report = {
+            "job_basename": basename,
+            "status": structure["status"],
+            "created_at": now_iso(),
+            "plan": plan,
+            "structure_check": structure,
+            "artifact_check": None,
+            "boundary_check": None,
+            "live_artifact_enforcer_result": None,
+            "targeted_result": None,
+            "full_result": None,
+            "human_review_required": True,
+        }
+        write_report(workspace, basename, report)
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 1 if structure["status"] != "passed" else 0
 
     live_artifact_result = None
     if args.enforce_live_artifacts or args.verify_live_artifacts:
@@ -326,6 +462,7 @@ def main() -> int:
         "status": "passed",
         "created_at": now_iso(),
         "plan": plan,
+        "structure_check": structure,
         "artifact_check": artifact,
         "boundary_check": boundary,
         "live_artifact_enforcer_result": live_artifact_result,
@@ -334,7 +471,7 @@ def main() -> int:
         "human_review_required": True,
     }
 
-    if artifact["status"] != "passed" or boundary["status"] != "passed":
+    if structure["status"] != "passed" or artifact["status"] != "passed" or boundary["status"] != "passed":
         report["status"] = "blocked"
 
     if live_artifact_result and live_artifact_result["status"] != "passed":

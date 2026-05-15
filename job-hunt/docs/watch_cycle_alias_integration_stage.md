@@ -35,10 +35,10 @@ tests/test_watch_cycle_action_aliases.py
 ## Default watch cycle
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python
+  --python ../.venv/bin/python
 ```
 
 This includes:
@@ -52,17 +52,17 @@ render_telegram_job_notifications.py
 ## Disable aliases if needed
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --disable-action-aliases
 ```
 
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_watch_cycle_action_aliases.py -q
+../.venv/bin/python -m pytest tests/test_watch_cycle_action_aliases.py -q
 ```
 
 ## Boundary

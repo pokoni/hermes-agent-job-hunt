@@ -37,21 +37,21 @@ scripts/install_job_watch_cron.example.sh
 ## Run default dry-run cycle
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python
+  --python ../.venv/bin/python
 ```
 
 ## Run with public network fetch
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --allow-network
 ```
 
@@ -62,10 +62,10 @@ set -a
 source ~/.hermes/.env
 set +a
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --send-telegram
 ```
 
@@ -79,7 +79,7 @@ outputs/logs/job_watch_cycle_report.md
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_watch_cycle.py -q
+../.venv/bin/python -m pytest tests/test_job_watch_cycle.py -q
 ```
 
 ## Safety

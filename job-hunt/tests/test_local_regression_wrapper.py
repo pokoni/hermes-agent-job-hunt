@@ -62,6 +62,28 @@ def test_local_regression_wrapper_plan_contract() -> None:
     assert "Explicit human approval is required before any submit action." in boundary
 
 
+def test_local_regression_wrapper_structure_only_passes_on_intact_workspace() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(_root()),
+            "--structure-only",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    assert completed.returncode == 0, f"--structure-only should pass on intact workspace: {completed.stderr}"
+    report = json.loads(completed.stdout)
+    assert report["status"] == "passed"
+    assert report["structure_check"]["status"] == "passed"
+    assert report["artifact_check"] is None
+    assert report["boundary_check"] is None
+
+
 def test_local_regression_wrapper_check_only_writes_report_when_artifacts_exist() -> None:
     # This test assumes the job-hunt regression baseline artifacts have already
     # been generated, which matches the current project workflow.

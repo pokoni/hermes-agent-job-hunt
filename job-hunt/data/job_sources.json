@@ -1,0 +1,244 @@
+{
+  "version": "2026-05-10",
+  "registry_name": "Hermes Japan job-hunt source registry",
+  "human_review_required": true,
+  "submission_boundary": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action."
+  ],
+  "default_thresholds": {
+    "min_fit_score_for_notification": 75,
+    "min_fit_score_for_auto_material_suggestion": 82
+  },
+  "sources": [
+    {
+      "source_id": "wantedly_ai_ml_intern_japan",
+      "source_name": "Wantedly AI/ML internship search in Japan",
+      "source_type": "job_board_search",
+      "enabled": true,
+      "fetch_mode": "manual_snapshot",
+      "url": "https://www.wantedly.com/projects",
+      "platform_id": "wantedly",
+      "priority": 1,
+      "cadence": "manual_snapshot_first_then_scheduled_review",
+      "tags": [
+        "internship",
+        "japan",
+        "ai",
+        "machine-learning",
+        "wantedly"
+      ],
+      "keywords": [
+        "AI",
+        "機械学習",
+        "Machine Learning",
+        "LLM",
+        "Computer Vision",
+        "Intern",
+        "インターン"
+      ],
+      "negative_keywords": [
+        "sales",
+        "営業",
+        "designer",
+        "デザイナー"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Fukuoka",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 75,
+      "notes": [
+        "Start with user-provided/manual snapshots because Wantedly often requires account/session context.",
+        "Do not store Wantedly credentials.",
+        "Do not bypass login walls, bot detection, or JavaScript restrictions."
+      ],
+      "safety": {
+        "requires_login": true,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "preferred_networks_internship",
+      "source_name": "Preferred Networks internship careers page",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://www.preferred.jp/ja/careers/internship/",
+      "platform_id": "company_careers",
+      "priority": 1,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "llm",
+        "research",
+        "pfn"
+      ],
+      "keywords": [
+        "PLaMo",
+        "LLM",
+        "深層学習",
+        "機械学習",
+        "インターン",
+        "研究"
+      ],
+      "negative_keywords": [],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 78,
+      "notes": [
+        "Public careers page source.",
+        "Prefer polite rate limits and snapshot logging."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "ntt_labs_internship_ai",
+      "source_name": "NTT Labs internship AI themes page",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+      "platform_id": "company_careers",
+      "priority": 1,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "research",
+        "alignment",
+        "agent",
+        "ntt"
+      ],
+      "keywords": [
+        "生成モデル",
+        "Alignment",
+        "LLM",
+        "AIエージェント",
+        "検索基盤",
+        "インターン"
+      ],
+      "negative_keywords": [],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 78,
+      "notes": [
+        "Public internship theme source.",
+        "Themes may change seasonally; registry validation does not guarantee current availability."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "rakuten_engineering_internship",
+      "source_name": "Rakuten engineering internship/career source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "manual_snapshot",
+      "url": "https://corp.rakuten.co.jp/careers/",
+      "platform_id": "company_careers",
+      "priority": 2,
+      "cadence": "weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "engineering",
+        "rakuten"
+      ],
+      "keywords": [
+        "Developer",
+        "AI",
+        "Machine Learning",
+        "Backend",
+        "Internship",
+        "Engineering"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Fukuoka"
+      ],
+      "min_fit_score_for_notification": 72,
+      "notes": [
+        "Use manual snapshot first because position pages may be routed through event-specific forms.",
+        "Email submission paths should be handled by existing supervised review and approval flow."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "manual_job_snapshot_inbox",
+      "source_name": "Manual job snapshot inbox",
+      "source_type": "manual_snapshot",
+      "enabled": true,
+      "fetch_mode": "manual_snapshot",
+      "url": "data/raw_jobs/manual_inbox/",
+      "platform_id": "manual",
+      "priority": 1,
+      "cadence": "on_user_input",
+      "tags": [
+        "manual",
+        "fallback",
+        "user-provided"
+      ],
+      "keywords": [
+        "AI",
+        "ML",
+        "LLM",
+        "CV",
+        "Intern",
+        "Engineer"
+      ],
+      "negative_keywords": [],
+      "locations": [
+        "Japan",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 70,
+      "notes": [
+        "This source lets the user drop job descriptions into data/raw_jobs/manual_inbox/.",
+        "It is the safest first implementation path for the monitor."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": false
+      }
+    }
+  ]
+}

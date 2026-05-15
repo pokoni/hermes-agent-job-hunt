@@ -29,15 +29,21 @@ parser = argparse.ArgumentParser()
 for arg in [
     '--workspace','--sources','--output','--raw-root','--seen','--dedup-report',
     '--candidate-profile','--batch-output','--ranking-json','--ranking-md',
-    '--queue-jsonl','--ranking','--output-jsonl','--report','--notifications','--delivery-log','--alias-map'
+    '--queue-jsonl','--ranking','--output-jsonl','--report','--notifications',
+    '--delivery-log','--alias-map','--audit','--manifest','--quality-manifest',
+    '--markdown-output','--allowlist-jsonl','--review-jsonl','--quarantine-jsonl'
 ]:
     parser.add_argument(arg)
 parser.add_argument('--allow-network', action='store_true')
 parser.add_argument('--send', action='store_true')
 parser.add_argument('--use-action-aliases', action='store_true')
+parser.add_argument('--strict-review', action='store_true')
+parser.add_argument('--exclude-review', action='store_true')
+parser.add_argument('--default-decision', default='allow')
+parser.add_argument('--max-low-quality-rate', type=float, default=0.35)
 args = parser.parse_args()
 payload = {json.dumps(payload, ensure_ascii=False)!r}
-for attr in ['output','batch_output','ranking_json','ranking_md','queue_jsonl','output_jsonl','report','delivery_log']:
+for attr in ['output','batch_output','ranking_json','ranking_md','queue_jsonl','output_jsonl','report','delivery_log','markdown_output','manifest','audit','quality_manifest','allowlist_jsonl','review_jsonl','quarantine_jsonl']:
     value = getattr(args, attr, None)
     if value:
         p = Path(value)
@@ -63,6 +69,9 @@ def _install_stubs(workspace: Path) -> None:
         "run_batch_job_pipeline.py",
         "render_telegram_job_notifications.py",
         "send_telegram_job_notifications.py",
+        "audit_public_careers_extraction_quality.py",
+        "build_public_careers_quality_gate_manifest.py",
+        "apply_public_careers_quality_gate_to_dedup_report.py",
     ]:
         _write_script(scripts / name, _stub_script(name))
 
@@ -180,3 +189,77 @@ def test_cron_example_exists() -> None:
     text = path.read_text(encoding="utf-8")
     assert "run_job_watch_cycle.py" in text
     assert ".hermes/.env" in text
+
+
+def test_job_watch_cycle_quality_gate_off_by_default(tmp_path: Path) -> None:
+    _install_stubs(tmp_path)
+    output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.json"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(tmp_path),
+            "--python",
+            sys.executable,
+            "--output",
+            str(output),
+        ],
+        check=True,
+    )
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["public_careers_quality_gate_enabled"] is False
+    assert report["step_count"] == 7
+    step_names = [step["name"] for step in report["steps"]]
+    assert "audit_public_careers_extraction_quality" not in step_names
+    assert "build_public_careers_quality_gate_manifest" not in step_names
+    assert "apply_public_careers_quality_gate" not in step_names
+
+
+def test_job_watch_cycle_quality_gate_inserts_three_steps(tmp_path: Path) -> None:
+    _install_stubs(tmp_path)
+    output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.json"
+    md_output = tmp_path / "outputs" / "logs" / "job_watch_cycle_report.md"
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(tmp_path),
+            "--python",
+            sys.executable,
+            "--output",
+            str(output),
+            "--markdown-output",
+            str(md_output),
+            "--apply-public-careers-quality-gate",
+        ],
+        check=True,
+    )
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["status"] == "passed"
+    assert report["public_careers_quality_gate_enabled"] is True
+    assert report["step_count"] == 10
+    assert report["does_not_submit"] is True
+
+    step_names = [step["name"] for step in report["steps"]]
+    # Quality gate steps should be between dedup and batch pipeline
+    dedup_idx = step_names.index("deduplicate_raw_jobs")
+    audit_idx = step_names.index("audit_public_careers_extraction_quality")
+    manifest_idx = step_names.index("build_public_careers_quality_gate_manifest")
+    gate_idx = step_names.index("apply_public_careers_quality_gate")
+    batch_idx = step_names.index("run_batch_job_pipeline")
+
+    assert dedup_idx < audit_idx < manifest_idx < gate_idx < batch_idx
+
+    # Verify gated dedup report is passed to batch pipeline
+    batch_step = next(step for step in report["steps"] if step["name"] == "run_batch_job_pipeline")
+    assert "job_deduplication_quality_gated_report.json" in " ".join(batch_step["command"])
+
+    text = md_output.read_text(encoding="utf-8")
+    assert "Public careers quality gate enabled: `True`" in text
+    assert "Do not submit by default." in text

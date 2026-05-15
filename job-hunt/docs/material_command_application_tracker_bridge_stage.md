@@ -55,7 +55,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python   scripts/execute_approved_material_commands.py   --workspace .   --commands outputs/logs/<action_id>_material_generation_commands.json   --registry data/material_stage_executors.json   --execute   --use-local-executors
+../.venv/bin/python   scripts/execute_approved_material_commands.py   --workspace .   --commands outputs/logs/<action_id>_material_generation_commands.json   --registry data/material_stage_executors.json   --execute   --use-local-executors
 ```
 
 ## Expected behavior

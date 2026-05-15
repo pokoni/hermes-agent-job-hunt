@@ -23,18 +23,18 @@ scripts/validate_local_e2e_dry_run.py
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_local_e2e_dry_run_validator.py -q
+../.venv/bin/python -m pytest tests/test_local_e2e_dry_run_validator.py -q
 ```
 
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/validate_local_e2e_dry_run.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python
+  --python ../.venv/bin/python
 ```
 
 ## Run using existing artifacts
@@ -42,10 +42,10 @@ cd /home/administrator/hermes-agent/job-hunt
 If a watch cycle has already produced a non-empty alias map:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/validate_local_e2e_dry_run.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --skip-watch-cycle
 ```
 

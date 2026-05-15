@@ -31,9 +31,9 @@ outputs/logs/job_source_monitor_run.json
 ## Run manual snapshot mode
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/fetch_job_sources.py \
   --workspace . \
   --sources data/job_sources.json \
@@ -43,7 +43,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Dry run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/fetch_job_sources.py \
   --workspace . \
   --sources data/job_sources.json \
@@ -56,7 +56,7 @@ cd /home/administrator/hermes-agent/job-hunt
 Use only when safe and appropriate:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/fetch_job_sources.py \
   --workspace . \
   --sources data/job_sources.json \
@@ -67,7 +67,7 @@ Use only when safe and appropriate:
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_source_monitor_fetch.py -q
+../.venv/bin/python -m pytest tests/test_job_source_monitor_fetch.py -q
 ```
 
 ## Safety

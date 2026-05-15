@@ -1,0 +1,42 @@
+{
+  "company_name": "Preferred Networks internship careers page extracted jobs",
+  "description": "# 研究開発\n\nSource: Preferred Networks internship careers page\nOriginal URL: https://www.preferred.jp/ja/careers/internship/\n\n研究開発\nプライバシーポリシー\n情報セキュリティ基本方針\nISO27001: AIプロダクト・ソリューションの開発（受託を含む）・提供を行う、\nAIプロダクツ&ソリューションズ事業本部の業務を対象に取得\n© 2019-2025 Preferred Networks, Inc.\nホーム\n企業情報\n創業者メッセージ\n経営陣\n沿革・受賞歴\nAIガバナンス\nコーポレートロゴ\n業界\n製造業\n素材・化学品\nライフサイエンス\nエンターテインメント",
+  "employment_type": "unknown",
+  "job_id": "研究開発_0096d1fd8bac",
+  "keywords": [
+    "AI"
+  ],
+  "location": "Unknown location",
+  "location_hits": [],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-13T13:06:17Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "25eaad69c3812c4ae5d11e0563d7c2c698182e522894fb41b534391b9942c90a",
+    "content_hash": "4c7c8ffaa419ab2b62f7f7d1994b605e28d31889e7763182e08a29619e14481e",
+    "original_location": "https://www.preferred.jp/ja/careers/internship/",
+    "raw_job_path": "data/raw_jobs/preferred_networks_internship_extracted/2026-05-13/研究開発_0096d1fd8bac.md",
+    "source_id": "preferred_networks_internship_extracted",
+    "source_name": "Preferred Networks internship careers page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "研究開発"
+}

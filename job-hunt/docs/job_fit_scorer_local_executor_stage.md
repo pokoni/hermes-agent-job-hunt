@@ -29,7 +29,7 @@ scripts/score_job_fit.py
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/score_job_fit.py \
   --workspace . \
   --job data/jobs/<job_basename>.json \
@@ -49,5 +49,5 @@ Human review required.
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_fit_scorer_local_executor.py -q
+../.venv/bin/python -m pytest tests/test_job_fit_scorer_local_executor.py -q
 ```

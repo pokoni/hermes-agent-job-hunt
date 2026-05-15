@@ -24,7 +24,7 @@ job_ranking_gate_decision.json
 Optional individual mode:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_telegram_job_notifications.py \
   --ranking outputs/logs/job_ranking_gate_decision.json \
   --output-jsonl outputs/logs/telegram_notifications.jsonl \
@@ -35,7 +35,7 @@ Optional individual mode:
 ## Default run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_telegram_job_notifications.py \
   --ranking outputs/logs/job_ranking_gate_decision.json \
   --output-jsonl outputs/logs/telegram_notifications.jsonl \
@@ -45,7 +45,7 @@ Optional individual mode:
 ## Limit digest size
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_telegram_job_notifications.py \
   --ranking outputs/logs/job_ranking_gate_decision.json \
   --output-jsonl outputs/logs/telegram_notifications.jsonl \
@@ -56,7 +56,7 @@ Optional individual mode:
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_telegram_notification_digest.py -q
+../.venv/bin/python -m pytest tests/test_telegram_notification_digest.py -q
 ```
 
 ## Boundary

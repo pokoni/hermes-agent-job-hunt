@@ -35,9 +35,9 @@ outputs/logs/batch_normalization_queue.jsonl
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_batch_job_pipeline.py \
   --workspace . \
   --dedup-report outputs/logs/job_deduplication_report.json \
@@ -48,7 +48,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_batch_job_pipeline.py -q
+../.venv/bin/python -m pytest tests/test_batch_job_pipeline.py -q
 ```
 
 ## Safety

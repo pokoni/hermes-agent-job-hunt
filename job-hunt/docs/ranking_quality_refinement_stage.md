@@ -43,7 +43,7 @@ docs/project_stage_after_ranking_quality_refinement.md
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_ranking_quality_refinement.py -q
+../.venv/bin/python -m pytest tests/test_ranking_quality_refinement.py -q
 ```
 
 ## Real flow
@@ -51,7 +51,7 @@ docs/project_stage_after_ranking_quality_refinement.md
 After extracting public careers jobs and deduplication, run:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_batch_job_pipeline.py \
   --workspace . \
   --dedup-report outputs/logs/job_deduplication_report.json \
@@ -62,7 +62,7 @@ After extracting public careers jobs and deduplication, run:
 Then inspect:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python - <<'PY'
+../.venv/bin/python - <<'PY'
 import json
 from pathlib import Path
 

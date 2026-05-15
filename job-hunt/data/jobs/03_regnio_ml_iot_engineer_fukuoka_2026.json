@@ -1,0 +1,66 @@
+{
+  "source": "green",
+  "source_job_id": "283132",
+  "url": "https://www.green-japan.com/company/10562/job/283132",
+  "company_name": "株式会社Regnio",
+  "company_profile": null,
+  "job_title": "機械学習/IoTエンジニア",
+  "department": null,
+  "location": {
+    "country": "Japan",
+    "city": "Fukuoka",
+    "remote_policy": "hybrid"
+  },
+  "employment_type": "full_time",
+  "language_requirement": {
+    "japanese_level": "not_specified (source does not mention Japanese requirement; application requirements hidden behind Green login)",
+    "english_level": "not_specified (source does not mention English requirement)",
+    "notes": "Application-condition details are hidden behind Green authentication (login required). Language requirements are not visible in the public posting."
+  },
+  "must_have_years_experience": null,
+  "required_skills": [],
+  "preferred_skills": [],
+  "responsibilities": [
+    "危険検知用の機械学習モデル設計・開発",
+    "カメラとLiDARを用いたリアルタイム検知システム構築",
+    "人・フック・鋼板などの画像認識機能開発",
+    "Jetson / Raspberry Piを使ったエッジ実装",
+    "AWSと連携したデータ管理・UI構築",
+    "警告システムや安全評価アルゴリズムの開発"
+  ],
+  "compensation": {
+    "currency": "JPY",
+    "min": 4000000,
+    "max": 7000000,
+    "bonus_notes": null
+  },
+  "visa_support": null,
+  "application_method": "platform_apply",
+  "application_deadline": null,
+  "screening_process": null,
+  "keywords_normalized": [
+    "Python",
+    "C/C++",
+    "AWS",
+    "Docker",
+    "IoT",
+    "Lambda",
+    "OpenCV",
+    "Jupyter",
+    "PyTorch",
+    "YOLO",
+    "Gstreamer",
+    "Linux",
+    "GitHub",
+    "CircleCI",
+    "Slack",
+    "Notion",
+    "Jetson",
+    "Raspberry Pi",
+    "LiDAR",
+    "camera sensors"
+  ],
+  "fit_hints": null,
+  "raw_description": "# 機械学習/IoTエンジニア\n\n## Source snapshot\n- 製造業 DX 向けの「人協調AIクレーン安全作業支援システム」の開発ポジション。\n- 鉄鋼関連メーカー 2 社との共同開発中プロダクトとして紹介されている。\n- 工場内のクレーン作業における安全性向上を目的に、AI と IoT を使ったシステムを開発する。\n- 機械学習モデル設計、IoT システム構築、エッジ実装、AWS 連携までを一貫して担当する想定。\n- 実際の工場に足を運び、センサー連携、データ取得、AI モデル構築、エッジシステム実装に関わる構成。\n\n## Visible responsibilities\n- 危険検知用の機械学習モデル設計・開発\n- カメラと LiDAR を用いたリアルタイム検知システム構築\n- 人・フック・鋼板などの画像認識機能開発\n- Jetson / Raspberry Pi を使ったエッジ実装\n- AWS と連携したデータ管理・UI 構築\n- 警告システムや安全評価アルゴリズムの開発\n\n## Visible stack / keywords\n- Python, C/C++, AWS, Docker, IoT, Lambda, OpenCV, Jupyter\n- PyTorch, YOLO, Gstreamer\n- Linux, GitHub, CircleCI, Slack, Notion\n- Jetson, Raspberry Pi, LiDAR, camera sensors\n\n## Visible employment details\n- 想定年収: 400万円〜700万円\n- 雇用形態: 正社員\n- 勤務地: 福岡県福岡市中央区警固 2-2-23 ウイングコート警固 601\n- 一部フレックス制（コアタイム 10:00〜16:00）\n- リモートワーク可（週 1 程度）\n\n## Missing or hidden information\n- Green の公開範囲では応募要件の詳細はログイン後表示\n- 必須スキル・歓迎スキルはログイン後でないと確認不可\n- 語学要件（日本語・英語）も非公開\n- 応募締切・選考プロセスは非公開\n\n## Normalization notes\n- required_skills and preferred_skills are empty because the posting hides skill requirements behind login authentication.\n- Language requirements are marked as not_specified for the same reason — the public page does not disclose them.\n- remote_policy set to 'hybrid' based on: リモートワーク可（週 1 程度）+ 一部フレックス制（コアタイム 10:00〜16:00）.\n- source_job_id extracted from URL path /job/283132.",
+  "fetched_at": "2026-04-22T00:00:00Z"
+}

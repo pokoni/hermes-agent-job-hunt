@@ -24,20 +24,20 @@ The goal is to avoid false failures caused by:
 Run job-hunt tests from the `job-hunt/` workspace root:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 ```
 
 Then run:
 
 ```bash
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+../.venv/bin/python -m pytest tests -q
 ```
 
 Do not use this from the repository root:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest job-hunt/tests -q
+.venv/bin/python -m pytest job-hunt/tests -q
 ```
 
 Some legacy tests use relative paths like `outputs/logs/...`, so they expect the current working directory to be `job-hunt/`.
@@ -61,7 +61,7 @@ export B=03_regnio_ml_iot_engineer_fukuoka_2026
 From `job-hunt/`:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 export B=03_regnio_ml_iot_engineer_fukuoka_2026
 
 pwd
@@ -75,7 +75,7 @@ ls -la data/master_experiences.json
 Expected `pwd`:
 
 ```text
-/home/administrator/hermes-agent/job-hunt
+<your-workspace>/job-hunt
 ```
 
 ## Required artifact checks
@@ -133,10 +133,10 @@ If Markdown resume/CV artifacts are missing, rerun `resume-tailor` in Hermes:
 Then export DOCX:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 export B=03_regnio_ml_iot_engineer_fukuoka_2026
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_resume_artifacts.py \
   --workspace . \
   --basename ${B}
@@ -145,7 +145,7 @@ export B=03_regnio_ml_iot_engineer_fukuoka_2026
 Then export PDF:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_resume_pdfs.py \
   --workspace . \
   --basename ${B}
@@ -178,11 +178,11 @@ Run these in Hermes from `job-hunt/`.
 Run targeted tests before full regression:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 export B=03_regnio_ml_iot_engineer_fukuoka_2026
 
 JOB_HUNT_TEST_BASENAME=${B} \
-/home/administrator/enter/envs/hermes/bin/python -m pytest \
+../.venv/bin/python -m pytest \
   tests/test_resume_docx_export.py \
   tests/test_resume_pdf_export.py \
   tests/test_application_tracker_docx_linkage.py \
@@ -197,11 +197,11 @@ JOB_HUNT_TEST_BASENAME=${B} \
 ## Full job-hunt regression
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 export B=03_regnio_ml_iot_engineer_fukuoka_2026
 
 JOB_HUNT_TEST_BASENAME=${B} \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+../.venv/bin/python -m pytest tests -q
 ```
 
 ## Multi-job regression
@@ -209,10 +209,32 @@ JOB_HUNT_TEST_BASENAME=${B} \
 After outputs exist for both jobs:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAMES=02_avilen_semiconductor_cv_ai_intern_2026,03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_multi_job_regression.py -q
+../.venv/bin/python -m pytest tests/test_multi_job_regression.py -q
+```
+
+## Repo structure check (safe on fresh clone)
+
+```bash
+cd job-hunt
+
+../.venv/bin/python scripts/run_job_hunt_regression.py \
+  --workspace . \
+  --structure-only
+```
+
+## Artifact check with regression wrapper
+
+```bash
+cd job-hunt
+export B=03_regnio_ml_iot_engineer_fukuoka_2026
+
+../.venv/bin/python scripts/run_job_hunt_regression.py \
+  --workspace . \
+  --basename ${B} \
+  --check-only
 ```
 
 ## Git sync verification
@@ -220,7 +242,7 @@ JOB_HUNT_TEST_BASENAMES=02_avilen_semiconductor_cv_ai_intern_2026,03_regnio_ml_i
 After committing and pushing:
 
 ```bash
-cd /home/administrator/hermes-agent
+cd <your-repo-root>
 
 git status
 git log --oneline --decorate -5
@@ -279,9 +301,9 @@ Regenerate:
 Run from `job-hunt/`:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+../.venv/bin/python -m pytest tests -q
 ```
 
 Some legacy tests expect relative paths such as `outputs/logs/...`.
@@ -291,8 +313,8 @@ Some legacy tests expect relative paths such as `outputs/logs/...`.
 The job-hunt workflow must preserve the following submission boundary lines in downstream review and live dry-run artifacts:
 
 ```text
-Explicit human approval is required.
 Do not submit by default.
 Stop before final submission.
+Explicit human approval is required before any submit action.
 
 

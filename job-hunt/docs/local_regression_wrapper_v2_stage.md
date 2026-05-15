@@ -22,9 +22,9 @@ scripts/run_job_hunt_regression.py
 ## Recommended commands
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -35,7 +35,7 @@ cd /home/administrator/hermes-agent/job-hunt
 Full regression:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -46,7 +46,7 @@ Full regression:
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_local_regression_wrapper_v2.py -q
+../.venv/bin/python -m pytest tests/test_local_regression_wrapper_v2.py -q
 ```
 
 ## Boundary

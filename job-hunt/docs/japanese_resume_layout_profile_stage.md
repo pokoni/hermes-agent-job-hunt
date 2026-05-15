@@ -26,9 +26,9 @@ docs/japanese_resume_layout_profile_stage.md
 ## Validation
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/validate_japanese_resume_layout_profile.py \
   --profile data/japanese_resume_layout_profile.json \
   --output outputs/logs/japanese_resume_layout_profile_validation.json
@@ -37,9 +37,9 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_japanese_resume_layout_profile.py -q
+../.venv/bin/python -m pytest tests/test_japanese_resume_layout_profile.py -q
 ```
 
 ## Boundary

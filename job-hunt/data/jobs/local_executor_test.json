@@ -1,0 +1,42 @@
+{
+  "company_name": "NTT Labs internship AI themes page extracted jobs",
+  "description": "# オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nオールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究\nResearch on spatial-division-multiplexed optical transmission system for All-Photonics Network utilizing optical coherence\nネットワーク\nNetwork\n横須賀研究開発センタ\nYokosuka R&D Center\n4週間以上6週間未満\nFrom more than 4 weeks to less 6 weeks\n必須のスキル\nRequired skills\nプログラミングに関する知識(Python、MATLABなどいずれか)\nProgramming (such as Python or MATLAB)\nあればよいスキル\nPreferred skills\n学部レベルの物理学、光学、情報通信工学、電子工学のいずれか\nUndergraduate level physics, optics, informatics, or electonics\n受け入れ可能な学生\nEligibility for Applicants",
+  "employment_type": "unknown",
+  "job_id": "local_executor_test",
+  "keywords": [
+    "AI"
+  ],
+  "location": "Unknown location",
+  "location_hits": [],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-13T11:48:45Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "eb433c139f007ba364f703f8aba5c8ca391d5d621569ec60549a16e092f9b6f4",
+    "content_hash": "feac79f1761230e047e18a1139584b039372e1cdac18fd04a950d6b04818a2fb",
+    "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+    "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-13/オールフォトニクス_ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究_5f299ad4c5cc.md",
+    "source_id": "ntt_labs_internship_ai_extracted",
+    "source_name": "NTT Labs internship AI themes page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究"
+}

@@ -31,9 +31,9 @@ outputs/resumes/<job_basename>_polished_pdf_manifest.json
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_polished_resume_pdfs.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026
@@ -42,10 +42,10 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_polished_resume_pdf_export.py -q
+../.venv/bin/python -m pytest tests/test_polished_resume_pdf_export.py -q
 ```
 
 ## Human review boundary

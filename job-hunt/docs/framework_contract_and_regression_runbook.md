@@ -72,8 +72,8 @@ There is **no** `submission-session-orchestrator` in the approved framework.
 ### After syncing upstream Hermes code
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
-/home/administrator/enter/envs/hermes/bin/python -m pytest \
+cd job-hunt
+../.venv/bin/python -m pytest \
   tests/test_workspace_contract.py \
   tests/test_output_naming_contract.py \
   tests/test_pipeline_regression.py \
@@ -83,8 +83,8 @@ cd /home/administrator/hermes-agent/job-hunt
 ### After re-running a full job pipeline for a specific job basename
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+cd job-hunt
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Maintenance rule

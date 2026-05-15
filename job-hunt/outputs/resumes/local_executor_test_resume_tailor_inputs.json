@@ -1,0 +1,318 @@
+{
+  "allowed_to_submit": false,
+  "auto_apply_allowed": false,
+  "candidate_profile_sections": {
+    "education": [
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Multimodal Information Processing"
+        ],
+        "degree": "M.S.",
+        "end_date": "2028-03",
+        "gpa": "",
+        "lab_or_supervisor": "Pangu Research Lab",
+        "major": "Information Science and Technology (システム情報科学府 情報理工専攻)",
+        "school": "Kyushu University Graduate School of Systems Information Science",
+        "start_date": "2026-04"
+      },
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Agentic AI"
+        ],
+        "degree": "Research Student",
+        "end_date": "2026-04",
+        "gpa": "",
+        "lab_or_supervisor": "Pangu Research Lab",
+        "major": "Information Science",
+        "school": "Kyushu University Graduate School of Information Science",
+        "start_date": "2024-10"
+      },
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Image Processing"
+        ],
+        "degree": "B.S.",
+        "end_date": "2024-06",
+        "gpa": "3.2/5.0",
+        "lab_or_supervisor": "",
+        "major": "Intelligence Science and Technology",
+        "school": "Shanghai Polytechnic University",
+        "start_date": "2019-09"
+      }
+    ],
+    "languages": [
+      {
+        "language": "Chinese",
+        "level": "Native",
+        "proof": ""
+      },
+      {
+        "language": "Japanese",
+        "level": "JLPT N2",
+        "proof": "JLPT N2"
+      },
+      {
+        "language": "English",
+        "level": "TOEIC 750",
+        "proof": "TOEIC 750"
+      }
+    ],
+    "projects": [
+      {
+        "domain": "Computer Vision / Edge AI",
+        "evidence_links": [
+          ""
+        ],
+        "period": "2023-07 to 2024-04",
+        "problem_statement": "Deploy object recognition on edge devices with limited compute resources while maintaining recognition accuracy.",
+        "project_name": "Edge-device Object Recognition Optimization",
+        "quantified_results": [
+          {
+            "after": "",
+            "before": "",
+            "metric": "model_size_reduction",
+            "unit": "%"
+          },
+          {
+            "after": "",
+            "before": "",
+            "metric": "latency",
+            "unit": "ms"
+          }
+        ],
+        "responsibilities": [
+          "Prepared training datasets and augmentation pipelines",
+          "Evaluated object recognition models",
+          "Applied quantization and pruning",
+          "Optimized model size and inference speed"
+        ],
+        "resume_bullets_en": [
+          "Worked on object recognition algorithms for smart cameras and smart glasses deployed on edge devices with limited compute resources.",
+          "Handled data preparation, augmentation, model evaluation, and lightweight optimization through quantization and pruning.",
+          "Contributed to a solution whose results were partially implemented in a commercial smart-glasses product."
+        ],
+        "resume_bullets_ja": [
+          "スマートカメラやスマートグラスなどのエッジデバイス向け物体認識アルゴリズムの開発に従事。",
+          "学習データ整備、データ拡張、モデル評価、量子化・枝刈りによる軽量化を担当。",
+          "検討成果の一部はスマートグラス向けの物体認識機能として商用製品に実装。"
+        ],
+        "role": "Edge AI Engineer Intern",
+        "target_devices": [
+          "smart camera",
+          "smart glasses"
+        ],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "OpenCV",
+          "Quantization",
+          "Pruning"
+        ]
+      },
+      {
+        "domain": "Computer Vision / Lightweight Models",
+        "evidence_links": [
+          "https://doi.org/10.1016/j.neucom.2025.129449"
+        ],
+        "period": "2022-09 to 2024-06",
+        "problem_statement": "Improve lightweight computer vision backbones while balancing accuracy, efficiency, and deployability.",
+        "project_name": "Lightweight Visual Backbone Research",
+        "quantified_results": [
+          {
+            "after": "1",
+            "before": "",
+            "metric": "publications",
+            "unit": "paper"
+          }
+        ],
+        "responsibilities": [
+          "Participated in research framework design",
+          "Set up experiments",
+          "Collected and analyzed data"
+        ],
+        "resume_bullets_en": [
+          "Contributed as second author to a Neurocomputing paper on a lightweight visual backbone with context-aware dual attention.",
+          "Participated in framework design, experiment setup, and data analysis."
+        ],
+        "resume_bullets_ja": [
+          "軽量 visual backbone に関する Neurocomputing 論文に第二著者として参加。",
+          "研究フレームワーク設計、実験設定、データ収集・分析を担当。"
+        ],
+        "role": "Student Researcher / Co-author",
+        "target_devices": [],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "OpenCV",
+          "Computer Vision"
+        ]
+      },
+      {
+        "domain": "Object Detection / Real-time Inference",
+        "evidence_links": [
+          "https://doi.org/10.1145/3671016.3671392"
+        ],
+        "period": "2022-09 to 2024-06",
+        "problem_statement": "Reduce detection latency in YOLOv5 to prevent real-time tracking failures in lightweight robotic scenarios.",
+        "project_name": "YOLOv5 Detection Latency Reduction for Lightweight Robots",
+        "quantified_results": [
+          {
+            "after": "1",
+            "before": "",
+            "metric": "publications",
+            "unit": "paper"
+          }
+        ],
+        "responsibilities": [
+          "Supported experiment design",
+          "Performed data analysis"
+        ],
+        "resume_bullets_en": [
+          "Co-authored a paper on reducing YOLOv5 detection latency for lightweight robots.",
+          "Contributed to experiment design and data analysis."
+        ],
+        "resume_bullets_ja": [
+          "YOLOv5 の検出遅延低減に関する論文に共著者として参加。",
+          "実験設計とデータ分析を担当。"
+        ],
+        "role": "Student Researcher / Co-author",
+        "target_devices": [
+          "lightweight robots"
+        ],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "YOLOv5",
+          "Object Detection"
+        ]
+      }
+    ]
+  },
+  "created_at": "2026-05-13T12:41:25Z",
+  "does_not_submit": true,
+  "fit_report_excerpt": "# Job Fit Report\n\n## Summary\n\n- Title: `オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究`\n- Company: `NTT Labs internship AI themes page extracted jobs`\n- Location: `Unknown location`\n- Fit score: `63/100`\n- Decision: `weak_match_hold`\n- Candidate profile: `data/candidate_profile.json`\n\n## Why matched\n\nProfile keyword hits:\n- Python\n- AI\n\nJob high-value topic hits:\n- Python\n\nLocation hits:\n- Japan\n- Fukuoka\n\n## Boundary\n\nDo not submit by default.\nStop before final submission.\nExplicit human approval is required before any submit action.\n\nThis report is a review artifact only. It does not submit an application.\n",
+  "fit_score": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "candidate_profile": "data/candidate_profile.json",
+    "company_name": "NTT Labs internship AI themes page extracted jobs",
+    "created_at": "2026-05-13T12:09:58Z",
+    "decision": "weak_match_hold",
+    "does_not_submit": true,
+    "fit_score": 63,
+    "high_value_topic_hits": [
+      "LLM",
+      "agent",
+      "computer vision",
+      "コンピュータビジョン",
+      "画像処理",
+      "機械学習",
+      "machine learning",
+      "Python",
+      "PyTorch",
+      "OpenCV",
+      "edge AI",
+      "軽量"
+    ],
+    "human_review_required": true,
+    "job": "data/jobs/local_executor_test.json",
+    "job_high_value_topic_hits": [
+      "Python"
+    ],
+    "location_hits": [
+      "Japan",
+      "Fukuoka"
+    ],
+    "negative_keyword_hits": [],
+    "profile_keyword_hits": [
+      "Python",
+      "AI"
+    ],
+    "scoring_level": "local_heuristic_fit_scorer_v1",
+    "status": "passed",
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ],
+    "title": "オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究"
+  },
+  "human_review_required": true,
+  "job": {
+    "company_name": "NTT Labs internship AI themes page extracted jobs",
+    "description": "# オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nオールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究\nResearch on spatial-division-multiplexed optical transmission system for All-Photonics Network utilizing optical coherence\nネットワーク\nNetwork\n横須賀研究開発センタ\nYokosuka R&D Center\n4週間以上6週間未満\nFrom more than 4 weeks to less 6 weeks\n必須のスキル\nRequired skills\nプログラミングに関する知識(Python、MATLABなどいずれか)\nProgramming (such as Python or MATLAB)\nあればよいスキル\nPreferred skills\n学部レベルの物理学、光学、情報通信工学、電子工学のいずれか\nUndergraduate level physics, optics, informatics, or electonics\n受け入れ可能な学生\nEligibility for Applicants",
+    "employment_type": "unknown",
+    "job_id": "local_executor_test",
+    "keywords": [
+      "AI"
+    ],
+    "location": "Unknown location",
+    "location_hits": [],
+    "normalization": {
+      "level": "local_raw_snapshot_executor",
+      "normalized_at": "2026-05-13T11:48:45Z",
+      "requires_full_job_review": true,
+      "requires_human_review": true
+    },
+    "requirements": [],
+    "responsibilities": [],
+    "safety": {
+      "allowed_to_submit": false,
+      "auto_apply_allowed": false,
+      "does_not_submit": true,
+      "human_review_required": true,
+      "stores_credentials": false,
+      "submission_boundary": [
+        "Do not submit by default.",
+        "Stop before final submission.",
+        "Explicit human approval is required before any submit action."
+      ]
+    },
+    "schema_version": "job_posting.v1",
+    "source": {
+      "body_hash": "eb433c139f007ba364f703f8aba5c8ca391d5d621569ec60549a16e092f9b6f4",
+      "content_hash": "feac79f1761230e047e18a1139584b039372e1cdac18fd04a950d6b04818a2fb",
+      "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+      "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-13/オールフォトニクス_ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究_5f299ad4c5cc.md",
+      "source_id": "ntt_labs_internship_ai_extracted",
+      "source_name": "NTT Labs internship AI themes page extracted jobs",
+      "source_type": "public_careers_extracted_job"
+    },
+    "title": "オールフォトニクス・ネットワークに向けた光の可干渉性を利用した空間多重光伝送システムに関する研究"
+  },
+  "job_basename": "local_executor_test",
+  "planned_outputs": {
+    "future_cv_docx": "outputs/resumes/local_executor_test_cv_ja.docx",
+    "future_cv_pdf": "outputs/resumes/local_executor_test_cv_ja.pdf",
+    "future_resume_docx": "outputs/resumes/local_executor_test_resume_ja.docx",
+    "future_resume_pdf": "outputs/resumes/local_executor_test_resume_ja.pdf",
+    "resume_tailor_inputs": "outputs/resumes/local_executor_test_resume_tailor_inputs.json",
+    "resume_tailor_plan": "outputs/resumes/local_executor_test_resume_tailor_plan.md"
+  },
+  "resume_highlights": [
+    "Python",
+    "AI",
+    "LLM",
+    "agent",
+    "computer vision",
+    "コンピュータビジョン",
+    "画像処理",
+    "機械学習",
+    "machine learning",
+    "PyTorch",
+    "OpenCV",
+    "edge AI"
+  ],
+  "status": "prepared",
+  "submission_boundary": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action."
+  ]
+}

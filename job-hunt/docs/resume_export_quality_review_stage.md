@@ -22,9 +22,9 @@ outputs/logs/<job_basename>_resume_export_quality_review.json
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/review_resume_exports.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026
@@ -33,10 +33,10 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_resume_export_quality_review.py -q
+../.venv/bin/python -m pytest tests/test_resume_export_quality_review.py -q
 ```
 
 ## Boundary

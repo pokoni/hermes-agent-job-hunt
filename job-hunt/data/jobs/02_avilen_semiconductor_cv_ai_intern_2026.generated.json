@@ -1,0 +1,55 @@
+{
+  "source": "Wantedly",
+  "source_job_id": "2407303",
+  "url": "https://www.wantedly.com/projects/2407303",
+  "company_name": "株式会社AVILEN",
+  "company_profile": null,
+  "job_title": "半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験",
+  "department": null,
+  "location": {
+    "country": "Japan",
+    "city": "Tokyo",
+    "remote_policy": "unknown"
+  },
+  "employment_type": "internship",
+  "language_requirement": {
+    "japanese_level": "ビジネスレベル (JLPT N1相当以上)",
+    "english_level": "not_specified (source does not mention English requirement)",
+    "notes": null
+  },
+  "must_have_years_experience": null,
+  "required_skills": [
+    "基本的な統計学・データ分析の知識",
+    "プログラミング経験",
+    "週20時間以上稼働可能",
+    "ビジネスレベルの日本語能力 (JLPT N1相当以上)"
+  ],
+  "preferred_skills": [
+    "プログラミングの実務経験",
+    "AIに関する深い知識（研究、資格、個人開発など）",
+    "週25時間以上の稼働"
+  ],
+  "responsibilities": [
+    "現場ヒアリングと要件整理のサポート",
+    "製造工程に使う画像処理アルゴリズムの構築",
+    "精度検証などAI実装に向けた技術サポート"
+  ],
+  "compensation": null,
+  "visa_support": null,
+  "application_method": "platform_apply",
+  "application_deadline": null,
+  "screening_process": null,
+  "keywords_normalized": [
+    "半導体",
+    "画像処理",
+    "AI",
+    "インターン",
+    "製造現場",
+    "画像分類",
+    "統計学",
+    "データ分析"
+  ],
+  "fit_hints": null,
+  "raw_description": "株式会社AVILENがWantedlyで募集するインターン。半導体製造現場の画像データ取得・分類・運用課題のヒアリング支援から、製造工程向け画像処理アルゴリズム構築、精度検証までのAI実装業務を一貫して経験できる実務直結型プログラム。研究用データではなく現場の生データを扱う。勤務地は東京、オンライン面談可（実際の勤務形態は明記なし）。給与条件は公開範囲では確認できず、具体的な技術スタック名（フレームワーク、ライブラリ等）も限定的。応募はWantedly経由。",
+  "fetched_at": "2026-04-22T00:00:00Z"
+}

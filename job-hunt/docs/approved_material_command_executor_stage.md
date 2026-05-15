@@ -29,7 +29,7 @@ Application submission is never allowed.
 ## Run dry-run planning
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/execute_approved_material_commands.py \
   --workspace . \
   --commands outputs/logs/<action_id>_material_generation_commands.json
@@ -38,17 +38,37 @@ Application submission is never allowed.
 ## Record supervised execution
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/execute_approved_material_commands.py \
   --workspace . \
   --commands outputs/logs/<action_id>_material_generation_commands.json \
   --execute
 ```
 
+## Run with local executors
+
+```bash
+../.venv/bin/python \
+  scripts/execute_approved_material_commands.py \
+  --workspace . \
+  --commands outputs/logs/<action_id>_material_generation_commands.json \
+  --execute --use-local-executors
+```
+
+This dispatches to real local scripts via `data/material_stage_executors.json`:
+
+```text
+job-normalizer       -> scripts/normalize_raw_job.py
+job-fit-scorer       -> scripts/score_job_fit.py
+resume-tailor        -> scripts/prepare_resume_tailor_plan.py
+application-tracker  -> scripts/update_application_tracker.py
+submission-review-gate -> scripts/create_submission_review_gate.py
+```
+
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_approved_material_command_executor.py -q
+../.venv/bin/python -m pytest tests/test_approved_material_command_executor.py -q
 ```
 
 ## Boundary

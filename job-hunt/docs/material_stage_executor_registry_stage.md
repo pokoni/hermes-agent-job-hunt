@@ -28,7 +28,7 @@ approved material command plan
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/resolve_material_stage_executors.py \
   --workspace . \
   --commands outputs/logs/<action_id>_material_generation_commands.json \

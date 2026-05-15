@@ -22,9 +22,9 @@ docs/project_stage_after_telegram_notifier.md
 ## Render messages
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_telegram_job_notifications.py \
   --ranking outputs/logs/job_ranking_gate_decision.json \
   --output-jsonl outputs/logs/telegram_notifications.jsonl \
@@ -34,7 +34,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Dry-run delivery
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/send_telegram_job_notifications.py \
   --notifications outputs/logs/telegram_notifications.jsonl \
   --report outputs/logs/notification_delivery_report.json
@@ -46,7 +46,7 @@ Only run when intentionally sending:
 
 ```bash
 TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=... \
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/send_telegram_job_notifications.py \
   --notifications outputs/logs/telegram_notifications.jsonl \
   --report outputs/logs/notification_delivery_report.json \
@@ -56,7 +56,7 @@ TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=... \
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_telegram_notifier.py -q
+../.venv/bin/python -m pytest tests/test_telegram_notifier.py -q
 ```
 
 ## Safety

@@ -24,9 +24,9 @@ scripts/extract_public_careers_jobs.py
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/extract_public_careers_jobs.py \
   --workspace . \
   --raw-root data/raw_jobs \
@@ -36,7 +36,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Dry run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/extract_public_careers_jobs.py \
   --workspace . \
   --raw-root data/raw_jobs \
@@ -56,16 +56,16 @@ outputs/logs/public_careers_adapter_report.json
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_public_careers_adapter.py -q
+../.venv/bin/python -m pytest tests/test_public_careers_adapter.py -q
 ```
 
 ## How to test real flow after this stage
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --allow-network
 ```
 

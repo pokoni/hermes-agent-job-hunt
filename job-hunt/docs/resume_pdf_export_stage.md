@@ -46,9 +46,9 @@ outputs/resumes/<job_basename>_pdf_export_manifest.json
 ## Dry-run command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_resume_pdfs.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -58,9 +58,9 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Export command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_resume_pdfs.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026
@@ -69,10 +69,10 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_resume_pdf_export.py -q
+../.venv/bin/python -m pytest tests/test_resume_pdf_export.py -q
 ```
 
 The runtime export test is skipped automatically if LibreOffice is unavailable. The dry-run contract test still runs.

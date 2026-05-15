@@ -66,14 +66,14 @@ Do not paste fake values into your real profile. Replace placeholders with your 
 From the workspace root:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_workspace_contract.py -q
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_candidate_profile_completeness.py -q
+../.venv/bin/python -m pytest tests/test_workspace_contract.py -q
+../.venv/bin/python -m pytest tests/test_candidate_profile_completeness.py -q
 ```
 
 Then run the regression set for the current job:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
 ```

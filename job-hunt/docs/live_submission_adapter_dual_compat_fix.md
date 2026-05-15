@@ -47,5 +47,5 @@ After replacing the files, rerun the third-job live adapter:
 Then run:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_submission_adapter.py tests/test_live_submission_resume_awareness.py tests/test_pipeline_regression.py -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests/test_live_submission_adapter.py tests/test_live_submission_resume_awareness.py tests/test_pipeline_regression.py -q
 ```

@@ -36,7 +36,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/apply_public_careers_quality_gate_to_dedup_report.py \
   --workspace .
 ```
@@ -44,7 +44,7 @@ job-hunt/
 ## Then run batch pipeline with gated report
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_batch_job_pipeline.py \
   --workspace . \
   --dedup-report outputs/logs/job_deduplication_quality_gated_report.json \

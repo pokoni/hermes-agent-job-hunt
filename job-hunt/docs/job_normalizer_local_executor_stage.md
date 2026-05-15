@@ -25,7 +25,7 @@ scripts/normalize_raw_job.py
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/normalize_raw_job.py \
   --workspace . \
   --raw-job data/raw_jobs/<source>/<date>/<job>.md \
@@ -45,5 +45,5 @@ Human review required.
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_normalizer_local_executor.py -q
+../.venv/bin/python -m pytest tests/test_job_normalizer_local_executor.py -q
 ```

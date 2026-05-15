@@ -1,0 +1,14 @@
+[Unit]
+Description=Hermes job-hunt watch cycle
+Documentation=local job-hunt/docs/watch_cycle_telegram_closure_stage.md
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/administrator/hermes-agent/job-hunt
+EnvironmentFile=/home/administrator/hermes-agent/job-hunt/outputs/deployment/hermes_job_hunt_watch.env
+ExecStart=/bin/bash -lc ''"'"'/home/administrator/enter/envs/hermes/bin/python'"'"' scripts/run_job_watch_cycle.py --workspace . --python '"'"'/home/administrator/enter/envs/hermes/bin/python'"'"' --send-telegram'
+Nice=5
+
+# Safety notes:
+# This service runs the local watch cycle and Telegram notification flow only.
+# It must not submit applications or upload application files.

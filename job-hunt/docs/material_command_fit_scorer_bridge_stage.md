@@ -40,7 +40,7 @@ tests/test_material_command_fit_scorer_bridge.py
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/execute_approved_material_commands.py \
   --workspace . \
   --commands outputs/logs/<action_id>_material_generation_commands.json \

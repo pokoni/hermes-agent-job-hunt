@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/job_posting.schema.json",
+  "title": "Job Posting",
+  "type": "object",
+  "required": [
+    "source",
+    "url",
+    "company_name",
+    "job_title",
+    "location",
+    "employment_type",
+    "language_requirement",
+    "required_skills",
+    "preferred_skills",
+    "responsibilities",
+    "application_method",
+    "raw_description"
+  ],
+  "properties": {
+    "source": {
+      "type": "string",
+      "description": "Wantedly / Green / doda / LinkedIn / BizReach / etc."
+    },
+    "source_job_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "company_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "department": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "country",
+        "city",
+        "remote_policy"
+      ],
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "remote_policy": {
+          "type": "string",
+          "enum": [
+            "onsite",
+            "hybrid",
+            "remote",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "employment_type": {
+      "type": "string",
+      "enum": [
+        "internship",
+        "new_grad",
+        "full_time",
+        "contract",
+        "part_time",
+        "other"
+      ]
+    },
+    "language_requirement": {
+      "type": "object",
+      "required": [
+        "japanese_level",
+        "english_level"
+      ],
+      "properties": {
+        "japanese_level": {
+          "type": "string"
+        },
+        "english_level": {
+          "type": "string"
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "must_have_years_experience": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "required_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "preferred_skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "responsibilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "compensation": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "default": "JPY"
+        },
+        "min": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "bonus_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "visa_support": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "sponsorship_available": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "application_method": {
+      "type": "string",
+      "enum": [
+        "platform_apply",
+        "email",
+        "external_ats",
+        "referral",
+        "other"
+      ]
+    },
+    "application_deadline": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "screening_process": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "keywords_normalized": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fit_hints": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "jp_resume_needed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "cover_letter_needed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "portfolio_needed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "raw_description": {
+      "type": "string"
+    },
+    "fetched_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

@@ -22,7 +22,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/audit_public_careers_extraction_quality.py \
   --workspace .
 ```

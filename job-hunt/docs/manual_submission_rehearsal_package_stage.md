@@ -24,9 +24,9 @@ outputs/logs/<job_basename>_<platform_id>_manual_submission_rehearsal_package.js
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/browser-apply-assistant/scripts/build_manual_submission_rehearsal_package.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -37,7 +37,7 @@ cd /home/administrator/hermes-agent/job-hunt
 
 ```bash
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_manual_submission_rehearsal_package.py -q
+../.venv/bin/python -m pytest tests/test_manual_submission_rehearsal_package.py -q
 ```
 
 ## Boundary

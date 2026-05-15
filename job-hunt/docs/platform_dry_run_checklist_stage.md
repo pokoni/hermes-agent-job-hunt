@@ -18,9 +18,9 @@ outputs/logs/<job_basename>_<platform_id>_platform_dry_run.json
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/browser-apply-assistant/scripts/build_platform_dry_run_checklist.py \
   --workspace . \
   --job data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json \
@@ -31,10 +31,10 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_platform_dry_run_checklist.py -q
+../.venv/bin/python -m pytest tests/test_platform_dry_run_checklist.py -q
 ```
 
 ## Boundary

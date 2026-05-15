@@ -60,17 +60,17 @@ into all live dry-run outputs.
 ## Test command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_submission_pdf_awareness.py -q
+../.venv/bin/python -m pytest tests/test_live_submission_pdf_awareness.py -q
 ```
 
 Then run all job-hunt tests:
 
 ```bash
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+../.venv/bin/python -m pytest tests -q
 ```
 
 ## Next development options

@@ -27,9 +27,9 @@ scripts/run_job_hunt_regression.py
 Print plan:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -39,7 +39,7 @@ cd /home/administrator/hermes-agent/job-hunt
 Check artifacts only:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -49,7 +49,7 @@ Check artifacts only:
 Run targeted tests:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -59,7 +59,7 @@ Run targeted tests:
 Run full tests:
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_hunt_regression.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -76,9 +76,9 @@ outputs/logs/<job_basename>_local_regression_report.json
 ## Test
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_local_regression_wrapper.py -q
+../.venv/bin/python -m pytest tests/test_local_regression_wrapper.py -q
 ```
 
 ## Boundary

@@ -56,14 +56,14 @@ Inside Hermes:
 Run:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_resume_artifact_outputs.py -q
+cd job-hunt
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests/test_resume_artifact_outputs.py -q
 ```
 
 Then run the full suite:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Downstream effect

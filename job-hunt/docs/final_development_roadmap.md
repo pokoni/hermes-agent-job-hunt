@@ -63,7 +63,7 @@ Goal: prevent repeated notifications for the same job.
 Deliverables:
 
 ```text
-scripts/deduplicate_jobs.py
+scripts/deduplicate_raw_jobs.py
 data/jobs_seen.jsonl
 outputs/logs/job_deduplication_report.json
 tests/test_job_deduplicator.py
@@ -165,7 +165,7 @@ Goal: after the user manually submits, record the real result.
 Deliverables:
 
 ```text
-scripts/record_post_submission_result.py
+scripts/record_post_submission_result.py  # TODO: script not yet implemented
 outputs/logs/<job_basename>_post_submission_result.json
 application tracker update
 ```

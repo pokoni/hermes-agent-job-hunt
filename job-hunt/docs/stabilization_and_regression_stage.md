@@ -60,15 +60,15 @@ This is intentionally lightweight and should be extended only when a missing fie
 ### Run all tests for a specific job basename
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+cd job-hunt
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ### Run only the new stabilization tests
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 /home/administrator/enter/envs/hermes/bin/python -m pytest \
+cd job-hunt
+JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest \
   tests/test_pipeline_regression.py \
   tests/test_candidate_profile_completeness.py -q
 ```

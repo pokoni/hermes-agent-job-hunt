@@ -34,6 +34,35 @@ run_datagen_sonnet.sh
 source-data/*
 run_datagen_megascience_glm4-6.sh
 data/*
+
+# ── job-hunt stable config re-inclusions ──────────────────────────
+# The blanket data/ rule above hides job-hunt stable configs.
+# Re-include the directory tree and its stable JSON / schema files.
+!job-hunt/data/
+!job-hunt/data/*.json
+!job-hunt/data/jobs/
+!job-hunt/data/jobs/*.json
+# raw_jobs: only re-include sample fixtures; runtime snapshots stay ignored
+!job-hunt/data/raw_jobs/
+!job-hunt/data/raw_jobs/*.md
+!job-hunt/data/raw_jobs/manual_inbox/
+!job-hunt/data/raw_jobs/manual_inbox/*
+!job-hunt/data/raw_jobs/manual_job_snapshot_inbox/
+!job-hunt/data/raw_jobs/manual_job_snapshot_inbox/*/
+!job-hunt/data/raw_jobs/manual_job_snapshot_inbox/*/*
+!job-hunt/data/raw_jobs/test_dedup_source/
+!job-hunt/data/raw_jobs/test_dedup_source/*/
+!job-hunt/data/raw_jobs/test_dedup_source/*/*
+!job-hunt/data/raw_jobs/test_dedup_source_dry_run/
+!job-hunt/data/raw_jobs/test_dedup_source_dry_run/*/
+!job-hunt/data/raw_jobs/test_dedup_source_dry_run/*/*
+# Re-ignore runtime snapshot directories (matched after the !raw_jobs/ re-include)
+job-hunt/data/raw_jobs/ntt_labs_internship_ai/
+job-hunt/data/raw_jobs/ntt_labs_internship_ai_extracted/
+job-hunt/data/raw_jobs/preferred_networks_internship/
+job-hunt/data/raw_jobs/preferred_networks_internship_extracted/
+# Keep jobs_seen.jsonl ignored (runtime state)
+
 node_modules/
 browser-use/
 agent-browser/

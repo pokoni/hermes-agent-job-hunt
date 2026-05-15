@@ -19,9 +19,9 @@ It copies all standard and polished artifact references from `submission_decisio
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/live-submission-adapter/scripts/enforce_live_artifact_references.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026
@@ -30,7 +30,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Verify only
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/live-submission-adapter/scripts/enforce_live_artifact_references.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026 \
@@ -41,7 +41,7 @@ cd /home/administrator/hermes-agent/job-hunt
 
 ```bash
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_live_artifact_reference_enforcer.py -q
+../.venv/bin/python -m pytest tests/test_live_artifact_reference_enforcer.py -q
 ```
 
 ## Boundary

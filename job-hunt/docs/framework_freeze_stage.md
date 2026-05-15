@@ -17,9 +17,9 @@ docs/framework_freeze_stage.md
 ## Validation
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/validate_project_framework_contract.py \
   --contract data/project_framework_contract.json \
   --output outputs/logs/project_framework_contract_validation.json
@@ -28,7 +28,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_project_framework_contract.py -q
+../.venv/bin/python -m pytest tests/test_project_framework_contract.py -q
 ```
 
 ## Rule

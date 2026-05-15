@@ -23,9 +23,9 @@ docs/project_stage_after_job_source_registry.md
 ## Run validation
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/validate_job_sources.py \
   --sources data/job_sources.json \
   --output outputs/logs/job_sources_validation.json
@@ -34,7 +34,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Run tests
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_sources.py -q
+../.venv/bin/python -m pytest tests/test_job_sources.py -q
 ```
 
 ## Safety

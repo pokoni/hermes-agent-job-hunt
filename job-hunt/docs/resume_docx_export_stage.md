@@ -45,9 +45,9 @@ outputs/resumes/<job_basename>_docx_export_manifest.json
 ## Run command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   skills/resume-tailor/scripts/export_resume_artifacts.py \
   --workspace . \
   --basename 03_regnio_ml_iot_engineer_fukuoka_2026
@@ -56,10 +56,10 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_resume_docx_export.py -q
+../.venv/bin/python -m pytest tests/test_resume_docx_export.py -q
 ```
 
 ## Downstream usage

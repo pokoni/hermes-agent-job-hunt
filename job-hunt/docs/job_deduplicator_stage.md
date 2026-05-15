@@ -28,9 +28,9 @@ outputs/logs/job_deduplication_report.json
 ## Run
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/deduplicate_raw_jobs.py \
   --workspace . \
   --raw-root data/raw_jobs \
@@ -41,7 +41,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Dry run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/deduplicate_raw_jobs.py \
   --workspace . \
   --raw-root data/raw_jobs \
@@ -53,7 +53,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_job_deduplicator.py -q
+../.venv/bin/python -m pytest tests/test_job_deduplicator.py -q
 ```
 
 ## Safety

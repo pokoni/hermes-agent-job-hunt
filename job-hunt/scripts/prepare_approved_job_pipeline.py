@@ -107,6 +107,11 @@ def build_manifest(workspace: Path, trigger_path: Path, trigger: dict, basename:
         "raw_job_exists": raw_path.exists(),
         "candidate": trigger.get("candidate", {}),
         "planned_outputs": outputs,
+        "next_runner": {
+            "script": "scripts/run_approved_job_material_pipeline.py",
+            "args": ["--workspace", ".", "--trigger", str(trigger_path.relative_to(workspace)) if trigger_path.is_relative_to(workspace) else str(trigger_path)],
+            "description": "Generate material_generation_commands.json from the same trigger request.",
+        },
         "next_manual_or_agent_steps": [
             "Run full job-normalizer on the approved raw job snapshot.",
             "Run full job-fit-scorer using candidate_profile.json.",

@@ -31,31 +31,31 @@ tests/test_job_watch_cycle.py
 ## Run default watch cycle
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python
+  --python ../.venv/bin/python
 ```
 
 ## Run with public network fetch
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --allow-network
 ```
 
 ## Skip adapter if needed
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/run_job_watch_cycle.py \
   --workspace . \
-  --python /home/administrator/enter/envs/hermes/bin/python \
+  --python ../.venv/bin/python \
   --skip-public-careers-adapter
 ```
 

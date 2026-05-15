@@ -31,7 +31,7 @@ docs/project_stage_after_digest_action_selector.md
 ## Render digest with aliases
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_telegram_job_notifications.py \
   --ranking outputs/logs/job_ranking_gate_decision.json \
   --output-jsonl outputs/logs/telegram_notifications.jsonl \
@@ -43,7 +43,7 @@ docs/project_stage_after_digest_action_selector.md
 ## Route a short command
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/route_user_job_action.py \
   --workspace . \
   --command "/job_generate_1" \
@@ -55,7 +55,7 @@ docs/project_stage_after_digest_action_selector.md
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_digest_action_selector.py -q
+../.venv/bin/python -m pytest tests/test_digest_action_selector.py -q
 ```
 
 ## Boundary

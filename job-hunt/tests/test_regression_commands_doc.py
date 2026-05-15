@@ -19,8 +19,7 @@ def test_regression_commands_doc_exists() -> None:
 
 def test_regression_commands_use_job_hunt_workspace_root() -> None:
     text = _doc().read_text(encoding="utf-8")
-    assert "cd /home/administrator/hermes-agent/job-hunt" in text
-    assert "/home/administrator/hermes-agent/job-hunt" in text
+    assert "cd job-hunt" in text
     assert "Some legacy tests expect relative paths" in text
 
 
@@ -50,7 +49,7 @@ def test_regression_commands_cover_downstream_pipeline_refresh() -> None:
         "/application-tracker",
         "/submission-review-gate",
         "/live-submission-adapter",
-        "Explicit human approval is required.",
+        "Explicit human approval is required before any submit action.",
         "Do not submit by default.",
         "Stop before final submission.",
     ]
@@ -69,7 +68,7 @@ def test_regression_commands_cover_targeted_and_full_tests() -> None:
         "tests/test_submission_review_pdf_awareness.py",
         "tests/test_live_submission_docx_awareness.py",
         "tests/test_live_submission_pdf_awareness.py",
-        "/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q",
+        "../.venv/bin/python -m pytest tests -q",
     ]
     for item in required:
         assert item in text, f"Regression doc missing test command item: {item}"

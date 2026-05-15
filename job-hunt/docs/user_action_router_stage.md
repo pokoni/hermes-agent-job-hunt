@@ -41,9 +41,9 @@ outputs/logs/<action_id>_tracker_add_request.json
 ## Example
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/route_user_job_action.py \
   --workspace . \
   --command "/job_generate_abc123" \
@@ -54,7 +54,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_user_action_router.py -q
+../.venv/bin/python -m pytest tests/test_user_action_router.py -q
 ```
 
 ## Boundary

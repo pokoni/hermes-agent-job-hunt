@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Hermes job-hunt watch cycle every 60 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=60min
+Persistent=true
+Unit=hermes-job-hunt-watch.service
+
+[Install]
+WantedBy=timers.target

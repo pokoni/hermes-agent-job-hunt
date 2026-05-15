@@ -1,0 +1,16 @@
+# Hermes job-hunt scheduled watch cycle
+# Generated only as a handoff template. Install manually after review.
+#
+# Before using live Telegram sending:
+# 1. Put real secrets in: /home/administrator/hermes-agent/job-hunt/outputs/deployment/hermes_job_hunt_watch.env
+# 2. chmod 600 /home/administrator/hermes-agent/job-hunt/outputs/deployment/hermes_job_hunt_watch.env
+# 3. Test manually once before installing cron.
+#
+# Boundary:
+# - Do not submit by default.
+# - Stop before final submission.
+# - Explicit human approval is required before any submit action.
+
+SHELL=/bin/bash
+
+*/60 * * * * cd '/home/administrator/hermes-agent/job-hunt' && set -a && source '/home/administrator/hermes-agent/job-hunt/outputs/deployment/hermes_job_hunt_watch.env' && set +a && '/home/administrator/enter/envs/hermes/bin/python' scripts/run_job_watch_cycle.py --workspace . --python '/home/administrator/enter/envs/hermes/bin/python' --send-telegram >> '/home/administrator/hermes-agent/job-hunt/outputs/logs/scheduled_watch_cycle.log' 2>&1

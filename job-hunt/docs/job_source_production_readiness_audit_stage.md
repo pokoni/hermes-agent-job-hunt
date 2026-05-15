@@ -22,7 +22,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/audit_job_source_production_readiness.py \
   --workspace .
 ```

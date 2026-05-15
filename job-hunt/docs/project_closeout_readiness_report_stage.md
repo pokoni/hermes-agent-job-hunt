@@ -29,7 +29,7 @@ job-hunt/
 ## Run
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/render_job_hunt_project_closeout_report.py \
   --workspace .
 ```

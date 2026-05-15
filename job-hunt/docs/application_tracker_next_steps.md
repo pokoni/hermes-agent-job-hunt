@@ -27,7 +27,7 @@ From the `job-hunt/` workspace, reopen Hermes so it can discover the new skill, 
 Run:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 pytest tests/test_application_tracker.py -q
 pytest tests -q
 ```

@@ -32,9 +32,9 @@ outputs/logs/approved_job_pipeline_queue.jsonl
 ## Example
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
-/home/administrator/enter/envs/hermes/bin/python \
+../.venv/bin/python \
   scripts/prepare_approved_job_pipeline.py \
   --workspace . \
   --trigger outputs/logs/abc123_pipeline_trigger_request.json
@@ -43,7 +43,7 @@ cd /home/administrator/hermes-agent/job-hunt
 ## Test
 
 ```bash
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_approved_job_pipeline_trigger.py -q
+../.venv/bin/python -m pytest tests/test_approved_job_pipeline_trigger.py -q
 ```
 
 ## Boundary

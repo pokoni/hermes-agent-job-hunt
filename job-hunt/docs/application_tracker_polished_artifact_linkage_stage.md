@@ -67,17 +67,17 @@ Inside Hermes:
 ## Test command
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_application_tracker_polished_artifact_linkage.py -q
+../.venv/bin/python -m pytest tests/test_application_tracker_polished_artifact_linkage.py -q
 ```
 
 Then run all tests:
 
 ```bash
 JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests -q
+../.venv/bin/python -m pytest tests -q
 ```
 
 ## Next development direction

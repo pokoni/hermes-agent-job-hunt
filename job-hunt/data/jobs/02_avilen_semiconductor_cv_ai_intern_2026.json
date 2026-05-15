@@ -1,0 +1,46 @@
+{
+  "source": "wantedly",
+  "url": "https://www.wantedly.com/projects/2407303",
+  "company_name": "株式会社AVILEN",
+  "job_title": "半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験",
+  "location": {
+    "country": "Japan",
+    "city": "Tokyo",
+    "remote_policy": "unknown"
+  },
+  "employment_type": "internship",
+  "language_requirement": {
+    "japanese_level": "JLPT N1",
+    "english_level": "none",
+    "notes": null
+  },
+  "required_skills": [
+    "基本的な統計学・データ分析の知識",
+    "プログラミング経験",
+    "週 20 時間以上稼働可能",
+    "ビジネスレベルの日本語能力（ページ上では JLPT N1 相当以上の記述）"
+  ],
+  "preferred_skills": [
+    "プログラミングの実務経験",
+    "AI に関する深い知識（研究、資格、個人開発など）",
+    "週 25 時間以上の稼働"
+  ],
+  "responsibilities": [
+    "現場ヒアリングと要件整理のサポート",
+    "製造工程に使う画像処理アルゴリズムの構築",
+    "精度検証など AI 実装に向けた技術サポート"
+  ],
+  "application_method": "platform_apply",
+  "raw_description": "---\njob_id: avilen_semiconductor_cv_ai_intern_2026\ncapture_type: source_snapshot\nretrieved_at: 2026-04-22\nsource_platform: wantedly\nsource_url: https://www.wantedly.com/projects/2407303\nsource_title: 半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験\ncompany_name: 株式会社AVILEN\njob_title: 半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験\nemployment_type: internship\nlocation: Tokyo\nlanguage: ja\nstatus: open\nnotes: Wantedly page shows public role description and qualification summary, but not a formal salary section in the visible capture.\n---\n\n# 半導体製造現場で画像処理AIを0から作る｜実務直結のAIエンジニア体験\n\n## Source snapshot\n- AVILEN のインターン募集で、勤務地表示は Tokyo、オンライン面談可。\n- 半導体製造現場の画像データ取得状況や分類・運用課題のヒアリング支援を行う想定。\n- 製造工程向けの画像処理アルゴリズム構築と精度検証のサポートが中心。\n- 研究用に整備されたデータではなく、現場の生データを扱う実務経験を訴求している。\n- 実務を通じて、データ処理から検証まで一貫した経験や、AI を社会実装するノウハウを得られると説明している。\n\n## Visible requirements\n- 基本的な統計学・データ分析の知識\n- プログラミング経験\n- 週 20 時間以上稼働可能\n- ビジネスレベルの日本語能力（ページ上では JLPT N1 相当以上の記述）\n\n## Preferred / plus factors\n- プログラミングの実務経験\n- AI に関する深い知識（研究、資格、個人開発など）\n- 週 25 時間以上の稼働\n\n## Visible responsibilities\n- 現場ヒアリングと要件整理のサポート\n- 製造工程に使う画像処理アルゴリズムの構築\n- 精度検証など AI 実装に向けた技術サポート\n\n## Missing or hidden information\n- 公開表示範囲では給与条件を確認していない\n- 具体的な技術スタック名は公開本文では限定的\n",
+  "source_job_id": "avilen_semiconductor_cv_ai_intern_2026",
+  "company_profile": null,
+  "department": null,
+  "must_have_years_experience": null,
+  "compensation": null,
+  "visa_support": null,
+  "application_deadline": null,
+  "screening_process": null,
+  "keywords_normalized": [],
+  "fit_hints": null,
+  "fetched_at": "2026-04-22"
+}

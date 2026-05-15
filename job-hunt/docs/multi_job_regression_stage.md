@@ -55,9 +55,9 @@ This means the test should pass immediately after the AVILEN pipeline has been c
 ## Running for one job
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_multi_job_regression.py -q
+../.venv/bin/python -m pytest tests/test_multi_job_regression.py -q
 ```
 
 ## Running for multiple jobs
@@ -65,9 +65,9 @@ JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 \
 After generating outputs for the third job, run:
 
 ```bash
-cd /home/administrator/hermes-agent/job-hunt
+cd job-hunt
 JOB_HUNT_TEST_BASENAMES=02_avilen_semiconductor_cv_ai_intern_2026,03_regnio_ml_iot_engineer_fukuoka_2026 \
-/home/administrator/enter/envs/hermes/bin/python -m pytest tests/test_multi_job_regression.py -q
+../.venv/bin/python -m pytest tests/test_multi_job_regression.py -q
 ```
 
 ## Recommended third-job pipeline
