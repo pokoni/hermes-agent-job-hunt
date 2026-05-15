@@ -11,7 +11,7 @@ import pytest
 
 
 def _basename() -> str:
-    return os.environ.get("JOB_HUNT_TEST_BASENAME", "01_pfn_st01_plamo_translation_2026")
+    return os.environ.get("JOB_HUNT_TEST_BASENAME", "03_regnio_ml_iot_engineer_fukuoka_2026")
 
 
 def _root() -> Path:

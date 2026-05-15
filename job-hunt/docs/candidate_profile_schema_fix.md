@@ -75,5 +75,5 @@ cd job-hunt
 Then run the regression set for the current job:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```

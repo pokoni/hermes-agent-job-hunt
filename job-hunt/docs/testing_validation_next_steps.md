@@ -37,7 +37,7 @@ Checks that:
 
 These tests default to the basename:
 
-`01_pfn_st01_plamo_translation_2026`
+`03_regnio_ml_iot_engineer_fukuoka_2026`
 
 If you want to validate another job, run pytest with:
 
@@ -48,7 +48,7 @@ JOB_HUNT_TEST_BASENAME=<your_job_basename> pytest tests -q
 Example:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 pytest tests -q
 ```
 
 ## Recommended run commands

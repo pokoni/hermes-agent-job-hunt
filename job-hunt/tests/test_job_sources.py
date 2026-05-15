@@ -83,3 +83,34 @@ def test_validate_job_sources_script() -> None:
     assert report["does_not_fetch_network"] is True
     assert report["does_not_submit"] is True
     assert "wantedly_ai_ml_intern_japan" in report["enabled_sources"]
+
+
+def test_job_source_schema_enforces_safety_constraints() -> None:
+    """Verify the JSON schema's safety const values match code expectations."""
+    schema_path = _root() / "schemas" / "job_source.schema.json"
+    assert schema_path.exists(), "Missing schemas/job_source.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+    safety = schema["properties"]["sources"]["items"]["properties"]["safety"]
+    assert safety["properties"]["stores_credentials"]["const"] is False
+    assert safety["properties"]["allows_auto_apply"]["const"] is False
+    assert safety["properties"]["respect_robots_and_terms"]["const"] is True
+
+    assert schema["properties"]["human_review_required"]["const"] is True
+
+    source_id_pattern = schema["properties"]["sources"]["items"]["properties"]["source_id"]["pattern"]
+    assert source_id_pattern == "^[a-z0-9][a-z0-9_-]*$"
+
+
+def test_job_source_schema_file_is_not_stale() -> None:
+    """Verify the schema file is loadable and structurally valid."""
+    schema_path = _root() / "schemas" / "job_source.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+    assert schema["$schema"].startswith("https://json-schema.org")
+    assert schema["type"] == "object"
+    required_top = set(schema["required"])
+    assert {"version", "registry_name", "human_review_required", "submission_boundary", "sources"}.issubset(required_top)
+
+    source_required = set(schema["properties"]["sources"]["items"]["required"])
+    assert {"source_id", "source_name", "source_type", "enabled", "fetch_mode", "url", "platform_id", "priority", "tags", "keywords", "locations", "safety"}.issubset(source_required)

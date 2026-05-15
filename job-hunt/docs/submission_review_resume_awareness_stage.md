@@ -42,20 +42,20 @@ job-normalizer
 Inside Hermes:
 
 ```text
-/submission-review-gate Create the final submission review package for data/jobs/02_avilen_semiconductor_cv_ai_intern_2026.json using available artifacts under outputs/, including outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_resume_manifest.json. Write outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_submission_review.md and outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_submission_decision.json. The decision JSON must include top-level keys status, decision, resume_version, resume_file, cv_file, resume_manifest, human_review_required, explicit_human_approval_required, and live_submission_allowed. Do not submit by default. Stop before final submission. Explicit human approval is required before any submit action.
+/submission-review-gate Create the final submission review package for data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json using available artifacts under outputs/, including outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_resume_manifest.json. Write outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_review.md and outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_decision.json. The decision JSON must include top-level keys status, decision, resume_version, resume_file, cv_file, resume_manifest, human_review_required, explicit_human_approval_required, and live_submission_allowed. Do not submit by default. Stop before final submission. Explicit human approval is required before any submit action.
 ```
 
 ## Tests
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests/test_submission_review_resume_awareness.py -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests/test_submission_review_resume_awareness.py -q
 ```
 
 Then run all tests:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Downstream effect

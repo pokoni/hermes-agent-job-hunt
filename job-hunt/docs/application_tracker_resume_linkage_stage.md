@@ -43,20 +43,20 @@ The latest human-readable tracker summary must include a `## Resume Artifacts` s
 Inside Hermes:
 
 ```text
-/application-tracker Create a tracker entry for data/jobs/02_avilen_semiconductor_cv_ai_intern_2026.json using any available artifacts under outputs/, including resume artifacts under outputs/resumes/. Read outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_resume_manifest.json if it exists, write the structured record to outputs/logs/application_tracker.jsonl, and regenerate outputs/logs/application_tracker_latest.md with a Resume Artifacts section.
+/application-tracker Create a tracker entry for data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json using any available artifacts under outputs/, including resume artifacts under outputs/resumes/. Read outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_resume_manifest.json if it exists, write the structured record to outputs/logs/application_tracker.jsonl, and regenerate outputs/logs/application_tracker_latest.md with a Resume Artifacts section.
 ```
 
 ## Tests
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests/test_application_tracker_resume_linkage.py -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests/test_application_tracker_resume_linkage.py -q
 ```
 
 Then run all tests:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Downstream effect

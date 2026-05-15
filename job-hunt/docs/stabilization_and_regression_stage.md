@@ -61,14 +61,14 @@ This is intentionally lightweight and should be extended only when a missing fie
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ### Run only the new stabilization tests
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest \
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest \
   tests/test_pipeline_regression.py \
   tests/test_candidate_profile_completeness.py -q
 ```

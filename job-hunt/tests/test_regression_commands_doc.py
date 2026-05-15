@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 
@@ -63,7 +64,6 @@ def test_regression_commands_cover_targeted_and_full_tests() -> None:
         "tests/test_resume_docx_export.py",
         "tests/test_resume_pdf_export.py",
         "tests/test_application_tracker_docx_linkage.py",
-        "tests/test_application_tracker_pdf_linkage.py",
         "tests/test_submission_review_docx_awareness.py",
         "tests/test_submission_review_pdf_awareness.py",
         "tests/test_live_submission_docx_awareness.py",
@@ -78,3 +78,12 @@ def test_regression_commands_warn_against_wrong_root_test_command() -> None:
     text = _doc().read_text(encoding="utf-8")
     assert "Do not use this from the repository root" in text
     assert "pytest job-hunt/tests -q" in text
+
+
+def test_regression_commands_referenced_test_files_exist() -> None:
+    """Verify that test files referenced in the regression doc actually exist."""
+    text = _doc().read_text(encoding="utf-8")
+    test_refs = re.findall(r"tests/test_\w+\.py", text)
+    for ref in set(test_refs):
+        path = _root() / ref
+        assert path.exists(), f"Regression doc references non-existent test: {ref}"

@@ -19,7 +19,7 @@ The tracker should maintain these two files:
 From the `job-hunt/` workspace, reopen Hermes so it can discover the new skill, then run:
 
 ```text
-/application-tracker Create a tracker entry for data/jobs/01_pfn_st01_plamo_translation_2026.json using any available artifacts under outputs/, write the structured record to outputs/logs/application_tracker.jsonl, and regenerate outputs/logs/application_tracker_latest.md
+/application-tracker Create a tracker entry for data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json using any available artifacts under outputs/, write the structured record to outputs/logs/application_tracker.jsonl, and regenerate outputs/logs/application_tracker_latest.md
 ```
 
 ## Recommended first verification

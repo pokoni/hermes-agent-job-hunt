@@ -48,7 +48,7 @@ These are Markdown/JSON artifacts by default. PDF/Docx export can be added later
 Inside Hermes:
 
 ```text
-/resume-tailor Generate application-ready resume artifacts using data/candidate_profile.json, data/master_experiences.json, data/jobs/02_avilen_semiconductor_cv_ai_intern_2026.json, outputs/fit_reports/02_avilen_semiconductor_cv_ai_intern_2026.md, and outputs/tailored_resumes/02_avilen_semiconductor_cv_ai_intern_2026_tailor_plan.md. Write outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_resume_ja.md, outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_cv_ja.md, and outputs/resumes/02_avilen_semiconductor_cv_ai_intern_2026_resume_manifest.json. Preserve factual consistency with candidate_profile.json and require human review.
+/resume-tailor Generate application-ready resume artifacts using data/candidate_profile.json, data/master_experiences.json, data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json, outputs/fit_reports/03_regnio_ml_iot_engineer_fukuoka_2026.md, and outputs/tailored_resumes/03_regnio_ml_iot_engineer_fukuoka_2026_tailor_plan.md. Write outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_resume_ja.md, outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_cv_ja.md, and outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_resume_manifest.json. Preserve factual consistency with candidate_profile.json and require human review.
 ```
 
 ## Tests
@@ -57,13 +57,13 @@ Run:
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests/test_resume_artifact_outputs.py -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests/test_resume_artifact_outputs.py -q
 ```
 
 Then run the full suite:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Downstream effect

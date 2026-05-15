@@ -8,7 +8,7 @@ WORKSPACE_ROOT = Path(__file__).resolve().parents[1]
 OUTPUTS_DIR = WORKSPACE_ROOT / "outputs"
 TAILORED_DIR = OUTPUTS_DIR / "tailored_resumes"
 
-DEFAULT_BASENAME = "01_pfn_st01_plamo_translation_2026"
+DEFAULT_BASENAME = "03_regnio_ml_iot_engineer_fukuoka_2026"
 JOB_BASENAME = os.environ.get("JOB_HUNT_TEST_BASENAME", DEFAULT_BASENAME)
 
 

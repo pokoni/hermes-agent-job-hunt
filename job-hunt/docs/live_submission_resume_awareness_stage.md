@@ -47,20 +47,20 @@ job-normalizer
 Inside Hermes:
 
 ```text
-/live-submission-adapter Create a controlled live submission dry-run package for data/jobs/02_avilen_semiconductor_cv_ai_intern_2026.json using available artifacts under outputs/, including outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_submission_decision.json and linked resume artifacts. Write outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_live_submission_dry_run_plan.md, outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_live_submission_field_mapping.md, outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_live_submission_authorization_request.md, and outputs/logs/02_avilen_semiconductor_cv_ai_intern_2026_live_submission_result_stub.json. Do not submit by default. Stop before final submission. Require explicit human approval before any submit action. The authorization request must include the exact line "Explicit approval is required."
+/live-submission-adapter Create a controlled live submission dry-run package for data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json using available artifacts under outputs/, including outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_decision.json and linked resume artifacts. Write outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_live_submission_dry_run_plan.md, outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_live_submission_field_mapping.md, outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_live_submission_authorization_request.md, and outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_live_submission_result_stub.json. Do not submit by default. Stop before final submission. Require explicit human approval before any submit action. The authorization request must include the exact line "Explicit approval is required."
 ```
 
 ## Tests
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests/test_live_submission_resume_awareness.py -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests/test_live_submission_resume_awareness.py -q
 ```
 
 Then run all tests:
 
 ```bash
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Expected remaining blockers

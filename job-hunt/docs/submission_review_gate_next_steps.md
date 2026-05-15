@@ -27,30 +27,30 @@ Do not rename `outputs/`.
 
 ## Inputs
 
-For a given job basename such as `01_pfn_st01_plamo_translation_2026`, this stage expects:
+For a given job basename such as `03_regnio_ml_iot_engineer_fukuoka_2026`, this stage expects:
 
-- `data/jobs/01_pfn_st01_plamo_translation_2026.json`
-- `outputs/fit_reports/01_pfn_st01_plamo_translation_2026.md`
-- `outputs/tailored_resumes/01_pfn_st01_plamo_translation_2026_tailor_plan.md`
-- `outputs/application_drafts/01_pfn_st01_plamo_translation_2026_motivation_ja.md`
-- `outputs/application_drafts/01_pfn_st01_plamo_translation_2026_self_pr_ja.md`
-- `outputs/application_drafts/01_pfn_st01_plamo_translation_2026_application_mail_ja.md`
-- `outputs/logs/01_pfn_st01_plamo_translation_2026_application_execution_plan.md`
-- `outputs/logs/01_pfn_st01_plamo_translation_2026_application_execution_checklist.md`
-- `outputs/logs/01_pfn_st01_plamo_translation_2026_application_form_snapshot.md`
+- `data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json`
+- `outputs/fit_reports/03_regnio_ml_iot_engineer_fukuoka_2026.md`
+- `outputs/tailored_resumes/03_regnio_ml_iot_engineer_fukuoka_2026_tailor_plan.md`
+- `outputs/application_drafts/03_regnio_ml_iot_engineer_fukuoka_2026_motivation_ja.md`
+- `outputs/application_drafts/03_regnio_ml_iot_engineer_fukuoka_2026_self_pr_ja.md`
+- `outputs/application_drafts/03_regnio_ml_iot_engineer_fukuoka_2026_application_mail_ja.md`
+- `outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_application_execution_plan.md`
+- `outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_application_execution_checklist.md`
+- `outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_application_form_snapshot.md`
 
 ## Outputs
 
 This stage should generate:
 
-- `outputs/logs/01_pfn_st01_plamo_translation_2026_submission_review.md`
-- `outputs/logs/01_pfn_st01_plamo_translation_2026_submission_decision.json`
+- `outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_review.md`
+- `outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_decision.json`
 
 ## Suggested first run command
 
 Run Hermes from the `job-hunt/` workspace and call:
 
-`/submission-review-gate Create the final submission review package for data/jobs/01_pfn_st01_plamo_translation_2026.json using available artifacts under outputs/, write outputs/logs/01_pfn_st01_plamo_translation_2026_submission_review.md and outputs/logs/01_pfn_st01_plamo_translation_2026_submission_decision.json, and keep the human-approval boundary explicit.`
+`/submission-review-gate Create the final submission review package for data/jobs/03_regnio_ml_iot_engineer_fukuoka_2026.json using available artifacts under outputs/, write outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_review.md and outputs/logs/03_regnio_ml_iot_engineer_fukuoka_2026_submission_decision.json, and keep the human-approval boundary explicit.`
 
 ## Suggested validation
 

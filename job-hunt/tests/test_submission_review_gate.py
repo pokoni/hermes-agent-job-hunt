@@ -5,12 +5,16 @@ import os
 from pathlib import Path
 
 
+def _root() -> Path:
+    return Path(__file__).resolve().parents[1]
+
+
 def _base_name() -> str:
-    return os.environ.get("JOB_HUNT_TEST_BASENAME", "01_pfn_st01_plamo_translation_2026")
+    return os.environ.get("JOB_HUNT_TEST_BASENAME", "03_regnio_ml_iot_engineer_fukuoka_2026")
 
 
 def _logs_dir() -> Path:
-    return Path("outputs/logs")
+    return _root() / "outputs" / "logs"
 
 
 def _review_path() -> Path:

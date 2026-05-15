@@ -186,7 +186,6 @@ JOB_HUNT_TEST_BASENAME=${B} \
   tests/test_resume_docx_export.py \
   tests/test_resume_pdf_export.py \
   tests/test_application_tracker_docx_linkage.py \
-  tests/test_application_tracker_pdf_linkage.py \
   tests/test_submission_review_docx_awareness.py \
   tests/test_submission_review_pdf_awareness.py \
   tests/test_live_submission_docx_awareness.py \

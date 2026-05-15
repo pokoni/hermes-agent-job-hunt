@@ -6,7 +6,7 @@ import re
 
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_BASENAME = "01_pfn_st01_plamo_translation_2026"
+DEFAULT_BASENAME = "03_regnio_ml_iot_engineer_fukuoka_2026"
 
 
 def _basename() -> str:

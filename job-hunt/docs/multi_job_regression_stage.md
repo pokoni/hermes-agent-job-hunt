@@ -47,7 +47,7 @@ For each selected job basename, the multi-job regression test checks:
 If no environment variable is set, the test checks:
 
 ```text
-02_avilen_semiconductor_cv_ai_intern_2026
+03_regnio_ml_iot_engineer_fukuoka_2026
 ```
 
 This means the test should pass immediately after the AVILEN pipeline has been completed.
@@ -56,7 +56,7 @@ This means the test should pass immediately after the AVILEN pipeline has been c
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 \
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 \
 ../.venv/bin/python -m pytest tests/test_multi_job_regression.py -q
 ```
 
@@ -66,7 +66,7 @@ After generating outputs for the third job, run:
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAMES=02_avilen_semiconductor_cv_ai_intern_2026,03_regnio_ml_iot_engineer_fukuoka_2026 \
+JOB_HUNT_TEST_BASENAMES=03_regnio_ml_iot_engineer_fukuoka_2026,03_regnio_ml_iot_engineer_fukuoka_2026 \
 ../.venv/bin/python -m pytest tests/test_multi_job_regression.py -q
 ```
 

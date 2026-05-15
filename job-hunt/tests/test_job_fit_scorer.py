@@ -10,7 +10,7 @@ DATA_DIR = WORKSPACE_ROOT / "data"
 OUTPUTS_DIR = WORKSPACE_ROOT / "outputs"
 FIT_REPORTS_DIR = OUTPUTS_DIR / "fit_reports"
 
-DEFAULT_BASENAME = "01_pfn_st01_plamo_translation_2026"
+DEFAULT_BASENAME = "03_regnio_ml_iot_engineer_fukuoka_2026"
 JOB_BASENAME = os.environ.get("JOB_HUNT_TEST_BASENAME", DEFAULT_BASENAME)
 
 

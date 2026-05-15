@@ -26,7 +26,9 @@ job-hunt/
 │   ├── application-tracker/
 │   ├── browser-apply-assistant/
 │   ├── submission-review-gate/
-│   └── live-submission-adapter/
+│   ├── live-submission-adapter/
+│   ├── job-source-monitor/
+│   └── telegram-notifier/
 ├── prompts/
 ├── outputs/
 ├── docs/
@@ -84,7 +86,7 @@ cd job-hunt
 
 ```bash
 cd job-hunt
-JOB_HUNT_TEST_BASENAME=02_avilen_semiconductor_cv_ai_intern_2026 ../.venv/bin/python -m pytest tests -q
+JOB_HUNT_TEST_BASENAME=03_regnio_ml_iot_engineer_fukuoka_2026 ../.venv/bin/python -m pytest tests -q
 ```
 
 ## Maintenance rule

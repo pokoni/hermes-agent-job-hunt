@@ -37,6 +37,8 @@ def test_frozen_skill_directories_exist() -> None:
         "browser-apply-assistant",
         "submission-review-gate",
         "live-submission-adapter",
+        "job-source-monitor",
+        "telegram-notifier",
     ]
     for name in required_skill_dirs:
         skill_dir = root / "skills" / name
