@@ -71,7 +71,7 @@ def test_user_action_router_generate_creates_pipeline_request(tmp_path: Path) ->
             "--workspace",
             str(workspace),
             "--command",
-            "/job_generate_abc123",
+            "/job_generate abc123",
             "--notifications",
             str(notifications),
             "--ranking",
@@ -102,6 +102,39 @@ def test_user_action_router_generate_creates_pipeline_request(tmp_path: Path) ->
     assert rows[0]["does_not_submit"] is True
 
 
+def test_user_action_router_generate_accepts_legacy_compact_command(tmp_path: Path) -> None:
+    workspace = tmp_path
+    notifications = workspace / "outputs" / "logs" / "telegram_notifications.jsonl"
+    ranking = workspace / "outputs" / "logs" / "job_ranking_gate_decision.json"
+    result_path = workspace / "outputs" / "logs" / "user_job_action_result.json"
+
+    candidate = _sample_candidate()
+    _write_jsonl(notifications, [{"action_id": "abc123", **candidate}])
+    ranking.write_text(json.dumps({"notification_candidates": [candidate]}, ensure_ascii=False), encoding="utf-8")
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(workspace),
+            "--command",
+            "/job_generate_abc123",
+            "--notifications",
+            str(notifications),
+            "--ranking",
+            str(ranking),
+            "--result",
+            str(result_path),
+        ],
+        check=True,
+    )
+
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert result["status"] == "passed"
+    assert result["action_record"]["action_id"] == "abc123"
+
+
 def test_user_action_router_track_creates_tracker_request(tmp_path: Path) -> None:
     workspace = tmp_path
     notifications = workspace / "outputs" / "logs" / "telegram_notifications.jsonl"
@@ -127,7 +160,7 @@ def test_user_action_router_track_creates_tracker_request(tmp_path: Path) -> Non
             "--workspace",
             str(workspace),
             "--command",
-            "/job_track_abc123",
+            "/job_track abc123",
             "--notifications",
             str(notifications),
             "--ranking",
@@ -163,7 +196,7 @@ def test_user_action_router_ignore_logs_action_without_pipeline_request(tmp_path
             "--workspace",
             str(workspace),
             "--command",
-            "/job_ignore_abc123",
+            "/job_ignore abc123",
             "--notifications",
             str(notifications),
             "--ranking",
@@ -197,7 +230,7 @@ def test_user_action_router_unknown_action_id_blocks(tmp_path: Path) -> None:
             "--workspace",
             str(workspace),
             "--command",
-            "/job_generate_missing",
+            "/job_generate missing",
             "--notifications",
             str(notifications),
             "--ranking",
@@ -215,3 +248,73 @@ def test_user_action_router_unknown_action_id_blocks(tmp_path: Path) -> None:
     result = json.loads(result_path.read_text(encoding="utf-8"))
     assert result["status"] == "blocked"
     assert result["action_record"]["errors"]
+
+
+def test_user_action_router_uses_last_nonempty_alias_and_ranking(tmp_path: Path) -> None:
+    workspace = tmp_path
+    notifications = workspace / "outputs" / "logs" / "telegram_notifications.jsonl"
+    ranking = workspace / "outputs" / "logs" / "job_ranking_gate_decision.json"
+    fallback_ranking = workspace / "outputs" / "logs" / "job_ranking_gate_decision_last_nonempty.json"
+    alias_map = workspace / "outputs" / "logs" / "telegram_action_alias_map.json"
+    fallback_alias_map = workspace / "outputs" / "logs" / "telegram_action_alias_map_last_nonempty.json"
+    result_path = workspace / "outputs" / "logs" / "user_job_action_result.json"
+
+    candidate = _sample_candidate()
+    _write_jsonl(notifications, [])
+    ranking.parent.mkdir(parents=True, exist_ok=True)
+    ranking.write_text(json.dumps({"notification_candidates": []}, ensure_ascii=False), encoding="utf-8")
+    alias_map.write_text(json.dumps({"aliases": []}, ensure_ascii=False), encoding="utf-8")
+    fallback_ranking.write_text(
+        json.dumps({
+            "notification_candidates": [candidate],
+            "material_suggestion_candidates": [],
+            "hold_candidates": [],
+            "ranked_candidates": [candidate],
+        }, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    fallback_alias_map.write_text(
+        json.dumps({
+            "aliases": [{
+                "alias": "1",
+                "action_id": "abc123",
+                "job_fingerprint": "abc123",
+                "raw_job_path": candidate["raw_job_path"],
+                "source_id": candidate["source_id"],
+                "title": candidate["title"],
+                "fit_score": candidate["fit_score"],
+                "ranking_decision": candidate["ranking_decision"],
+            }],
+        }, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(workspace),
+            "--command",
+            "/job_generate 1",
+            "--notifications",
+            str(notifications),
+            "--ranking",
+            str(ranking),
+            "--fallback-ranking",
+            str(fallback_ranking),
+            "--alias-map",
+            str(alias_map),
+            "--fallback-alias-map",
+            str(fallback_alias_map),
+            "--result",
+            str(result_path),
+        ],
+        check=True,
+    )
+
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    assert result["status"] == "passed"
+    assert result["action_record"]["alias_used"] is True
+    assert result["action_record"]["action_id"] == "abc123"
+    assert result["generated_request_paths"]

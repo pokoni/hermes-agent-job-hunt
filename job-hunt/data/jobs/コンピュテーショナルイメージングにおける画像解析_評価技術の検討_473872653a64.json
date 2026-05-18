@@ -1,0 +1,48 @@
+{
+  "company_name": "NTT Labs internship AI themes page extracted jobs",
+  "description": "# コンピュテーショナルイメージングにおける画像解析・評価技術の検討\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nコンピュテーショナルイメージングにおける画像解析・評価技術の検討\nA Study on Image Analysis and Evaluation Techniques in Computational Imaging\n人工知能\nArtificial Intelligence\n横須賀研究開発センタ\nYokosuka R&D Center\n4週間以上6週間未満\nFrom more than 4 weeks to less 6 weeks\n必須のスキル\nRequired skills\nPythonによるプログラミングスキル\nProgramming skills in Python\nあればよいスキル\nPreferred skills\n深層学習フレームワーク（PyTorch）の使用経験\n画像処理またはコンピュータビジョンに関する基本的な知識\n英語の論文や資料を読解する能力\nExperience with a Deep Learning framework such as PyTorch",
+  "employment_type": "unknown",
+  "job_id": "コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64",
+  "keywords": [
+    "AI",
+    "人工知能",
+    "深層学習",
+    "Deep Learning",
+    "コンピュータビジョン",
+    "画像",
+    "画像処理"
+  ],
+  "location": "Unknown location",
+  "location_hits": [],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-17T00:01:46Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "ca786193eb1dba485f44048d4886c27942813194a14d052c76aeead8659383e7",
+    "content_hash": "3dfde26d4fc0d591771e276d09f32d9b20b562197a54d12caeded1d0479de42e",
+    "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+    "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-15/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64.md",
+    "source_id": "ntt_labs_internship_ai_extracted",
+    "source_name": "NTT Labs internship AI themes page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "コンピュテーショナルイメージングにおける画像解析・評価技術の検討"
+}

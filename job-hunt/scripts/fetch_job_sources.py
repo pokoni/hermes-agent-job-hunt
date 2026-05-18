@@ -96,6 +96,12 @@ def read_manual_snapshot_source(workspace: Path, source: dict) -> tuple[list[Sna
     warnings = []
     snapshots = []
     location = source.get("url", "")
+    if re.match(r"^https?://", str(location), flags=re.IGNORECASE):
+        warnings.append(
+            f"{source['source_id']}: manual snapshot source uses a web URL; "
+            "set url to a local data/raw_jobs path or change fetch_mode to public_url_html."
+        )
+        return snapshots, warnings
     path = Path(location)
     if not path.is_absolute():
         path = workspace / path

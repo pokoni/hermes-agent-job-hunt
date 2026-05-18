@@ -1,0 +1,26 @@
+{
+  "job_basename": "コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64",
+  "export_type": "docx",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "resume_ja",
+      "source_markdown": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_resume_ja.md",
+      "output_docx": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_resume_ja.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "cv_ja",
+      "source_markdown": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_cv_ja.md",
+      "output_docx": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_cv_ja.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from Markdown artifacts.",
+    "DOCX files require human layout review before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T00:01:46Z"
+}

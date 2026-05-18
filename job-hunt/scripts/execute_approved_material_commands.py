@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """Execute or record an approved material-generation command plan.
 
+Execution backends:
+- Hermes oneshot, which runs supervised skill commands through the configured
+  Hermes model/provider and should be used for production material generation.
+- Explicit local executors, which are deterministic offline fallbacks/tests.
+- Record-only mode, which leaves supervised skill commands pending.
+
 Concrete local stages currently supported:
 - job-normalizer via scripts/normalize_raw_job.py
 - job-fit-scorer via scripts/score_job_fit.py
@@ -16,7 +22,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import shlex
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -69,6 +77,12 @@ def append_jsonl(path: Path, row: dict) -> None:
         f.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
 
+def append_progress(progress_log: Path | None, row: dict) -> None:
+    if progress_log is None:
+        return
+    append_jsonl(progress_log, {**row, "created_at": now_iso()})
+
+
 def rel(workspace: Path, path: Path) -> str:
     try:
         return str(path.resolve().relative_to(workspace.resolve()))
@@ -108,7 +122,11 @@ def validate_command_plan(plan: dict) -> list[str]:
     if forbidden:
         errors.append(f"Forbidden execution stages are present: {forbidden}")
 
-    for expected in EXPECTED_STAGES:
+    expected_stages = plan.get("pipeline_stages")
+    if not isinstance(expected_stages, list) or not expected_stages:
+        expected_stages = EXPECTED_STAGES
+
+    for expected in expected_stages:
         if expected not in seen_stages:
             errors.append(f"Expected stage missing from command plan: {expected}")
 
@@ -261,6 +279,219 @@ def run_subprocess(workspace: Path, cmd: list[str]) -> subprocess.CompletedProce
     )
 
 
+def expected_output_status(workspace: Path, expected_outputs: list[str]) -> dict:
+    """Return which expected outputs exist after a stage run."""
+    existing = []
+    missing = []
+    for output in expected_outputs:
+        path = resolve_workspace_path(workspace, str(output))
+        item = {
+            "path": str(output),
+            "absolute_path": str(path),
+        }
+        if path.exists() and path.stat().st_size > 0:
+            item["size_bytes"] = path.stat().st_size
+            existing.append(item)
+        else:
+            missing.append(item)
+    return {
+        "existing": existing,
+        "missing": missing,
+        "existing_count": len(existing),
+        "missing_count": len(missing),
+    }
+
+
+def hermes_command_prefix(python_bin: str, hermes_command: str) -> list[str]:
+    """Build a non-shell command prefix for Hermes oneshot execution."""
+    if hermes_command.strip():
+        return shlex.split(hermes_command)
+    return [python_bin, "-m", "hermes_cli.main"]
+
+
+def build_hermes_stage_prompt(workspace: Path, plan: dict, item: dict) -> str:
+    stage = str(item.get("stage", "unknown"))
+    job_basename = infer_job_basename(plan, item)
+    expected_outputs = item.get("expected_outputs", [])
+
+    skill_path = workspace / "skills" / stage / "SKILL.md"
+    prompt_assets = {
+        "job-fit-scorer": workspace / "prompts" / "fit_scoring.md",
+        "resume-tailor": workspace / "prompts" / "resume_tailoring.md",
+        "application-tracker": workspace / "prompts" / "application_tracking.md",
+        "submission-review-gate": workspace / "prompts" / "submission_review_gate.md",
+    }
+    prompt_asset = prompt_assets.get(stage)
+
+    references = []
+    if skill_path.exists():
+        references.append(f"- Skill contract: `{rel(workspace, skill_path)}`")
+    if prompt_asset and prompt_asset.exists():
+        references.append(f"- Prompt asset: `{rel(workspace, prompt_asset)}`")
+
+    expected_lines = "\n".join(f"- `{output}`" for output in expected_outputs) or "- No explicit outputs listed."
+    reference_lines = "\n".join(references) or "- No local skill contract file found; follow the command text exactly."
+
+    return "\n".join([
+        "You are executing the Hermes Japan job-hunt Layer2 material pipeline.",
+        "",
+        "This must be a real Hermes/model-backed stage execution. Use the configured",
+        "Hermes model/provider for analysis and drafting; do not silently replace the",
+        "analysis with the local heuristic executors unless you are only converting",
+        "already-generated Markdown into DOCX/PDF files.",
+        "",
+        f"Workspace: `{workspace}`",
+        f"Stage: `{stage}`",
+        f"Job basename: `{job_basename}`",
+        "",
+        "Stage command:",
+        "```text",
+        str(item.get("command", "")).strip(),
+        "```",
+        "",
+        "Local contracts to read/follow:",
+        reference_lines,
+        "",
+        "Expected outputs that must exist before you finish:",
+        expected_lines,
+        "",
+        "Safety boundary:",
+        *[f"- {line}" for line in BOUNDARY_LINES],
+        "",
+        "Rules:",
+        "- Use only files inside the current job-hunt workspace.",
+        "- Do not submit applications, upload files, click application buttons, or store credentials.",
+        "- Keep human_review_required=true and allowed_to_submit=false in generated JSON manifests.",
+        "- For fit scoring, write a model-backed fit score/report grounded in the job and candidate profile.",
+        "- For resume-tailor, generate truthful Japanese resume/CV Markdown first; DOCX/PDF export may use the local resume-tailor converter scripts without rewriting facts.",
+        "- If an expected output cannot be produced, write a clear blocker report in the relevant outputs/logs path and explain it in your final response.",
+        "",
+        "Return a concise final summary after the files are written.",
+    ])
+
+
+def run_hermes_skill_executor(
+    workspace: Path,
+    python_bin: str,
+    plan: dict,
+    item: dict,
+    hermes_command: str,
+    hermes_model: str,
+    hermes_provider: str,
+    hermes_toolsets: str,
+    hermes_timeout: int,
+) -> dict:
+    """Run a supervised stage through Hermes oneshot and verify outputs."""
+    prompt = build_hermes_stage_prompt(workspace, plan, item)
+    cmd = hermes_command_prefix(python_bin, hermes_command)
+
+    if hermes_model:
+        cmd += ["--model", hermes_model]
+    if hermes_provider:
+        cmd += ["--provider", hermes_provider]
+    if hermes_toolsets:
+        cmd += ["--toolsets", hermes_toolsets]
+    cmd += ["-z", prompt]
+
+    env = os.environ.copy()
+    repo_root = Path(__file__).resolve().parents[2]
+    existing_pythonpath = env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = str(repo_root) if not existing_pythonpath else f"{repo_root}{os.pathsep}{existing_pythonpath}"
+
+    try:
+        completed = subprocess.run(
+            cmd,
+            cwd=workspace,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=hermes_timeout,
+            env=env,
+        )
+    except subprocess.TimeoutExpired as exc:
+        timeout_stdout = (exc.stdout or "") if isinstance(exc.stdout, str) else ""
+        timeout_stderr = f"Hermes oneshot timed out after {hermes_timeout}s."
+        output_status = expected_output_status(workspace, item.get("expected_outputs", []))
+        post_processing: list[dict] = []
+        timeout_recovered = False
+
+        if item.get("stage") == "resume-tailor" and output_status["existing_count"] > 0:
+            job_basename = infer_job_basename(plan, item)
+            post_processing = _run_resume_export_chain(
+                workspace,
+                python_bin,
+                job_basename,
+                allow_local_markdown_generation=False,
+            )
+            output_status = expected_output_status(workspace, item.get("expected_outputs", []))
+            timeout_recovered = output_status["missing_count"] == 0
+
+        if timeout_recovered:
+            return {
+                "status": "hermes_executor_passed",
+                "returncode": None,
+                "stdout": timeout_stdout,
+                "stderr": timeout_stderr + " Recovered by local post-processing after timeout.",
+                "generation_backend": "hermes",
+                "hermes_command": " ".join(cmd[:3]) if not hermes_command.strip() else hermes_command,
+                "hermes_model": hermes_model,
+                "hermes_provider": hermes_provider,
+                "hermes_toolsets": hermes_toolsets,
+                "expected_output_status": output_status,
+                "post_processing": post_processing,
+                "timeout_recovered": True,
+            }
+
+        return {
+            "status": "hermes_executor_failed",
+            "returncode": None,
+            "stdout": timeout_stdout,
+            "stderr": timeout_stderr,
+            "generation_backend": "hermes",
+            "hermes_command": " ".join(cmd[:3]) if not hermes_command.strip() else hermes_command,
+            "hermes_model": hermes_model,
+            "hermes_provider": hermes_provider,
+            "hermes_toolsets": hermes_toolsets,
+            "expected_output_status": output_status,
+            "post_processing": post_processing,
+        }
+
+    job_basename = infer_job_basename(plan, item)
+    post_processing: list[dict] = []
+    if item.get("stage") == "resume-tailor" and completed.returncode == 0:
+        output_status_before = expected_output_status(workspace, item.get("expected_outputs", []))
+        if output_status_before["missing_count"] > 0:
+            post_processing = _run_resume_export_chain(
+                workspace,
+                python_bin,
+                job_basename,
+                allow_local_markdown_generation=False,
+            )
+
+    output_status = expected_output_status(workspace, item.get("expected_outputs", []))
+    if completed.returncode != 0:
+        status = "hermes_executor_failed"
+    elif output_status["missing_count"] > 0:
+        status = "hermes_executor_missing_outputs"
+    else:
+        status = "hermes_executor_passed"
+
+    return {
+        "status": status,
+        "returncode": completed.returncode,
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+        "generation_backend": "hermes",
+        "hermes_command": " ".join(cmd[:3]) if not hermes_command.strip() else hermes_command,
+        "hermes_model": hermes_model,
+        "hermes_provider": hermes_provider,
+        "hermes_toolsets": hermes_toolsets,
+        "expected_output_status": output_status,
+        "post_processing": post_processing,
+    }
+
+
 def run_job_normalizer_local_executor(workspace: Path, python_bin: str, plan: dict, item: dict, local_script: str) -> dict:
     raw_job_path = infer_raw_job_path(workspace, plan, item)
     job_basename = infer_job_basename(plan, item)
@@ -357,7 +588,7 @@ def run_resume_tailor_plan_local_executor(workspace: Path, python_bin: str, plan
     ]
 
     completed = run_subprocess(workspace, cmd)
-    return {
+    result = {
         "status": "local_executor_passed" if completed.returncode == 0 else "local_executor_failed",
         "returncode": completed.returncode,
         "stdout": completed.stdout,
@@ -373,6 +604,123 @@ def run_resume_tailor_plan_local_executor(workspace: Path, python_bin: str, plan
             "report_output": report_output,
         },
     }
+
+    # Post-processing: generate Markdown, then DOCX, then PDF (if available)
+    if completed.returncode == 0:
+        result["post_processing"] = _run_resume_export_chain(
+            workspace, python_bin, job_basename,
+        )
+
+    return result
+
+
+def _run_resume_export_chain(
+    workspace: Path,
+    python_bin: str,
+    job_basename: str,
+    *,
+    allow_local_markdown_generation: bool = True,
+) -> list[dict]:
+    """Convert existing Markdown to DOCX/PDF, optionally generating local fallback Markdown."""
+    steps: list[dict] = []
+
+    resume_md = workspace / "outputs" / "resumes" / f"{job_basename}_resume_ja.md"
+    cv_md = workspace / "outputs" / "resumes" / f"{job_basename}_cv_ja.md"
+
+    if allow_local_markdown_generation:
+        md_script = "scripts/generate_resume_markdown.py"
+        md_cmd = [python_bin, md_script, "--workspace", ".", "--basename", job_basename]
+        md_completed = run_subprocess(workspace, md_cmd)
+        steps.append({
+            "step": "generate_resume_markdown",
+            "status": "passed" if md_completed.returncode == 0 else "failed",
+            "returncode": md_completed.returncode,
+            "stdout": md_completed.stdout[:500],
+            "stderr": md_completed.stderr[:300],
+            "generation_backend": "local_executor",
+        })
+    else:
+        missing_markdown = [
+            rel(workspace, path)
+            for path in (resume_md, cv_md)
+            if not path.exists() or path.stat().st_size <= 0
+        ]
+        steps.append({
+            "step": "verify_model_generated_markdown",
+            "status": "passed" if not missing_markdown else "blocked_missing_model_markdown",
+            "returncode": 0 if not missing_markdown else 1,
+            "stdout": "",
+            "stderr": (
+                ""
+                if not missing_markdown
+                else "Hermes resume-tailor did not create required Markdown sources: "
+                + ", ".join(missing_markdown)
+            ),
+            "required_markdown": [
+                rel(workspace, resume_md),
+                rel(workspace, cv_md),
+            ],
+            "generation_backend": "hermes",
+        })
+        if missing_markdown:
+            return steps
+
+    # Step 2: Export DOCX from Markdown
+    docx_script = "skills/resume-tailor/scripts/export_resume_artifacts.py"
+    docx_cmd = [python_bin, docx_script, "--workspace", ".", "--basename", job_basename]
+    docx_completed = run_subprocess(workspace, docx_cmd)
+    steps.append({
+        "step": "export_resume_docx",
+        "status": "passed" if docx_completed.returncode == 0 else "failed",
+        "returncode": docx_completed.returncode,
+        "stdout": docx_completed.stdout[:500],
+        "stderr": docx_completed.stderr[:300],
+    })
+
+    # Step 3: Export PDF from DOCX (requires LibreOffice)
+    pdf_script = "skills/resume-tailor/scripts/export_resume_pdfs.py"
+    pdf_cmd = [python_bin, pdf_script, "--workspace", ".", "--basename", job_basename]
+    pdf_completed = run_subprocess(workspace, pdf_cmd)
+    pdf_status = "passed" if pdf_completed.returncode == 0 else "blocked_missing_dependency"
+    # Check if the failure is due to missing LibreOffice
+    if pdf_completed.returncode != 0 and "libreoffice" in (pdf_completed.stderr + pdf_completed.stdout).lower():
+        pdf_status = "blocked_missing_dependency"
+    steps.append({
+        "step": "export_resume_pdf",
+        "status": pdf_status,
+        "returncode": pdf_completed.returncode,
+        "stdout": pdf_completed.stdout[:500],
+        "stderr": pdf_completed.stderr[:300],
+    })
+
+    # Step 4: Render polished DOCX (Japanese layout)
+    polished_script = "skills/resume-tailor/scripts/render_polished_resume_docx.py"
+    polished_cmd = [python_bin, polished_script, "--workspace", ".", "--basename", job_basename]
+    polished_completed = run_subprocess(workspace, polished_cmd)
+    steps.append({
+        "step": "render_polished_docx",
+        "status": "passed" if polished_completed.returncode == 0 else "failed",
+        "returncode": polished_completed.returncode,
+        "stdout": polished_completed.stdout[:500],
+        "stderr": polished_completed.stderr[:300],
+    })
+
+    # Step 5: Export polished PDF
+    polished_pdf_script = "skills/resume-tailor/scripts/export_polished_resume_pdfs.py"
+    polished_pdf_cmd = [python_bin, polished_pdf_script, "--workspace", ".", "--basename", job_basename]
+    polished_pdf_completed = run_subprocess(workspace, polished_pdf_cmd)
+    polished_pdf_status = "passed" if polished_pdf_completed.returncode == 0 else "blocked_missing_dependency"
+    if polished_pdf_completed.returncode != 0 and "libreoffice" in (polished_pdf_completed.stderr + polished_pdf_completed.stdout).lower():
+        polished_pdf_status = "blocked_missing_dependency"
+    steps.append({
+        "step": "export_polished_pdf",
+        "status": polished_pdf_status,
+        "returncode": polished_pdf_completed.returncode,
+        "stdout": polished_pdf_completed.stdout[:500],
+        "stderr": polished_pdf_completed.stderr[:300],
+    })
+
+    return steps
 
 
 
@@ -478,6 +826,12 @@ def execute_one(
     execute: bool,
     allow_shell: bool,
     use_local_executors: bool,
+    execution_backend: str,
+    hermes_command: str,
+    hermes_model: str,
+    hermes_provider: str,
+    hermes_toolsets: str,
+    hermes_timeout: int,
 ) -> dict:
     stage = str(item.get("stage", "unknown"))
     command = str(item.get("command", "")).strip()
@@ -497,15 +851,32 @@ def execute_one(
     if execute and use_local_executors:
         local_script = local_executor_for_stage(workspace, registry, stage)
         if stage == "job-normalizer" and local_script:
-            return {**base, "execution_mode": "local_executor", **run_job_normalizer_local_executor(workspace, python_bin, plan, item, local_script)}
+            return {**base, "execution_mode": "local_executor", "generation_backend": "local_executor", **run_job_normalizer_local_executor(workspace, python_bin, plan, item, local_script)}
         if stage == "job-fit-scorer" and local_script:
-            return {**base, "execution_mode": "local_executor", **run_job_fit_scorer_local_executor(workspace, python_bin, plan, item, local_script)}
+            return {**base, "execution_mode": "local_executor", "generation_backend": "local_executor", **run_job_fit_scorer_local_executor(workspace, python_bin, plan, item, local_script)}
         if stage == "resume-tailor" and local_script:
-            return {**base, "execution_mode": "local_executor", **run_resume_tailor_plan_local_executor(workspace, python_bin, plan, item, local_script)}
+            return {**base, "execution_mode": "local_executor", "generation_backend": "local_executor", **run_resume_tailor_plan_local_executor(workspace, python_bin, plan, item, local_script)}
         if stage == "application-tracker" and local_script:
-            return {**base, "execution_mode": "local_executor", **run_application_tracker_local_executor(workspace, python_bin, plan, item, local_script)}
+            return {**base, "execution_mode": "local_executor", "generation_backend": "local_executor", **run_application_tracker_local_executor(workspace, python_bin, plan, item, local_script)}
         if stage == "submission-review-gate" and local_script:
-            return {**base, "execution_mode": "local_executor", **run_submission_review_gate_local_executor(workspace, python_bin, plan, item, local_script)}
+            return {**base, "execution_mode": "local_executor", "generation_backend": "local_executor", **run_submission_review_gate_local_executor(workspace, python_bin, plan, item, local_script)}
+
+    if execute and execution_backend == "hermes" and command_type == "supervised_slash_command":
+        return {
+            **base,
+            "execution_mode": "hermes_oneshot",
+            **run_hermes_skill_executor(
+                workspace=workspace,
+                python_bin=python_bin,
+                plan=plan,
+                item=item,
+                hermes_command=hermes_command,
+                hermes_model=hermes_model,
+                hermes_provider=hermes_provider,
+                hermes_toolsets=hermes_toolsets,
+                hermes_timeout=hermes_timeout,
+            ),
+        }
 
     if command_type == "supervised_slash_command":
         return {
@@ -551,7 +922,13 @@ def execute_one(
 def determine_status(results: list[dict], execute: bool) -> str:
     if any(str(item["status"]).startswith("blocked") for item in results):
         return "blocked"
-    if any(item["status"] in {"failed", "local_executor_failed"} for item in results):
+    failed_statuses = {
+        "failed",
+        "local_executor_failed",
+        "hermes_executor_failed",
+        "hermes_executor_missing_outputs",
+    }
+    if any(item["status"] in failed_statuses for item in results):
         return "failed"
     return "execution_recorded" if execute else "planned"
 
@@ -565,6 +942,7 @@ def markdown_report(report: dict) -> str:
         f"- Status: `{report['status']}`",
         f"- Action ID: `{report.get('action_id', '')}`",
         f"- Execute requested: `{report.get('execute_requested')}`",
+        f"- Execution backend: `{report.get('execution_backend', 'record')}`",
         f"- Use local executors: `{report.get('use_local_executors')}`",
         f"- Shell execution allowed: `{report.get('allow_shell')}`",
         f"- Human review required: `{report.get('human_review_required')}`",
@@ -601,11 +979,32 @@ def run_executor(
     execute: bool,
     allow_shell: bool,
     use_local_executors: bool,
+    execution_backend: str,
+    hermes_command: str,
+    hermes_model: str,
+    hermes_provider: str,
+    hermes_toolsets: str,
+    hermes_timeout: int,
+    progress_log: Path | None = None,
 ) -> dict:
     plan = read_json(commands_path)
     registry = maybe_read_json(registry_path)
     action_id = sanitize_action_id(plan.get("action_id") or commands_path.stem.replace("_material_generation_commands", ""))
     errors = validate_command_plan(plan)
+    commands = plan.get("commands", [])
+    total_commands = len(commands) if isinstance(commands, list) else 0
+
+    append_progress(progress_log, {
+        "event": "material_executor_started",
+        "action_id": action_id,
+        "status": "running",
+        "stage": "material-executor",
+        "stage_index": 0,
+        "stage_count": total_commands,
+        "percent": 35,
+        "message": "Layer2 material executor started.",
+        "execution_backend": execution_backend,
+    })
 
     report_path = output_dir / f"{action_id}_material_command_execution_report.json"
     markdown_path = output_dir / f"{action_id}_material_command_execution_report.md"
@@ -623,6 +1022,7 @@ def run_executor(
             "execute_requested": execute,
             "allow_shell": allow_shell,
             "use_local_executors": use_local_executors,
+            "execution_backend": execution_backend,
             "execution_results": [],
             "human_review_required": True,
             "auto_apply_allowed": False,
@@ -640,13 +1040,66 @@ def run_executor(
             "report": rel(workspace, report_path),
             "created_at": report["created_at"],
         })
+        append_progress(progress_log, {
+            "event": "material_executor_blocked",
+            "action_id": action_id,
+            "status": "blocked",
+            "stage": "material-executor",
+            "stage_index": 0,
+            "stage_count": total_commands,
+            "percent": 35,
+            "message": "Layer2 material executor was blocked.",
+            "errors": errors,
+        })
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return report
 
-    results = [
-        execute_one(workspace, item, plan, registry, python_bin, execute, allow_shell, use_local_executors)
-        for item in plan["commands"]
-    ]
+    results = []
+    for index, item in enumerate(plan["commands"], start=1):
+        stage = str(item.get("stage", "unknown"))
+        start_percent = 35 + int((index - 1) * 45 / max(1, total_commands))
+        append_progress(progress_log, {
+            "event": "stage_started",
+            "action_id": action_id,
+            "status": "running",
+            "stage": stage,
+            "stage_index": index,
+            "stage_count": total_commands,
+            "percent": start_percent,
+            "message": f"Layer2 stage {index}/{total_commands} started: {stage}",
+            "execution_backend": execution_backend,
+        })
+        result = execute_one(
+            workspace,
+            item,
+            plan,
+            registry,
+            python_bin,
+            execute,
+            allow_shell,
+            use_local_executors,
+            execution_backend,
+            hermes_command,
+            hermes_model,
+            hermes_provider,
+            hermes_toolsets,
+            hermes_timeout,
+        )
+        results.append(result)
+        done_percent = 35 + int(index * 45 / max(1, total_commands))
+        append_progress(progress_log, {
+            "event": "stage_finished",
+            "action_id": action_id,
+            "status": result.get("status", "unknown"),
+            "stage": stage,
+            "stage_index": index,
+            "stage_count": total_commands,
+            "percent": done_percent,
+            "message": f"Layer2 stage {index}/{total_commands} finished: {stage}",
+            "execution_backend": execution_backend,
+            "generation_backend": result.get("generation_backend", ""),
+            "execution_mode": result.get("execution_mode", ""),
+        })
     status = determine_status(results, execute=execute)
 
     report = {
@@ -661,6 +1114,7 @@ def run_executor(
         "execute_requested": execute,
         "allow_shell": allow_shell,
         "use_local_executors": use_local_executors,
+        "execution_backend": execution_backend,
         "execution_results": results,
         "pipeline_stages": [item.get("stage") for item in plan.get("commands", [])],
         "human_review_required": True,
@@ -683,6 +1137,17 @@ def run_executor(
         "use_local_executors": use_local_executors,
         "created_at": report["created_at"],
     })
+    append_progress(progress_log, {
+        "event": "material_executor_finished",
+        "action_id": action_id,
+        "status": status,
+        "stage": "material-executor",
+        "stage_index": total_commands,
+        "stage_count": total_commands,
+        "percent": 80 if status == "execution_recorded" else 75,
+        "message": "Layer2 material executor finished.",
+        "execution_backend": execution_backend,
+    })
 
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return report
@@ -699,9 +1164,24 @@ def main() -> int:
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--allow-shell", action="store_true")
     parser.add_argument("--use-local-executors", action="store_true")
+    parser.add_argument("--use-hermes", action="store_true")
+    parser.add_argument("--execution-backend", choices=["hermes", "local", "record"], default="record")
+    parser.add_argument("--hermes-command", default="")
+    parser.add_argument("--hermes-model", default="")
+    parser.add_argument("--hermes-provider", default="")
+    parser.add_argument("--hermes-toolsets", default="file")
+    parser.add_argument("--hermes-timeout", type=int, default=1200)
+    parser.add_argument("--progress-log", default="", help="Optional JSONL progress log for UI updates.")
     args = parser.parse_args()
 
     workspace = Path(args.workspace).resolve()
+
+    execution_backend = args.execution_backend
+    if args.use_hermes:
+        execution_backend = "hermes"
+    if args.use_local_executors:
+        execution_backend = "local"
+    use_local_executors = args.use_local_executors or execution_backend == "local"
 
     report = run_executor(
         workspace=workspace,
@@ -712,7 +1192,14 @@ def main() -> int:
         python_bin=args.python,
         execute=args.execute,
         allow_shell=args.allow_shell,
-        use_local_executors=args.use_local_executors,
+        use_local_executors=use_local_executors,
+        execution_backend=execution_backend,
+        hermes_command=args.hermes_command,
+        hermes_model=args.hermes_model,
+        hermes_provider=args.hermes_provider,
+        hermes_toolsets=args.hermes_toolsets,
+        hermes_timeout=args.hermes_timeout,
+        progress_log=resolve_workspace_path(workspace, args.progress_log) if args.progress_log else None,
     )
 
     return 0 if report["status"] in {"planned", "execution_recorded"} else 1

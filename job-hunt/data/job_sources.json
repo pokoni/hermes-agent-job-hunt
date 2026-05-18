@@ -1,5 +1,5 @@
 {
-  "version": "2026-05-10",
+  "version": "2026-05-17",
   "registry_name": "Hermes Japan job-hunt source registry",
   "human_review_required": true,
   "submission_boundary": [
@@ -18,7 +18,7 @@
       "source_type": "job_board_search",
       "enabled": true,
       "fetch_mode": "manual_snapshot",
-      "url": "https://www.wantedly.com/projects",
+      "url": "data/raw_jobs/manual_inbox/wantedly/",
       "platform_id": "wantedly",
       "priority": 1,
       "cadence": "manual_snapshot_first_then_scheduled_review",
@@ -52,7 +52,7 @@
       ],
       "min_fit_score_for_notification": 75,
       "notes": [
-        "Start with user-provided/manual snapshots because Wantedly often requires account/session context.",
+        "Start with user-provided/manual snapshots under data/raw_jobs/manual_inbox/wantedly/ because Wantedly often requires account/session context.",
         "Do not store Wantedly credentials.",
         "Do not bypass login walls, bot detection, or JavaScript restrictions."
       ],
@@ -158,7 +158,7 @@
       "source_name": "Rakuten engineering internship/career source",
       "source_type": "company_careers",
       "enabled": true,
-      "fetch_mode": "manual_snapshot",
+      "fetch_mode": "public_url_html",
       "url": "https://corp.rakuten.co.jp/careers/",
       "platform_id": "company_careers",
       "priority": 2,
@@ -188,8 +188,304 @@
       ],
       "min_fit_score_for_notification": 72,
       "notes": [
-        "Use manual snapshot first because position pages may be routed through event-specific forms.",
+        "Public careers index source; event-specific application forms still require supervised manual review.",
         "Email submission paths should be handled by existing supervised review and approval flow."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "mercari_new_graduate_engineering",
+      "source_name": "Mercari students and new graduates engineering source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://careers.mercari.com/en/new-graduates/",
+      "platform_id": "company_careers",
+      "priority": 2,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "new-graduate",
+        "japan",
+        "software-engineering",
+        "mercari"
+      ],
+      "keywords": [
+        "Software Engineer",
+        "Engineering",
+        "Internship",
+        "AI",
+        "Backend",
+        "Machine Learning",
+        "New Graduate"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing",
+        "designer"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 72,
+      "notes": [
+        "Official students/new-graduates page; public fetch only.",
+        "Some role-specific listings may be dynamic, so keep manual review before action."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "lycorp_engineer_internship",
+      "source_name": "LY Corporation engineer internship source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://www.lycorp.co.jp/en/recruit/newgrads/internship/engineer/",
+      "platform_id": "company_careers",
+      "priority": 1,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "software-engineering",
+        "ai",
+        "lycorp"
+      ],
+      "keywords": [
+        "Software Engineer",
+        "Engineer",
+        "Internship",
+        "AI",
+        "Data",
+        "Backend",
+        "Hackathon",
+        "Job-Based Program"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Fukuoka",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 72,
+      "notes": [
+        "Official engineering internship page; public fetch only.",
+        "Course details may change seasonally and must be reviewed before action."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "cyberagent_engineer_internship",
+      "source_name": "CyberAgent engineering internship source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://www.cyberagent.co.jp/careers/students/tech/internship_b/",
+      "platform_id": "company_careers",
+      "priority": 2,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "machine-learning",
+        "data-science",
+        "cyberagent"
+      ],
+      "keywords": [
+        "機械学習",
+        "データサイエンス",
+        "AI",
+        "エンジニア",
+        "インターンシップ",
+        "Machine Learning",
+        "Data Science"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing",
+        "designer",
+        "営業"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Osaka",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 72,
+      "notes": [
+        "Official student engineering internship page; public fetch only.",
+        "Includes mission-type and machine-learning/data-science internship listings when open."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "cybozu_engineer_internship",
+      "source_name": "Cybozu engineer internship source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://cybozu.co.jp/company/job/recruitment/intern/",
+      "platform_id": "company_careers",
+      "priority": 3,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "software-engineering",
+        "backend",
+        "cybozu"
+      ],
+      "keywords": [
+        "エンジニア",
+        "インターン",
+        "生成AI",
+        "バックエンド",
+        "プラットフォーム",
+        "kintone",
+        "Engineer"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing",
+        "営業"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Osaka",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 70,
+      "notes": [
+        "Official engineer summer internship page; public fetch only.",
+        "Course availability changes quickly and needs review before action."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "sony_japan_ai_internship",
+      "source_name": "Sony Japan AI and machine learning internship source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://www.sony.com/ja/SonyInfo/Jobs/internship/en/long-internship/course.html",
+      "platform_id": "company_careers",
+      "priority": 2,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "ai",
+        "machine-learning",
+        "sony"
+      ],
+      "keywords": [
+        "AI",
+        "Machine Learning",
+        "Generative AI",
+        "Cloud",
+        "R&D",
+        "Research",
+        "Internship"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo",
+        "Remote"
+      ],
+      "min_fit_score_for_notification": 74,
+      "notes": [
+        "Official Sony internship course source; public fetch only.",
+        "English course page contains AI and Machine Learning internship descriptions."
+      ],
+      "safety": {
+        "requires_login": false,
+        "stores_credentials": false,
+        "allows_auto_apply": false,
+        "respect_robots_and_terms": true,
+        "manual_review_before_notification": true
+      }
+    },
+    {
+      "source_id": "woven_toyota_internship",
+      "source_name": "Woven by Toyota internship source",
+      "source_type": "company_careers",
+      "enabled": true,
+      "fetch_mode": "public_url_html",
+      "url": "https://woven.toyota/en/internship/",
+      "platform_id": "company_careers",
+      "priority": 2,
+      "cadence": "daily_or_weekly",
+      "tags": [
+        "internship",
+        "japan",
+        "mobility",
+        "ai",
+        "machine-learning",
+        "woven"
+      ],
+      "keywords": [
+        "Internship",
+        "AI",
+        "Machine Learning",
+        "Software",
+        "Mobility",
+        "Engineering",
+        "AD/ADAS"
+      ],
+      "negative_keywords": [
+        "sales",
+        "marketing"
+      ],
+      "locations": [
+        "Japan",
+        "Tokyo"
+      ],
+      "min_fit_score_for_notification": 74,
+      "notes": [
+        "Official Woven by Toyota internship overview; public fetch only.",
+        "Role-specific pages may be linked from the internship page and require manual review."
       ],
       "safety": {
         "requires_login": false,

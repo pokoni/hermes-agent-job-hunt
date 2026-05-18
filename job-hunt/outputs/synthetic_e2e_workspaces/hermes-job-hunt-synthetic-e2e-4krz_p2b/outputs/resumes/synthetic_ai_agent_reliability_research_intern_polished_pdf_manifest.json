@@ -1,0 +1,32 @@
+{
+  "job_basename": "synthetic_ai_agent_reliability_research_intern",
+  "export_type": "polished_japanese_pdf",
+  "status": "created",
+  "converter": "stdlib_fallback",
+  "export_method": "stdlib_fallback",
+  "generated_files": [
+    {
+      "document_type": "rirekisho",
+      "source_docx": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_rirekisho_polished.docx",
+      "output_pdf": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_rirekisho_polished.pdf",
+      "status": "created",
+      "export_method": "stdlib_fallback"
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "source_docx": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_shokumukeirekisho_polished.docx",
+      "output_pdf": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_shokumukeirekisho_polished.pdf",
+      "status": "created",
+      "export_method": "stdlib_fallback"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from polished Japanese DOCX artifacts.",
+    "LibreOffice/soffice is preferred; stdlib fallback PDF is used when no converter is available.",
+    "Candidate facts were not rewritten during PDF export.",
+    "Human visual review is required before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T05:35:39Z"
+}

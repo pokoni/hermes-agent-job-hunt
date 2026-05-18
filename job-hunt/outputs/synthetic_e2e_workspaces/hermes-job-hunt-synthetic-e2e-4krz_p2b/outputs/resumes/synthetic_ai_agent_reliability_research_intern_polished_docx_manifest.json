@@ -1,0 +1,28 @@
+{
+  "job_basename": "synthetic_ai_agent_reliability_research_intern",
+  "render_type": "polished_japanese_docx",
+  "layout_profile": "data/japanese_resume_layout_profile.json",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "rirekisho",
+      "source_markdown": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_resume_ja.md",
+      "output_docx": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_rirekisho_polished.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "source_markdown": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_cv_ja.md",
+      "output_docx": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_shokumukeirekisho_polished.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Rendered from existing Markdown artifacts.",
+    "Candidate facts were not rewritten during rendering.",
+    "Human layout and content review is required before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T05:35:39Z"
+}

@@ -1,0 +1,5 @@
+name: job-hunt
+version: 1.0.0
+description: "Semi-automated job-hunting system for the Japanese market. Routes Telegram commands to job-hunt pipeline scripts."
+author: "hermes-agent-job-hunt"
+kind: standalone

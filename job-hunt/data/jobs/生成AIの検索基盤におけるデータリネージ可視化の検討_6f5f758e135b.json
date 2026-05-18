@@ -1,0 +1,43 @@
+{
+  "company_name": "NTT Labs internship AI themes page extracted jobs",
+  "description": "# 生成AIの検索基盤におけるデータリネージ可視化の検討\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\n生成AIの検索基盤におけるデータリネージ可視化の検討\nInvestigation of Data Lineage Visualization in Retrieval Infrastructure for Generative AI\n情報処理基盤\nInformation processing infrastructure\n武蔵野研究開発センタ\nMusashino R&D Center\n4週間以上6週間未満\nFrom more than 4 weeks to less 6 weeks\n必須のスキル\nRequired skills\n基本的なプログラミングスキル（Pythonなど）\nOSに関する基礎知識（基本的なコマンドなど）\nBasic programming skills (e.g. Python)\nBasic knowledge of operating systems (e.g. familiarity with basic commands)\nあればよいスキル\nPreferred skills\n英語の技術文書・ドキュメントを解読する能力\nRetrieval-Augmented Generation（RAG）とベクトル検索に関する基礎知識",
+  "employment_type": "unknown",
+  "job_id": "生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b",
+  "keywords": [
+    "AI",
+    "生成AI"
+  ],
+  "location": "Unknown location",
+  "location_hits": [],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-17T13:12:36Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "88ce0df0c917b24e8b27c8c61312b80a680809e2d08ec23d0ae0e8590984f1c5",
+    "content_hash": "865930169c7e38acedb2d7924e0127595c3cb8e2487769cd10ce0430a6d02548",
+    "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+    "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-15/生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b.md",
+    "source_id": "ntt_labs_internship_ai_extracted",
+    "source_name": "NTT Labs internship AI themes page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "生成AIの検索基盤におけるデータリネージ可視化の検討"
+}

@@ -1,0 +1,45 @@
+{
+  "company_name": "NTT Labs internship AI themes page extracted jobs",
+  "description": "# Basic skills in software engineering\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nBasic skills in software engineering\nProgramming experience in any language\nあればよいスキル\nPreferred skills\nソフトウェアテストに関する基礎的スキル\nプロンプトエンジニアリングの知識\nBasic skills in software testing\nKnowledge of prompt engineering\n受け入れ可能な学生\nEligibility for Applicants\n学部生 / 修士課程 / 博士課程\nUndergraduate, Master's Course, Doctor's Course\n使用言語\nWorking Language of Internship\n日本語のみ\nJapanese Only\nテーマ管理番号（NTTs26022）",
+  "employment_type": "unknown",
+  "job_id": "Basic_skills_in_software_engineering_be512e63dbad",
+  "keywords": [
+    "AI"
+  ],
+  "location": "Japan, 日本",
+  "location_hits": [
+    "Japan",
+    "日本"
+  ],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-17T01:01:05Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "9c4346594e1eb84963802b5436ccc0ce889feed4068a41564bbc921e122c53c0",
+    "content_hash": "d01757c9e9dbe8c55b5c51dfd48a7b6e9bb53c402c0fdd0b1a8764391efff79f",
+    "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+    "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-17/Basic_skills_in_software_engineering_be512e63dbad.md",
+    "source_id": "ntt_labs_internship_ai_extracted",
+    "source_name": "NTT Labs internship AI themes page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "Basic skills in software engineering"
+}

@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+
+FALLBACK_EXPORT_METHOD = "cid_japanese_fallback"
 
 
 def _basename() -> str:
@@ -27,6 +27,13 @@ def _assert_exists(rel_path: str) -> Path:
     assert path.exists(), f"Expected file does not exist: {rel_path}"
     assert path.stat().st_size > 0, f"Expected file is empty: {rel_path}"
     return path
+
+
+def _assert_cid_japanese_fallback_pdf(path: Path, expected_text: str) -> None:
+    data = path.read_bytes()
+    assert b"/UniJIS-UCS2-H" in data, "Fallback PDF must use Japanese CID encoding"
+    assert b"/HeiseiKakuGo-W5" in data, "Fallback PDF must use a Japanese base font"
+    assert expected_text.encode("utf-16-be").hex().upper().encode("ascii") in data
 
 
 def test_resume_pdf_export_script_exists() -> None:
@@ -62,6 +69,7 @@ def test_resume_pdf_export_dry_run_contract() -> None:
     assert result["job_basename"] == b
     assert "converter_available" in result
     assert "targets" in result
+    assert result["fallback_pdf_method"] == FALLBACK_EXPORT_METHOD
     assert result["missing_inputs"] == []
 
     output_paths = {item["output_pdf"] for item in result["targets"]}
@@ -69,10 +77,7 @@ def test_resume_pdf_export_dry_run_contract() -> None:
     assert f"outputs/resumes/{b}_cv_ja.pdf" in output_paths
 
 
-def test_export_resume_artifacts_to_pdf_when_converter_available() -> None:
-    if not (shutil.which("libreoffice") or shutil.which("soffice")):
-        pytest.skip("LibreOffice is not installed; PDF export runtime test skipped.")
-
+def test_export_resume_artifacts_to_pdf_creates_valid_files() -> None:
     b = _basename()
 
     subprocess.run(
@@ -99,6 +104,11 @@ def test_export_resume_artifacts_to_pdf_when_converter_available() -> None:
     assert manifest["export_type"] == "pdf"
     assert manifest["status"] == "created"
     assert manifest["human_review_required"] is True
+    assert manifest["generated_files"][0]["export_method"] in {"libreoffice", FALLBACK_EXPORT_METHOD}
+
+    if manifest["export_method"] == FALLBACK_EXPORT_METHOD:
+        _assert_cid_japanese_fallback_pdf(resume_pdf, "氏名")
+        _assert_cid_japanese_fallback_pdf(cv_pdf, "技術")
 
     generated_paths = {item["output_pdf"] for item in manifest["generated_files"]}
     assert f"outputs/resumes/{b}_resume_ja.pdf" in generated_paths

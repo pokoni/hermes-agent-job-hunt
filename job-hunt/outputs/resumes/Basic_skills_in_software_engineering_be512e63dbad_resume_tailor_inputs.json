@@ -1,0 +1,320 @@
+{
+  "allowed_to_submit": false,
+  "auto_apply_allowed": false,
+  "candidate_profile_sections": {
+    "education": [
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Multimodal Information Processing"
+        ],
+        "degree": "M.S.",
+        "end_date": "2028-03",
+        "gpa": "",
+        "lab_or_supervisor": "Pangu Research Lab",
+        "major": "Information Science and Technology (システム情報科学府 情報理工専攻)",
+        "school": "Kyushu University Graduate School of Systems Information Science",
+        "start_date": "2026-04"
+      },
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Agentic AI"
+        ],
+        "degree": "Research Student",
+        "end_date": "2026-04",
+        "gpa": "",
+        "lab_or_supervisor": "Pangu Research Lab",
+        "major": "Information Science",
+        "school": "Kyushu University Graduate School of Information Science",
+        "start_date": "2024-10"
+      },
+      {
+        "coursework_keywords": [
+          "Machine Learning",
+          "Computer Vision",
+          "Image Processing"
+        ],
+        "degree": "B.S.",
+        "end_date": "2024-06",
+        "gpa": "3.2/5.0",
+        "lab_or_supervisor": "",
+        "major": "Intelligence Science and Technology",
+        "school": "Shanghai Polytechnic University",
+        "start_date": "2019-09"
+      }
+    ],
+    "languages": [
+      {
+        "language": "Chinese",
+        "level": "Native",
+        "proof": ""
+      },
+      {
+        "language": "Japanese",
+        "level": "JLPT N2",
+        "proof": "JLPT N2"
+      },
+      {
+        "language": "English",
+        "level": "TOEIC 750",
+        "proof": "TOEIC 750"
+      }
+    ],
+    "projects": [
+      {
+        "domain": "Computer Vision / Edge AI",
+        "evidence_links": [
+          ""
+        ],
+        "period": "2023-07 to 2024-04",
+        "problem_statement": "Deploy object recognition on edge devices with limited compute resources while maintaining recognition accuracy.",
+        "project_name": "Edge-device Object Recognition Optimization",
+        "quantified_results": [
+          {
+            "after": "",
+            "before": "",
+            "metric": "model_size_reduction",
+            "unit": "%"
+          },
+          {
+            "after": "",
+            "before": "",
+            "metric": "latency",
+            "unit": "ms"
+          }
+        ],
+        "responsibilities": [
+          "Prepared training datasets and augmentation pipelines",
+          "Evaluated object recognition models",
+          "Applied quantization and pruning",
+          "Optimized model size and inference speed"
+        ],
+        "resume_bullets_en": [
+          "Worked on object recognition algorithms for smart cameras and smart glasses deployed on edge devices with limited compute resources.",
+          "Handled data preparation, augmentation, model evaluation, and lightweight optimization through quantization and pruning.",
+          "Contributed to a solution whose results were partially implemented in a commercial smart-glasses product."
+        ],
+        "resume_bullets_ja": [
+          "スマートカメラやスマートグラスなどのエッジデバイス向け物体認識アルゴリズムの開発に従事。",
+          "学習データ整備、データ拡張、モデル評価、量子化・枝刈りによる軽量化を担当。",
+          "検討成果の一部はスマートグラス向けの物体認識機能として商用製品に実装。"
+        ],
+        "role": "Edge AI Engineer Intern",
+        "target_devices": [
+          "smart camera",
+          "smart glasses"
+        ],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "OpenCV",
+          "Quantization",
+          "Pruning"
+        ]
+      },
+      {
+        "domain": "Computer Vision / Lightweight Models",
+        "evidence_links": [
+          "https://doi.org/10.1016/j.neucom.2025.129449"
+        ],
+        "period": "2022-09 to 2024-06",
+        "problem_statement": "Improve lightweight computer vision backbones while balancing accuracy, efficiency, and deployability.",
+        "project_name": "Lightweight Visual Backbone Research",
+        "quantified_results": [
+          {
+            "after": "1",
+            "before": "",
+            "metric": "publications",
+            "unit": "paper"
+          }
+        ],
+        "responsibilities": [
+          "Participated in research framework design",
+          "Set up experiments",
+          "Collected and analyzed data"
+        ],
+        "resume_bullets_en": [
+          "Contributed as second author to a Neurocomputing paper on a lightweight visual backbone with context-aware dual attention.",
+          "Participated in framework design, experiment setup, and data analysis."
+        ],
+        "resume_bullets_ja": [
+          "軽量 visual backbone に関する Neurocomputing 論文に第二著者として参加。",
+          "研究フレームワーク設計、実験設定、データ収集・分析を担当。"
+        ],
+        "role": "Student Researcher / Co-author",
+        "target_devices": [],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "OpenCV",
+          "Computer Vision"
+        ]
+      },
+      {
+        "domain": "Object Detection / Real-time Inference",
+        "evidence_links": [
+          "https://doi.org/10.1145/3671016.3671392"
+        ],
+        "period": "2022-09 to 2024-06",
+        "problem_statement": "Reduce detection latency in YOLOv5 to prevent real-time tracking failures in lightweight robotic scenarios.",
+        "project_name": "YOLOv5 Detection Latency Reduction for Lightweight Robots",
+        "quantified_results": [
+          {
+            "after": "1",
+            "before": "",
+            "metric": "publications",
+            "unit": "paper"
+          }
+        ],
+        "responsibilities": [
+          "Supported experiment design",
+          "Performed data analysis"
+        ],
+        "resume_bullets_en": [
+          "Co-authored a paper on reducing YOLOv5 detection latency for lightweight robots.",
+          "Contributed to experiment design and data analysis."
+        ],
+        "resume_bullets_ja": [
+          "YOLOv5 の検出遅延低減に関する論文に共著者として参加。",
+          "実験設計とデータ分析を担当。"
+        ],
+        "role": "Student Researcher / Co-author",
+        "target_devices": [
+          "lightweight robots"
+        ],
+        "tech_stack": [
+          "Python",
+          "PyTorch",
+          "YOLOv5",
+          "Object Detection"
+        ]
+      }
+    ]
+  },
+  "created_at": "2026-05-17T01:01:05Z",
+  "does_not_submit": true,
+  "fit_report_excerpt": "# Job Fit Report\n\n## Summary\n\n- Title: `Basic skills in software engineering`\n- Company: `NTT Labs internship AI themes page extracted jobs`\n- Location: `Japan, 日本`\n- Fit score: `61/100`\n- Decision: `weak_match_hold`\n- Candidate profile: `data/candidate_profile.json`\n\n## Why matched\n\nProfile keyword hits:\n- AI\n- edge\n\nLocation hits:\n- Japan\n- 日本\n- Fukuoka\n\n## Boundary\n\nDo not submit by default.\nStop before final submission.\nExplicit human approval is required before any submit action.\n\nThis report is a review artifact only. It does not submit an application.\n",
+  "fit_score": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "candidate_profile": "data/candidate_profile.json",
+    "company_name": "NTT Labs internship AI themes page extracted jobs",
+    "created_at": "2026-05-17T01:01:05Z",
+    "decision": "weak_match_hold",
+    "does_not_submit": true,
+    "fit_score": 61,
+    "high_value_topic_hits": [
+      "LLM",
+      "agent",
+      "computer vision",
+      "コンピュータビジョン",
+      "画像処理",
+      "機械学習",
+      "machine learning",
+      "Python",
+      "PyTorch",
+      "OpenCV",
+      "edge AI",
+      "軽量"
+    ],
+    "human_review_required": true,
+    "job": "data/jobs/Basic_skills_in_software_engineering_be512e63dbad.json",
+    "job_high_value_topic_hits": [],
+    "location_hits": [
+      "Japan",
+      "日本",
+      "Fukuoka"
+    ],
+    "negative_keyword_hits": [],
+    "profile_keyword_hits": [
+      "AI",
+      "edge"
+    ],
+    "scoring_level": "local_heuristic_fit_scorer_v1",
+    "status": "passed",
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ],
+    "title": "Basic skills in software engineering"
+  },
+  "human_review_required": true,
+  "job": {
+    "company_name": "NTT Labs internship AI themes page extracted jobs",
+    "description": "# Basic skills in software engineering\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nBasic skills in software engineering\nProgramming experience in any language\nあればよいスキル\nPreferred skills\nソフトウェアテストに関する基礎的スキル\nプロンプトエンジニアリングの知識\nBasic skills in software testing\nKnowledge of prompt engineering\n受け入れ可能な学生\nEligibility for Applicants\n学部生 / 修士課程 / 博士課程\nUndergraduate, Master's Course, Doctor's Course\n使用言語\nWorking Language of Internship\n日本語のみ\nJapanese Only\nテーマ管理番号（NTTs26022）",
+    "employment_type": "unknown",
+    "job_id": "Basic_skills_in_software_engineering_be512e63dbad",
+    "keywords": [
+      "AI"
+    ],
+    "location": "Japan, 日本",
+    "location_hits": [
+      "Japan",
+      "日本"
+    ],
+    "normalization": {
+      "level": "local_raw_snapshot_executor",
+      "normalized_at": "2026-05-17T01:01:05Z",
+      "requires_full_job_review": true,
+      "requires_human_review": true
+    },
+    "requirements": [],
+    "responsibilities": [],
+    "safety": {
+      "allowed_to_submit": false,
+      "auto_apply_allowed": false,
+      "does_not_submit": true,
+      "human_review_required": true,
+      "stores_credentials": false,
+      "submission_boundary": [
+        "Do not submit by default.",
+        "Stop before final submission.",
+        "Explicit human approval is required before any submit action."
+      ]
+    },
+    "schema_version": "job_posting.v1",
+    "source": {
+      "body_hash": "9c4346594e1eb84963802b5436ccc0ce889feed4068a41564bbc921e122c53c0",
+      "content_hash": "d01757c9e9dbe8c55b5c51dfd48a7b6e9bb53c402c0fdd0b1a8764391efff79f",
+      "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+      "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-17/Basic_skills_in_software_engineering_be512e63dbad.md",
+      "source_id": "ntt_labs_internship_ai_extracted",
+      "source_name": "NTT Labs internship AI themes page extracted jobs",
+      "source_type": "public_careers_extracted_job"
+    },
+    "title": "Basic skills in software engineering"
+  },
+  "job_basename": "Basic_skills_in_software_engineering_be512e63dbad",
+  "planned_outputs": {
+    "future_cv_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_cv_ja.docx",
+    "future_cv_pdf": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_cv_ja.pdf",
+    "future_resume_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_resume_ja.docx",
+    "future_resume_pdf": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_resume_ja.pdf",
+    "resume_tailor_inputs": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_resume_tailor_inputs.json",
+    "resume_tailor_plan": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_resume_tailor_plan.md"
+  },
+  "resume_highlights": [
+    "AI",
+    "edge",
+    "LLM",
+    "agent",
+    "computer vision",
+    "コンピュータビジョン",
+    "画像処理",
+    "機械学習",
+    "machine learning",
+    "Python",
+    "PyTorch",
+    "OpenCV"
+  ],
+  "status": "prepared",
+  "submission_boundary": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action."
+  ]
+}

@@ -1,0 +1,147 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 2768 >>
+stream
+BT
+/F1 12 Tf
+50 790 Td
+14 TL
+(rirekisho) Tj
+T*
+(Generated fallback polished PDF for human review.) Tj
+T*
+(Review DOCX layout before submission.) Tj
+T*
+(履歴書) Tj
+T*
+(Japanese Resume Artifact) Tj
+T*
+(Candidate Snapshot) Tj
+T*
+(| Field | Value |) Tj
+T*
+(|---|---|) Tj
+T*
+(| 氏名 | HU YAOHUA \(胡 耀華\) |) Tj
+T*
+(| メール | yoward.hu@gmail.com |) Tj
+T*
+(| 電話 | 070-9180-2452 |) Tj
+T*
+(| 所在地 | 福岡県 |) Tj
+T*
+(| 国籍 | 中国 |) Tj
+T*
+(| ビザステータス | 学生 |) Tj
+T*
+(| 現在の所属 | 九州大学 システム情報科学府 情報理工専攻 |) Tj
+T*
+(| 研究室 | Pangu Research Lab |) Tj
+T*
+(| 日本語レベル | JLPT N2 |) Tj
+T*
+(| 英語レベル | TOEIC 750 |) Tj
+T*
+(| GitHub | https://github.com/pokoni |) Tj
+T*
+(Education) Tj
+T*
+(九州大学 大学院 システム情報科学府 情報理工専攻) Tj
+T*
+(修士課程 \(M.S.\) — 2026年4月〜2028年3月（予定）) Tj
+T*
+(研究室: Pangu Research Lab) Tj
+T*
+(主な履修: Machine Learning, Computer Vision, Multimodal Information Processing) Tj
+T*
+(九州大学 大学院 情報科学府) Tj
+T*
+(研究生 — 2024年10月〜2026年4月) Tj
+T*
+(研究室: Pangu Research Lab) Tj
+T*
+(主な履修: Machine Learning, Computer Vision, Agentic AI) Tj
+T*
+(上海第二工業大学) Tj
+T*
+(知能科学技術専攻 \(B.S.\) — 2019年9月〜2024年6月) Tj
+T*
+(GPA: 3.2/5.0) Tj
+T*
+(主な履修: Machine Learning, Computer Vision, Image Processing) Tj
+T*
+(Skills) Tj
+T*
+(プログラミング言語:) Tj
+T*
+(・Python — 研究・インターンシップで3年以上の実務経験) Tj
+T*
+(ML・検索関連フレームワーク:) Tj
+T*
+(・PyTorch) Tj
+T*
+(・LangGraph \(agent タスク設計\)) Tj
+T*
+(・LlamaIndex \(RAG パイプラインの知識\)) Tj
+T*
+(データ分析・実験設計:) Tj
+T*
+(・データ収集・データ拡張・データ分析) Tj
+T*
+(・実験設計・評価パイプライン構築) Tj
+T*
+(CV・エッジAI（参考）:) Tj
+T*
+(・OpenCV, Object Detection, モデル圧縮, 量子化, 枝刈り, 推論最適化) Tj
+T*
+(言語スキル:) Tj
+T*
+(・日本語: JLPT N2（読み書き・会話が可能）) Tj
+T*
+(・英語: TOEIC 750（技術文書の読解が可能）) Tj
+T*
+(・中国語: ネイティブ) Tj
+T*
+(Research and Work Experience) Tj
+T*
+(九州大学 Pangu Research Lab \(2024年10月〜現在\)) Tj
+T*
+(Role: Graduate Researcher) Tj
+T*
+(Location: 福岡県) Tj
+T*
+(Python / PyTorch / LangGraph / LlamaIndex を用いた研究開発に従事。ソフトウェア工学とAIの接点に焦点を当て、機械学習・コンピュータビジョン・マルチモー) Tj
+T*
+(主な活動:) Tj
+T*
+(・LangGraph と LlamaIndex を活用した agent タスク設計と RAG パイプラインの基礎検討) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+3137
+%%EOF

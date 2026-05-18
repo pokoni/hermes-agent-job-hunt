@@ -179,3 +179,51 @@ def test_deduplicate_raw_jobs_dry_run_does_not_append_seen(tmp_path: Path) -> No
     assert report["dry_run"] is True
     assert report["new_job_count"] == 1
     assert not seen.exists()
+
+
+def test_deduplicate_raw_jobs_skips_aggregate_public_snapshots(tmp_path: Path) -> None:
+    raw_root = tmp_path / "raw_jobs"
+    seen = tmp_path / "jobs_seen.jsonl"
+    output = tmp_path / "job_deduplication_report.json"
+
+    aggregate = raw_root / "public_source" / "2099-01-01" / "page.md"
+    aggregate.parent.mkdir(parents=True, exist_ok=True)
+    aggregate.write_text(
+        "\n".join([
+            "---",
+            "source_id: public_source",
+            "source_name: Public source",
+            "source_type: company_careers",
+            "fetch_mode: public_url_html",
+            "original_location: https://example.com/careers",
+            "---",
+            "",
+            "# Page title",
+            "Role: Should not be treated as a standalone job",
+            "",
+        ]),
+        encoding="utf-8",
+    )
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(_root()),
+            "--raw-root",
+            str(raw_root),
+            "--seen",
+            str(seen),
+            "--output",
+            str(output),
+        ],
+        check=True,
+    )
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["status"] == "passed"
+    assert report["new_job_count"] == 0
+    assert report["duplicate_job_count"] == 0
+    assert report["skipped_snapshot_count"] == 1
+    assert report["aggregate_public_snapshot_count"] == 1

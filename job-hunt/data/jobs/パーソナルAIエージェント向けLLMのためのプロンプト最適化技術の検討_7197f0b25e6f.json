@@ -1,0 +1,47 @@
+{
+  "company_name": "NTT Labs internship AI themes page extracted jobs",
+  "description": "# パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討\n\nSource: NTT Labs internship AI themes page\nOriginal URL: https://www.ntt-labs.jp/saiyo/internship/theme2/\n\nパーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討\nPrompt Optimization Techniques for LLM-Based Personal AI Agents\n情報処理基盤\nInformation processing infrastructure\n武蔵野研究開発センタ\nMusashino R&D Center\n4週間以上6週間未満\nFrom more than 4 weeks to less 6 weeks\n必須のスキル\nRequired skills\nPythonでのプログラミングスキル\nLLMなどの機械学習モデルに関する知識\nProgramming skills in Python\nKnowledge of Machine Learning models such as LLMs\nあればよいスキル\nPreferred skills",
+  "employment_type": "unknown",
+  "job_id": "パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f",
+  "keywords": [
+    "AI",
+    "機械学習",
+    "Machine Learning",
+    "LLM",
+    "エージェント",
+    "Agent"
+  ],
+  "location": "Unknown location",
+  "location_hits": [],
+  "normalization": {
+    "level": "local_raw_snapshot_executor",
+    "normalized_at": "2026-05-17T00:27:33Z",
+    "requires_full_job_review": true,
+    "requires_human_review": true
+  },
+  "requirements": [],
+  "responsibilities": [],
+  "safety": {
+    "allowed_to_submit": false,
+    "auto_apply_allowed": false,
+    "does_not_submit": true,
+    "human_review_required": true,
+    "stores_credentials": false,
+    "submission_boundary": [
+      "Do not submit by default.",
+      "Stop before final submission.",
+      "Explicit human approval is required before any submit action."
+    ]
+  },
+  "schema_version": "job_posting.v1",
+  "source": {
+    "body_hash": "1253cb0e50cf2bf25f59bb3b8656c8d862e934d1f9e1e571f5a1eae59358b240",
+    "content_hash": "594eb698587e6ed54f648113e7c9e391b96394883a568fd6dddd083fc887f134",
+    "original_location": "https://www.ntt-labs.jp/saiyo/internship/theme2/",
+    "raw_job_path": "data/raw_jobs/ntt_labs_internship_ai_extracted/2026-05-15/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f.md",
+    "source_id": "ntt_labs_internship_ai_extracted",
+    "source_name": "NTT Labs internship AI themes page extracted jobs",
+    "source_type": "public_careers_extracted_job"
+  },
+  "title": "パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討"
+}

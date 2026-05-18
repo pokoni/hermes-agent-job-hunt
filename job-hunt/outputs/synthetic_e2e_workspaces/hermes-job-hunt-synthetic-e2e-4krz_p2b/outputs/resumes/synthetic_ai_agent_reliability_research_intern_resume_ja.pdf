@@ -1,0 +1,147 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 3479 >>
+stream
+BT
+/F1 12 Tf
+50 790 Td
+14 TL
+(resume_ja) Tj
+T*
+(Generated fallback PDF for human review.) Tj
+T*
+(Layout must be checked against the DOCX before submission.) Tj
+T*
+(Japanese Resume Artifact) Tj
+T*
+(Candidate Snapshot) Tj
+T*
+(| 項目 | 内容 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| 氏名 | Synthetic Candidate |) Tj
+T*
+(| 現職 | Graduate research engineer（大学院研究生） |) Tj
+T*
+(| 所在地 | 福岡県福岡市（Fukuoka, Japan） |) Tj
+T*
+(| メールアドレス | 【要確認：候補者プロフィールにメールアドレス未記載】 |) Tj
+T*
+(| 電話番号 | 【要確認：候補者プロフィールに電話番号未記載】 |) Tj
+T*
+(| 在留資格 / 就労可否 | 【要確認：プロフィールに在留資格情報なし】 |) Tj
+T*
+(| 日本語レベル | ビジネスレベル（business） |) Tj
+T*
+(| 英語レベル | プロフェッショナルレベル（professional） |) Tj
+T*
+(| 週当たり稼働可能時間 | 【要確認：プロフィールに記載なし】 |) Tj
+T*
+(Education) Tj
+T*
+(修士課程（在学中）) Tj
+T*
+(| 項目 | 内容 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| 学位 | M.S. candidate（修士課程在籍） |) Tj
+T*
+(| 専攻 | コンピュータサイエンス（Computer Science） |) Tj
+T*
+(| 研究分野 | 機械学習、コンピュータビジョン、AIエージェント |) Tj
+T*
+(| 大学 | Synthetic University |) Tj
+T*
+(| 修了予定 | 【要確認：修了予定日未記載】 |) Tj
+T*
+(Skills) Tj
+T*
+(機械学習・AI) Tj
+T*
+(• AI agent reliability（AIエージェント信頼性評価）) Tj
+T*
+(• LLM evaluation（大規模言語モデル評価）) Tj
+T*
+(• PyTorch) Tj
+T*
+(• Computer vision（コンピュータビジョン）) Tj
+T*
+(プログラミング言語) Tj
+T*
+(• Python（主力）) Tj
+T*
+(• TypeScript) Tj
+T*
+(ツール・インフラ) Tj
+T*
+(• Docker) Tj
+T*
+(• Git) Tj
+T*
+(• Linux) Tj
+T*
+(Research and Work Experience) Tj
+T*
+(Synthetic AI Agent Reliability Lab（プロジェクト）) Tj
+T*
+(• LLMツール使用の信頼性評価のためのテストハーネス（test harness）を構築) Tj
+T*
+(• 評価レポート（evaluation reports）の生成を担当) Tj
+T*
+(• 使用技術：Python, LLM, AI agent) Tj
+T*
+(• キーワード：LLM, agent, evaluation, Python) Tj
+T*
+(本プロジェクトは、LLMエージェントのツール使用信頼性を検証する評価フレームワークの構築に焦点を当てており、本求人の「Design evaluation cases for LLM agent) Tj
+T*
+(Synthetic Vision Edge Prototype（プロジェクト）) Tj
+T*
+(• PyTorchを用いたコンピュータビジョンパイプラインを低遅延推論向けに最適化) Tj
+T*
+(• 使用技術：PyTorch, computer vision, edge AI) Tj
+T*
+(• キーワード：computer vision, PyTorch, edge AI) Tj
+T*
+(本プロジェクトは、求人が関心分野として挙げるコンピュータビジョン領域における実践的なPyTorch開発経験を示します。) Tj
+T*
+(Publications) Tj
+T*
+(【該当なし — 候補者プロフィールに出版物の記載はありません】) Tj
+T*
+(Application-Specific Emphasis) Tj
+T*
+(本求人「Synthetic AI Agent Reliability Research Intern」に特化したアピールポイント：) Tj
+T*
+(• ドメインの高い一致： 候補者の修士研究（機械学習・コンピュータビジョン・AIエージェント）と主要プロジェクト「Synthetic AI Agent Reliability Lab」は、求人) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+3848
+%%EOF

@@ -1,0 +1,28 @@
+{
+  "job_basename": "Basic_skills_in_software_engineering_be512e63dbad",
+  "render_type": "polished_japanese_docx",
+  "layout_profile": "data/japanese_resume_layout_profile.json",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "rirekisho",
+      "source_markdown": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_resume_ja.md",
+      "output_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_rirekisho_polished.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "source_markdown": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_cv_ja.md",
+      "output_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_shokumukeirekisho_polished.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Rendered from existing Markdown artifacts.",
+    "Candidate facts were not rewritten during rendering.",
+    "Human layout and content review is required before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T01:01:05Z"
+}

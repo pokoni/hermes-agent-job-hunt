@@ -13,7 +13,9 @@ Outputs:
   outputs/resumes/<job_basename>_shokumukeirekisho_polished.pdf
   outputs/resumes/<job_basename>_polished_pdf_manifest.json
 
-The script uses LibreOffice/soffice if available. It never submits files.
+The script uses LibreOffice/soffice if available. If no converter is installed,
+it writes a reviewable fallback PDF from DOCX text using only the Python
+standard library. It never submits files.
 """
 
 from __future__ import annotations
@@ -26,6 +28,8 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from cjk_pdf_fallback import FALLBACK_EXPORT_METHOD, write_cid_japanese_fallback_pdf
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -33,6 +37,15 @@ def now_iso() -> str:
 
 def rel(path: Path, root: Path) -> str:
     return str(path.resolve().relative_to(root.resolve()))
+
+
+def write_fallback_pdf(source_docx: Path, output_pdf: Path, title: str) -> None:
+    write_cid_japanese_fallback_pdf(
+        source_docx,
+        output_pdf,
+        title,
+        review_note="Generated fallback polished PDF for human review.",
+    )
 
 
 def find_converter() -> str | None:
@@ -87,7 +100,9 @@ def dry_run_report(workspace: Path, basename: str) -> dict:
             for item in targets
         ],
         "missing_inputs": missing,
-        "ready": not missing and converter is not None,
+        "fallback_pdf_available": True,
+        "fallback_pdf_method": FALLBACK_EXPORT_METHOD,
+        "ready": not missing,
         "human_review_required": True,
     }
 
@@ -138,17 +153,20 @@ def convert_docx_to_pdf(converter: str, source_docx: Path, output_pdf: Path) -> 
         raise RuntimeError(f"Polished PDF output has invalid header: {output_pdf}")
 
 
-def write_manifest(workspace: Path, basename: str, generated: list[dict], converter: str) -> Path:
+def write_manifest(workspace: Path, basename: str, generated: list[dict], converter: str, export_method: str) -> Path:
     resume_dir = workspace / "outputs" / "resumes"
     manifest = {
         "job_basename": basename,
         "export_type": "polished_japanese_pdf",
         "status": "created",
         "converter": converter,
+        "export_method": export_method,
         "generated_files": generated,
         "human_review_required": True,
         "notes": [
             "Generated from polished Japanese DOCX artifacts.",
+            "LibreOffice/soffice is preferred for layout-faithful conversion.",
+            "When no converter is available, the stdlib fallback uses a Japanese CID font and UTF-16BE text to avoid mojibake.",
             "Candidate facts were not rewritten during PDF export.",
             "Human visual review is required before submission.",
             "No application submission action was performed.",
@@ -182,28 +200,29 @@ def main() -> int:
         )
 
     converter = find_converter()
-    if not converter:
-        raise RuntimeError(
-            "LibreOffice converter not found. Install libreoffice or run with --dry-run "
-            "to validate polished PDF export readiness."
-        )
+    export_method = "libreoffice" if converter else FALLBACK_EXPORT_METHOD
 
     generated = []
     for item in build_targets(workspace, basename):
-        convert_docx_to_pdf(converter, item["source_docx"], item["output_pdf"])
+        if converter:
+            convert_docx_to_pdf(converter, item["source_docx"], item["output_pdf"])
+        else:
+            write_fallback_pdf(item["source_docx"], item["output_pdf"], item["document_type"])
         generated.append(
             {
                 "document_type": item["document_type"],
                 "source_docx": rel(item["source_docx"], workspace),
                 "output_pdf": rel(item["output_pdf"], workspace),
                 "status": "created",
+                "export_method": export_method,
             }
         )
 
-    manifest_path = write_manifest(workspace, basename, generated, converter)
+    manifest_path = write_manifest(workspace, basename, generated, converter or FALLBACK_EXPORT_METHOD, export_method)
     result = {
         "job_basename": basename,
         "status": "created",
+        "export_method": export_method,
         "polished_pdf_manifest": rel(manifest_path, workspace),
         "generated_files": generated,
         "human_review_required": True,

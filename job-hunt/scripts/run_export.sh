@@ -1,0 +1,1 @@
+cd /Users/huyaohua/PycharmProjects/hermes-agent-job-hunt/job-hunt && python3 scripts/generate_binary_exports.py

@@ -1,0 +1,32 @@
+{
+  "job_basename": "Basic_skills_in_software_engineering_be512e63dbad",
+  "export_type": "polished_japanese_pdf",
+  "status": "created",
+  "converter": "stdlib_fallback",
+  "export_method": "stdlib_fallback",
+  "generated_files": [
+    {
+      "document_type": "rirekisho",
+      "source_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_rirekisho_polished.docx",
+      "output_pdf": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_rirekisho_polished.pdf",
+      "status": "created",
+      "export_method": "stdlib_fallback"
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "source_docx": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_shokumukeirekisho_polished.docx",
+      "output_pdf": "outputs/resumes/Basic_skills_in_software_engineering_be512e63dbad_shokumukeirekisho_polished.pdf",
+      "status": "created",
+      "export_method": "stdlib_fallback"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from polished Japanese DOCX artifacts.",
+    "LibreOffice/soffice is preferred; stdlib fallback PDF is used when no converter is available.",
+    "Candidate facts were not rewritten during PDF export.",
+    "Human visual review is required before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T01:01:06Z"
+}

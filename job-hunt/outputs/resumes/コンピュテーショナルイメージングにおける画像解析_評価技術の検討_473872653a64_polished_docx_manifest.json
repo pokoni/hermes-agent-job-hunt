@@ -1,0 +1,28 @@
+{
+  "job_basename": "コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64",
+  "render_type": "polished_japanese_docx",
+  "layout_profile": "data/japanese_resume_layout_profile.json",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "rirekisho",
+      "source_markdown": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_resume_ja.md",
+      "output_docx": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_rirekisho_polished.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "shokumukeirekisho",
+      "source_markdown": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_cv_ja.md",
+      "output_docx": "outputs/resumes/コンピュテーショナルイメージングにおける画像解析_評価技術の検討_473872653a64_shokumukeirekisho_polished.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Rendered from existing Markdown artifacts.",
+    "Candidate facts were not rewritten during rendering.",
+    "Human layout and content review is required before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T00:01:46Z"
+}

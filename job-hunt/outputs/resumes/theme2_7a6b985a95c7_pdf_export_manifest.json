@@ -1,0 +1,32 @@
+{
+  "job_basename": "theme2_7a6b985a95c7",
+  "export_type": "pdf",
+  "status": "created",
+  "converter": "cid_japanese_fallback",
+  "export_method": "cid_japanese_fallback",
+  "generated_files": [
+    {
+      "document_type": "resume_ja",
+      "source_docx": "outputs/resumes/theme2_7a6b985a95c7_resume_ja.docx",
+      "output_pdf": "outputs/resumes/theme2_7a6b985a95c7_resume_ja.pdf",
+      "status": "created",
+      "export_method": "cid_japanese_fallback"
+    },
+    {
+      "document_type": "cv_ja",
+      "source_docx": "outputs/resumes/theme2_7a6b985a95c7_cv_ja.docx",
+      "output_pdf": "outputs/resumes/theme2_7a6b985a95c7_cv_ja.pdf",
+      "status": "created",
+      "export_method": "cid_japanese_fallback"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from DOCX resume artifacts.",
+    "LibreOffice/soffice is preferred for layout-faithful conversion.",
+    "When no converter is available, the stdlib fallback uses a Japanese CID font and UTF-16BE text to avoid mojibake.",
+    "PDF files require human visual review before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T13:44:54Z"
+}

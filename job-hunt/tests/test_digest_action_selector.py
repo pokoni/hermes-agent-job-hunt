@@ -106,11 +106,74 @@ def test_digest_action_alias_map_is_written_and_used_in_message(tmp_path: Path) 
     row = json.loads(out_jsonl.read_text(encoding="utf-8").splitlines()[0])
     assert row["notification_type"] == "digest"
     assert row["uses_action_aliases"] is True
-    assert "/job_generate_1" in row["message"]
-    assert "/job_generate_fingerprint1" not in row["message"]
+    assert "/job_generate 1" in row["message"]
+    assert "/job_generate fingerprint1" not in row["message"]
 
 
 def test_user_action_router_resolves_digest_alias(tmp_path: Path) -> None:
+    workspace = tmp_path
+    ranking = workspace / "outputs" / "logs" / "job_ranking_gate_decision.json"
+    notifications = workspace / "outputs" / "logs" / "telegram_notifications.jsonl"
+    render_report = workspace / "outputs" / "logs" / "telegram_notification_render_report.json"
+    alias_map = workspace / "outputs" / "logs" / "telegram_action_alias_map.json"
+    result = workspace / "outputs" / "logs" / "user_job_action_result.json"
+
+    candidate = _candidate(1, "生成モデルのAlignmentの改善", 92)
+    _write_raw_job(workspace, candidate["raw_job_path"], candidate["title"])
+    _write_ranking(ranking, [candidate])
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_render_script()),
+            "--ranking",
+            str(ranking),
+            "--output-jsonl",
+            str(notifications),
+            "--report",
+            str(render_report),
+            "--alias-map",
+            str(alias_map),
+            "--use-action-aliases",
+        ],
+        check=True,
+    )
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_router_script()),
+            "--workspace",
+            str(workspace),
+            "--command",
+            "/job_generate 1",
+            "--notifications",
+            str(notifications),
+            "--ranking",
+            str(ranking),
+            "--alias-map",
+            str(alias_map),
+            "--result",
+            str(result),
+        ],
+        check=True,
+    )
+
+    routed = json.loads(result.read_text(encoding="utf-8"))
+    assert routed["status"] == "passed"
+    assert routed["action_record"]["alias_used"] is True
+    assert routed["action_record"]["alias"] == "1"
+    assert routed["action_record"]["action_id"] == "fingerprint1"
+    assert routed["generated_request_paths"]
+
+    trigger_path = workspace / routed["generated_request_paths"][0]
+    trigger = json.loads(trigger_path.read_text(encoding="utf-8"))
+    assert trigger["action_id"] == "fingerprint1"
+    assert trigger["allowed_to_submit"] is False
+    assert trigger["allowed_to_trigger_material_generation"] is True
+
+
+def test_user_action_router_still_accepts_legacy_compact_alias(tmp_path: Path) -> None:
     workspace = tmp_path
     ranking = workspace / "outputs" / "logs" / "job_ranking_gate_decision.json"
     notifications = workspace / "outputs" / "logs" / "telegram_notifications.jsonl"
@@ -162,15 +225,7 @@ def test_user_action_router_resolves_digest_alias(tmp_path: Path) -> None:
     routed = json.loads(result.read_text(encoding="utf-8"))
     assert routed["status"] == "passed"
     assert routed["action_record"]["alias_used"] is True
-    assert routed["action_record"]["alias"] == "1"
     assert routed["action_record"]["action_id"] == "fingerprint1"
-    assert routed["generated_request_paths"]
-
-    trigger_path = workspace / routed["generated_request_paths"][0]
-    trigger = json.loads(trigger_path.read_text(encoding="utf-8"))
-    assert trigger["action_id"] == "fingerprint1"
-    assert trigger["allowed_to_submit"] is False
-    assert trigger["allowed_to_trigger_material_generation"] is True
 
 
 def test_user_action_router_blocks_unknown_alias_cleanly(tmp_path: Path) -> None:
@@ -192,7 +247,7 @@ def test_user_action_router_blocks_unknown_alias_cleanly(tmp_path: Path) -> None
             "--workspace",
             str(workspace),
             "--command",
-            "/job_generate_999",
+            "/job_generate 999",
             "--notifications",
             str(notifications),
             "--ranking",

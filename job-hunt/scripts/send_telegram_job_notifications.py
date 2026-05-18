@@ -4,7 +4,7 @@
 Default mode is dry-run. Real sending requires:
   --send
   TELEGRAM_BOT_TOKEN
-  TELEGRAM_CHAT_ID
+  TELEGRAM_CHAT_ID or TELEGRAM_HOME_CHANNEL
 
 Never commit tokens, chat IDs, credentials, or .env files.
 """
@@ -41,6 +41,14 @@ def read_jsonl(path: Path) -> list[dict]:
     return rows
 
 
+def env_first(*names: str) -> str:
+    for name in names:
+        value = os.environ.get(name, "").strip()
+        if value:
+            return value
+    return ""
+
+
 def send_telegram_message(token: str, chat_id: str, message: str, disable_web_page_preview: bool, timeout: int) -> dict:
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     payload = urlencode({
@@ -62,7 +70,7 @@ def deliver(notifications: list[dict], send: bool, token: str, chat_id: str, tim
     errors = []
 
     if send and (not token or not chat_id):
-        errors.append("Real send requested but TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing.")
+        errors.append("Real send requested but TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID/TELEGRAM_HOME_CHANNEL are required.")
 
     for item in notifications:
         row = {
@@ -134,7 +142,7 @@ def main() -> int:
 
     notifications = read_jsonl(Path(args.notifications))
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
+    chat_id = env_first("TELEGRAM_CHAT_ID", "TELEGRAM_HOME_CHANNEL")
 
     report = deliver(
         notifications=notifications,

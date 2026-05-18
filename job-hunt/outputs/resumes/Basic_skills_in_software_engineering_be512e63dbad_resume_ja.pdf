@@ -1,0 +1,129 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 2213 >>
+stream
+BT
+/F1 12 Tf
+50 790 Td
+14 TL
+(resume_ja) Tj
+T*
+(Generated fallback PDF for human review.) Tj
+T*
+(Layout must be checked against the DOCX before submission.) Tj
+T*
+(Japanese Resume Artifact) Tj
+T*
+(Candidate Snapshot) Tj
+T*
+(| 項目 | 内容 |) Tj
+T*
+(|------|------|) Tj
+T*
+(言語能力) Tj
+T*
+(| 言語 | レベル | 証明 |) Tj
+T*
+(|------|--------|------|) Tj
+T*
+(| Chinese | Native | — |) Tj
+T*
+(| Japanese | JLPT N2 | JLPT N2 |) Tj
+T*
+(| English | TOEIC 750 | TOEIC 750 |) Tj
+T*
+(Education) Tj
+T*
+(| 期間 | 学校 | 学位 | 専攻 | 研究室 |) Tj
+T*
+(|------|------|------|------|--------|) Tj
+T*
+(| 2026-04 – 2028-03 | Kyushu University Graduate School of Systems Information Science | M.S. | ) Tj
+T*
+(| 2024-10 – 2026-04 | Kyushu University Graduate School of Information Science | Research Studen) Tj
+T*
+(| 2019-09 – 2024-06 | Shanghai Polytechnic University | B.S. | Intelligence Science and Technolo) Tj
+T*
+(Projects) Tj
+T*
+(Edge-device Object Recognition Optimization) Tj
+T*
+(領域: Computer Vision / Edge AI) Tj
+T*
+(期間: 2023-07 to 2024-04) Tj
+T*
+(Deploy object recognition on edge devices with limited compute resources while maintaining recog) Tj
+T*
+(定量的成果:) Tj
+T*
+(• model_size_reduction: → %) Tj
+T*
+(• latency: → ms) Tj
+T*
+(Lightweight Visual Backbone Research) Tj
+T*
+(領域: Computer Vision / Lightweight Models) Tj
+T*
+(期間: 2022-09 to 2024-06) Tj
+T*
+(Improve lightweight computer vision backbones while balancing accuracy, efficiency, and deployab) Tj
+T*
+(定量的成果:) Tj
+T*
+(• publications: → 1 paper) Tj
+T*
+(YOLOv5 Detection Latency Reduction for Lightweight Robots) Tj
+T*
+(領域: Object Detection / Real-time Inference) Tj
+T*
+(期間: 2022-09 to 2024-06) Tj
+T*
+(Reduce detection latency in YOLOv5 to prevent real-time tracking failures in lightweight robotic) Tj
+T*
+(定量的成果:) Tj
+T*
+(• publications: → 1 paper) Tj
+T*
+(---) Tj
+T*
+(This document was auto-generated from candidate profile data.) Tj
+T*
+(Human review and editing required before submission.) Tj
+T*
+(Safety Boundary) Tj
+T*
+(Do not submit by default.) Tj
+T*
+(Stop before final submission.) Tj
+T*
+(Explicit human approval is required before any submit action.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2582
+%%EOF

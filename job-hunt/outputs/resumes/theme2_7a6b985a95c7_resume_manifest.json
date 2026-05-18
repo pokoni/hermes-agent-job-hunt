@@ -1,0 +1,22 @@
+{
+  "job_id": "theme2_7a6b985a95c7",
+  "job_basename": "theme2_7a6b985a95c7",
+  "resume_version": "0.1.0",
+  "resume_file": "outputs/resumes/theme2_7a6b985a95c7_resume_ja.md",
+  "cv_file": "outputs/resumes/theme2_7a6b985a95c7_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/theme2_7a6b985a95c7.json",
+    "outputs/logs/theme2_7a6b985a95c7_fit_report.md",
+    "outputs/logs/theme2_7a6b985a95c7_fit_score.json"
+  ],
+  "human_review_required": true,
+  "allowed_to_submit": false,
+  "submission_boundary": [
+    "Do not submit by default.",
+    "Stop before final submission.",
+    "Explicit human approval is required before any submit action."
+  ],
+  "generated_at": "2026-05-17T15:17:00Z"
+}

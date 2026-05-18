@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
@@ -16,6 +17,14 @@ def _render_script() -> Path:
 
 def _send_script() -> Path:
     return _root() / "scripts" / "send_telegram_job_notifications.py"
+
+
+def _load_script_module(path: Path):
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _sample_ranking() -> dict:
@@ -83,7 +92,7 @@ def test_render_telegram_job_notifications(tmp_path: Path) -> None:
     message = rows[0]["message"]
     assert "Job Match 88/100" in message
     assert "Machine Learning Intern" in message
-    assert "/job_generate_" in message
+    assert "/job_generate abc123" in message
     assert "Do not submit by default." in message
 
 
@@ -154,3 +163,18 @@ def test_send_telegram_requires_env_for_real_send(tmp_path: Path) -> None:
     assert report["status"] == "failed"
     assert report["errors"]
     assert "TELEGRAM_BOT_TOKEN" in report["errors"][0]
+
+
+def test_send_telegram_accepts_home_channel_for_real_send(tmp_path: Path) -> None:
+    module = _load_script_module(_send_script())
+
+    report = module.deliver(
+        notifications=[],
+        send=True,
+        token="test-token",
+        chat_id="home-chat",
+        timeout=1,
+    )
+
+    assert report["errors"] == []
+    assert report["secrets_loaded_from_environment"] is True

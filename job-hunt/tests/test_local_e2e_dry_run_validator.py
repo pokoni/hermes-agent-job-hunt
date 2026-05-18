@@ -71,7 +71,7 @@ ranking = {
 notification = {
   'notification_type': 'digest',
   'action_id': 'digest',
-  'message': '/job_generate_1',
+  'message': '/job_generate 1',
   'does_not_submit': True
 }
 watch = {
@@ -207,7 +207,7 @@ def test_local_e2e_dry_run_validator_passes_stubbed_flow(tmp_path: Path) -> None
 
     report = json.loads(output.read_text(encoding="utf-8"))
     assert report["status"] == "passed"
-    assert report["selected_command"] == "/job_generate_1"
+    assert report["selected_command"] == "/job_generate 1"
     assert report["resolved_action_id"] == "fingerprint1"
     assert report["approved_pipeline_status"] == "ready_for_frozen_pipeline"
     assert report["telegram_send_requested"] is False

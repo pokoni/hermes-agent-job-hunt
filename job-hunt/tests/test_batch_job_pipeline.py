@@ -158,6 +158,14 @@ def test_run_batch_job_pipeline_ranks_new_jobs(tmp_path: Path) -> None:
     assert "Do not submit by default." in ranking_md
     assert "No notification was sent by this script." in ranking_md
 
+    ranking = json.loads((workspace / "outputs" / "logs" / "job_ranking_gate_decision.json").read_text(encoding="utf-8"))
+    assert ranking["candidate_count"] == 1
+    assert ranking["ranked_candidates"][0]["job_fingerprint"] == "abc123"
+
+    last_nonempty = json.loads((workspace / "outputs" / "logs" / "job_ranking_gate_decision_last_nonempty.json").read_text(encoding="utf-8"))
+    assert last_nonempty["snapshot_type"] == "last_nonempty_ranking"
+    assert last_nonempty["ranked_candidates"][0]["job_fingerprint"] == "abc123"
+
 
 def test_run_batch_job_pipeline_handles_empty_new_jobs(tmp_path: Path) -> None:
     workspace = tmp_path
@@ -188,3 +196,106 @@ def test_run_batch_job_pipeline_handles_empty_new_jobs(tmp_path: Path) -> None:
     assert report["candidate_count"] == 0
     assert report["notify_count"] == 0
     assert report["does_not_submit"] is True
+
+
+def test_run_batch_job_pipeline_scores_duplicates_for_display_only(tmp_path: Path) -> None:
+    workspace = tmp_path
+    raw_path = workspace / "data" / "raw_jobs" / "manual_inbox" / "2099-01-01" / "seen_ai_job.md"
+    _write_raw_job(
+        raw_path,
+        "# AI Agent Intern\n\nCompany: Example AI\nRole: AI Agent Intern\nLocation: Tokyo\n\nWork on LLM agents and computer vision.\n",
+    )
+
+    sources_path = workspace / "data" / "job_sources.json"
+    sources_path.parent.mkdir(parents=True, exist_ok=True)
+    sources_path.write_text(json.dumps(_base_sources(), ensure_ascii=False, indent=2), encoding="utf-8")
+
+    logs = workspace / "outputs" / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    dedup_path = logs / "job_deduplication_report.json"
+    dedup_path.write_text(
+        json.dumps({
+            "status": "passed",
+            "new_jobs": [],
+            "duplicates": [
+                {
+                    "job_fingerprint": "seen123",
+                    "source_id": "manual_job_snapshot_inbox",
+                    "raw_job_path": str(raw_path.relative_to(workspace)),
+                    "original_location": "seen_ai_job.md",
+                    "title_hint": "AI Agent Intern",
+                    "duplicate_reason": "job_fingerprint_already_seen",
+                }
+            ],
+        }, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(workspace),
+            "--dedup-report",
+            str(dedup_path),
+            "--sources",
+            str(sources_path),
+        ],
+        check=True,
+    )
+
+    ranking = json.loads((logs / "job_ranking_gate_decision.json").read_text(encoding="utf-8"))
+    assert ranking["candidate_count"] == 1
+    assert ranking["new_candidate_count"] == 0
+    assert ranking["display_duplicate_candidate_count"] == 1
+    assert ranking["notification_candidates"] == []
+    assert ranking["ranked_candidates"][0]["discovery_status"] == "duplicate_seen"
+    assert ranking["ranked_candidates"][0]["ranking_decision"] == "already_seen_display_only"
+
+
+def test_run_batch_job_pipeline_preserves_last_nonempty_on_empty_cycle(tmp_path: Path) -> None:
+    workspace = tmp_path
+    sources_path = workspace / "data" / "job_sources.json"
+    sources_path.parent.mkdir(parents=True, exist_ok=True)
+    sources_path.write_text(json.dumps(_base_sources(), ensure_ascii=False, indent=2), encoding="utf-8")
+
+    logs = workspace / "outputs" / "logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    last_nonempty_path = logs / "job_ranking_gate_decision_last_nonempty.json"
+    last_nonempty_path.write_text(
+        json.dumps({
+            "status": "passed",
+            "snapshot_type": "last_nonempty_ranking",
+            "run_at": "2026-01-01T00:00:00Z",
+            "candidate_count": 1,
+            "ranked_candidates": [{"job_fingerprint": "keep-me"}],
+            "notification_candidates": [{"job_fingerprint": "keep-me"}],
+            "material_suggestion_candidates": [],
+            "hold_candidates": [],
+        }, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    dedup_path = logs / "job_deduplication_report.json"
+    dedup_path.write_text(json.dumps({"status": "passed", "new_jobs": []}, ensure_ascii=False), encoding="utf-8")
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(workspace),
+            "--dedup-report",
+            str(dedup_path),
+            "--sources",
+            str(sources_path),
+        ],
+        check=True,
+    )
+
+    current = json.loads((logs / "job_ranking_gate_decision.json").read_text(encoding="utf-8"))
+    assert current["candidate_count"] == 0
+
+    preserved = json.loads(last_nonempty_path.read_text(encoding="utf-8"))
+    assert preserved["ranked_candidates"][0]["job_fingerprint"] == "keep-me"

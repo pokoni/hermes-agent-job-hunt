@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -39,11 +40,12 @@ def test_runtime_controller_default_state_is_disabled(tmp_path: Path) -> None:
 
 
 def test_runtime_controller_start_enables(tmp_path: Path) -> None:
-    result = _run(tmp_path, "start")
+    result = _run(tmp_path, "start", "--no-background")
     assert result["returncode"] == 0
     data = json.loads(result["stdout"])
     assert data["status"] == "enabled"
     assert data["enabled"] is True
+    assert data["watcher_started"] is False
 
     state = json.loads((_run(tmp_path, "status"))["stdout"])
     assert state["enabled"] is True
@@ -51,15 +53,15 @@ def test_runtime_controller_start_enables(tmp_path: Path) -> None:
 
 
 def test_runtime_controller_start_is_idempotent(tmp_path: Path) -> None:
-    _run(tmp_path, "start")
-    result = _run(tmp_path, "start")
+    _run(tmp_path, "start", "--no-background")
+    result = _run(tmp_path, "start", "--no-background")
     assert result["returncode"] == 0
     data = json.loads(result["stdout"])
     assert data["status"] == "already_enabled"
 
 
 def test_runtime_controller_stop_disables(tmp_path: Path) -> None:
-    _run(tmp_path, "start")
+    _run(tmp_path, "start", "--no-background")
     result = _run(tmp_path, "stop")
     assert result["returncode"] == 0
     data = json.loads(result["stdout"])
@@ -79,7 +81,7 @@ def test_runtime_controller_stop_is_idempotent(tmp_path: Path) -> None:
 
 
 def test_runtime_controller_state_file_location(tmp_path: Path) -> None:
-    _run(tmp_path, "start")
+    _run(tmp_path, "start", "--no-background")
     state_path = tmp_path / "outputs" / "logs" / "job_search_runtime_state.json"
     assert state_path.exists()
     state = json.loads(state_path.read_text(encoding="utf-8"))
@@ -135,6 +137,36 @@ def test_runtime_controller_run_now_dry_run(tmp_path: Path) -> None:
     assert state["last_notification_count"] == 2
 
 
+def test_runtime_controller_start_spawns_background_watcher(tmp_path: Path) -> None:
+    _install_watch_cycle_stub(tmp_path)
+
+    result = _run(tmp_path, "start", "--interval-seconds", "1", "--dry-run", "--offline")
+    assert result["returncode"] == 0
+    data = json.loads(result["stdout"])
+    assert data["status"] == "enabled"
+    assert data["watcher_started"] is True
+    assert data["watcher_pid"]
+    assert data["dry_run"] is True
+
+    try:
+        state = {}
+        for _ in range(50):
+            state = json.loads((_run(tmp_path, "status"))["stdout"])
+            if state.get("last_run_at") and state.get("last_status") == "passed":
+                break
+            time.sleep(0.1)
+
+        assert state["enabled"] is True
+        assert state["watcher_alive"] is True
+        assert state["watcher_send_telegram"] is False
+        assert state["watcher_allow_network"] is False
+        assert state["last_status"] == "passed"
+        assert state["last_notification_count"] == 2
+    finally:
+        stop = _run(tmp_path, "stop")
+        assert stop["returncode"] == 0
+
+
 def test_runtime_controller_run_now_records_failure(tmp_path: Path) -> None:
     scripts = tmp_path / "scripts"
     scripts.mkdir(parents=True, exist_ok=True)
@@ -150,7 +182,7 @@ def test_runtime_controller_run_now_records_failure(tmp_path: Path) -> None:
 
 
 def test_runtime_controller_no_secrets_in_state(tmp_path: Path) -> None:
-    _run(tmp_path, "start")
+    _run(tmp_path, "start", "--no-background")
     _install_watch_cycle_stub(tmp_path)
     _run(tmp_path, "run-now")
 

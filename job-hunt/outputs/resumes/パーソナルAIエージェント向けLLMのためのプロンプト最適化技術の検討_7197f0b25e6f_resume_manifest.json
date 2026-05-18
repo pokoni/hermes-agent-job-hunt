@@ -1,0 +1,19 @@
+{
+  "job_id": "パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f",
+  "job_basename": "パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f",
+  "resume_version": "1.0.0",
+  "resume_file": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_resume_ja.md",
+  "cv_file": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f.json",
+    "outputs/logs/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_fit_report.md"
+  ],
+  "human_review_required": true,
+  "allowed_to_submit": false,
+  "generated_by": "resume-tailor",
+  "generated_at": "2026-05-17T15:31:00Z",
+  "model": "deepseek-reasoner",
+  "provider": "deepseek"
+}

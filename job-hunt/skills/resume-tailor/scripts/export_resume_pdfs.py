@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export DOCX resume artifacts to PDF when a supported converter is available.
+"""Export DOCX resume artifacts to PDF.
 
 This script belongs to the Hermes job-hunt `resume-tailor` component.
 
@@ -13,8 +13,10 @@ Generated outputs when conversion succeeds:
   outputs/resumes/<job_basename>_cv_ja.pdf
   outputs/resumes/<job_basename>_pdf_export_manifest.json
 
-The script is intentionally honest about environment dependencies. If LibreOffice
-is not installed, it exits with a clear error unless --dry-run is used.
+LibreOffice/soffice is preferred when available. If it is unavailable, the
+script writes a reviewable fallback PDF from the DOCX text using only the
+Python standard library. The fallback is not a layout-faithful conversion, but
+it is a real PDF artifact for Telegram review delivery.
 """
 
 from __future__ import annotations
@@ -28,6 +30,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
+
+from cjk_pdf_fallback import FALLBACK_EXPORT_METHOD, write_cid_japanese_fallback_pdf
 
 
 @dataclass(frozen=True)
@@ -51,6 +55,16 @@ def find_libreoffice() -> str | None:
 
 def _rel(path: Path, root: Path) -> str:
     return str(path.resolve().relative_to(root.resolve()))
+
+
+def write_fallback_pdf(source_docx: Path, output_pdf: Path, title: str) -> None:
+    """Write a readable Japanese fallback PDF from DOCX text using stdlib only."""
+    write_cid_japanese_fallback_pdf(
+        source_docx,
+        output_pdf,
+        title,
+        review_note="Generated fallback PDF for human review.",
+    )
 
 
 def build_targets(workspace: Path, basename: str) -> list[PdfExportTarget]:
@@ -94,7 +108,9 @@ def check_inputs(workspace: Path, basename: str) -> dict:
             for t in targets
         ],
         "missing_inputs": missing,
-        "ready": not missing and find_libreoffice() is not None,
+        "fallback_pdf_available": True,
+        "fallback_pdf_method": FALLBACK_EXPORT_METHOD,
+        "ready": not missing,
     }
 
 
@@ -143,16 +159,19 @@ def convert_docx_to_pdf(converter: str, source_docx: Path, output_pdf: Path) -> 
         raise RuntimeError(f"PDF output was not created or is empty: {output_pdf}")
 
 
-def write_manifest(workspace: Path, basename: str, generated: list[dict], converter: str) -> Path:
+def write_manifest(workspace: Path, basename: str, generated: list[dict], converter: str, export_method: str) -> Path:
     manifest = {
         "job_basename": basename,
         "export_type": "pdf",
         "status": "created",
         "converter": converter,
+        "export_method": export_method,
         "generated_files": generated,
         "human_review_required": True,
         "notes": [
             "Generated from DOCX resume artifacts.",
+            "LibreOffice/soffice is preferred for layout-faithful conversion.",
+            "When no converter is available, the stdlib fallback uses a Japanese CID font and UTF-16BE text to avoid mojibake.",
             "PDF files require human visual review before submission.",
             "No application submission action was performed.",
         ],
@@ -189,28 +208,29 @@ def main(argv: Iterable[str] | None = None) -> int:
         )
 
     converter = find_libreoffice()
-    if not converter:
-        raise RuntimeError(
-            "LibreOffice converter not found. Install `libreoffice` or run with --dry-run "
-            "to validate interface readiness without producing PDFs."
-        )
+    export_method = "libreoffice" if converter else FALLBACK_EXPORT_METHOD
 
     generated: list[dict] = []
     for target in build_targets(workspace, basename):
-        convert_docx_to_pdf(converter, target.source_docx, target.output_pdf)
+        if converter:
+            convert_docx_to_pdf(converter, target.source_docx, target.output_pdf)
+        else:
+            write_fallback_pdf(target.source_docx, target.output_pdf, target.document_type)
         generated.append(
             {
                 "document_type": target.document_type,
                 "source_docx": _rel(target.source_docx, workspace),
                 "output_pdf": _rel(target.output_pdf, workspace),
                 "status": "created",
+                "export_method": export_method,
             }
         )
 
-    manifest_path = write_manifest(workspace, basename, generated, converter)
+    manifest_path = write_manifest(workspace, basename, generated, converter or FALLBACK_EXPORT_METHOD, export_method)
     result = {
         "job_basename": basename,
         "status": "created",
+        "export_method": export_method,
         "pdf_export_manifest": _rel(manifest_path, workspace),
         "generated_files": generated,
         "human_review_required": True,

@@ -1,0 +1,147 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 3676 >>
+stream
+BT
+/F1 12 Tf
+50 790 Td
+14 TL
+(cv_ja) Tj
+T*
+(Generated fallback PDF for human review.) Tj
+T*
+(Layout must be checked against the DOCX before submission.) Tj
+T*
+(Japanese CV Artifact) Tj
+T*
+(職務経歴書（Shokumu Keirekisho）) Tj
+T*
+(Profile Summary) Tj
+T*
+(大学院コンピュータサイエンス専攻の研究生（M.S. candidate）として、機械学習・コンピュータビジョン・AIエージェントの研究に従事。LLMエージェントのツール使用信頼性評価のためのテ) Tj
+T*
+(所在地：福岡県福岡市) Tj
+T*
+(【注意】メールアドレス・電話番号・在留資格・修了予定日は候補者プロフィールに未記載のため、本CVでは省略しています。提出前に必ず追記してください。) Tj
+T*
+(Core Skills) Tj
+T*
+(機械学習・AI研究) Tj
+T*
+(| スキル | レベル / 経験 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| AI agent reliability | プロジェクト実績あり（テストハーネス構築、評価レポート生成） |) Tj
+T*
+(| LLM evaluation | プロジェクト実績あり（LLMツール使用信頼性評価） |) Tj
+T*
+(| PyTorch | プロジェクト実績あり（CVパイプライン最適化、モデル開発） |) Tj
+T*
+(| Computer vision | プロジェクト実績あり（低遅延推論パイプライン最適化） |) Tj
+T*
+(プログラミング) Tj
+T*
+(| 言語 | レベル |) Tj
+T*
+(|---|---|) Tj
+T*
+(| Python | 主力 — 研究・プロジェクト全般で使用 |) Tj
+T*
+(| TypeScript | 補助的 — 必要に応じて使用 |) Tj
+T*
+(開発ツール・インフラ) Tj
+T*
+(| ツール | 用途 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| Docker | コンテナ化・環境再現 |) Tj
+T*
+(| Git | バージョン管理・共同開発 |) Tj
+T*
+(| Linux | 開発・実行環境 |) Tj
+T*
+(言語) Tj
+T*
+(| 言語 | レベル | 用途 |) Tj
+T*
+(|---|---|---|) Tj
+T*
+(| 日本語 | ビジネスレベル | 技術文書作成、チーム内コミュニケーション |) Tj
+T*
+(| 英語 | プロフェッショナルレベル | 技術文書作成、研究発表、国際共同研究 |) Tj
+T*
+(Professional / Research Experience) Tj
+T*
+(大学院研究（在学中）) Tj
+T*
+(| 項目 | 内容 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| 期間 | 【要確認：入学年月〜修了予定年月】 |) Tj
+T*
+(| 所属 | Synthetic University, Computer Science |) Tj
+T*
+(| 役割 | Graduate research engineer（大学院研究生） |) Tj
+T*
+(| 研究分野 | 機械学習、コンピュータビジョン、AIエージェント |) Tj
+T*
+(| 主な活動 | • 機械学習・AIエージェント関連の研究プロジェクトに従事<br>• LLMエージェントの信頼性評価に関する実験・分析<br>• 評価フレームワークの設計と実装 |) Tj
+T*
+(Selected Projects) Tj
+T*
+(1. Synthetic AI Agent Reliability Lab) Tj
+T*
+(| 項目 | 内容 |) Tj
+T*
+(|---|---|) Tj
+T*
+(| 役割 | 開発・評価担当 |) Tj
+T*
+(| 使用技術 | Python, LLM, AI agent |) Tj
+T*
+(| キーワード | LLM, agent, evaluation, Python |) Tj
+T*
+(概要： LLMツール使用の信頼性を評価するためのテストハーネス（test harness）を構築し、評価レポートを生成するプロジェクト。LLMエージェントがツール呼び出しを行う際の信頼性・失敗) Tj
+T*
+(成果・貢献：) Tj
+T*
+(• LLMツール使用信頼性のテストハーネスを設計・実装) Tj
+T*
+(• モデル出力の分析と評価レポートの生成) Tj
+T*
+(• 評価結果に基づく改善提案の文書化) Tj
+T*
+(本求人との関連性： 本プロジェクトは求人の「Design evaluation cases for LLM agents and file/tool workflows」「Analyze mo) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+4045
+%%EOF

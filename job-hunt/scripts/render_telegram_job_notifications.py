@@ -13,10 +13,10 @@ Default behavior renders one compact digest message when there are multiple
 notification candidates. Use --individual to render one message per job.
 
 Use --use-action-aliases to render short commands such as:
-  /job_generate_1
-  /job_track_2
+  /job_generate 1
+  /job_track 2
 
-The alias map resolves those short commands back to the real action_id.
+The alias map resolves those short action ids back to the real action_id.
 
 This script does not send network requests. It only renders notification payloads.
 """
@@ -82,6 +82,10 @@ def row_action_id(row: dict) -> str:
     return safe_action_token(fingerprint or row.get("raw_job_path", "job"))
 
 
+def action_command(action: str, token: str, action_prefix: str) -> str:
+    return f"/{action_prefix}_{action} {token}"
+
+
 def build_alias_map(rows: list[dict], action_prefix: str) -> dict:
     entries = []
     for idx, row in enumerate(rows, start=1):
@@ -98,18 +102,18 @@ def build_alias_map(rows: list[dict], action_prefix: str) -> dict:
             "ranking_decision": clean(row.get("ranking_decision")),
             "topic_quality_label": clean(row.get("topic_quality_label")),
             "commands": {
-                "generate": f"/{action_prefix}_generate_{alias}",
-                "track": f"/{action_prefix}_track_{alias}",
-                "ignore": f"/{action_prefix}_ignore_{alias}",
-                "defer": f"/{action_prefix}_defer_{alias}",
-                "review": f"/{action_prefix}_review_{alias}",
+                "generate": action_command("generate", alias, action_prefix),
+                "track": action_command("track", alias, action_prefix),
+                "ignore": action_command("ignore", alias, action_prefix),
+                "defer": action_command("defer", alias, action_prefix),
+                "review": action_command("review", alias, action_prefix),
             },
             "resolved_commands": {
-                "generate": f"/{action_prefix}_generate_{real_action_id}",
-                "track": f"/{action_prefix}_track_{real_action_id}",
-                "ignore": f"/{action_prefix}_ignore_{real_action_id}",
-                "defer": f"/{action_prefix}_defer_{real_action_id}",
-                "review": f"/{action_prefix}_review_{real_action_id}",
+                "generate": action_command("generate", real_action_id, action_prefix),
+                "track": action_command("track", real_action_id, action_prefix),
+                "ignore": action_command("ignore", real_action_id, action_prefix),
+                "defer": action_command("defer", real_action_id, action_prefix),
+                "review": action_command("review", real_action_id, action_prefix),
             },
         })
 
@@ -129,7 +133,7 @@ def build_alias_map(rows: list[dict], action_prefix: str) -> dict:
 def command_token(row: dict, action: str, action_prefix: str, aliases_by_action_id: dict[str, str], use_aliases: bool) -> str:
     real_action_id = row_action_id(row)
     token = aliases_by_action_id.get(real_action_id, real_action_id) if use_aliases else real_action_id
-    return f"/{action_prefix}_{action}_{token}"
+    return action_command(action, token, action_prefix)
 
 
 def render_single_message(row: dict, action_prefix: str, aliases_by_action_id: dict[str, str], use_aliases: bool) -> dict:
@@ -229,9 +233,9 @@ def render_digest_message(
 
         if use_aliases:
             lines += [
-                f"Generate: /{action_prefix}_generate_{alias_label}",
-                f"Track: /{action_prefix}_track_{alias_label}",
-                f"Ignore: /{action_prefix}_ignore_{alias_label}",
+                f"Generate: {action_command('generate', alias_label, action_prefix)}",
+                f"Track: {action_command('track', alias_label, action_prefix)}",
+                f"Ignore: {action_command('ignore', alias_label, action_prefix)}",
             ]
         else:
             lines += [
@@ -243,7 +247,9 @@ def render_digest_message(
     if omitted:
         lines += [
             "",
-            f"...and {omitted} more candidate(s). Check outputs/logs/job_ranking_gate_report.md for details.",
+            f"...and {omitted} more candidate(s).",
+            "Show all: /job_latest all",
+            "Next page: /job_latest 2",
         ]
 
     if use_aliases:
@@ -296,6 +302,7 @@ def render_notifications(
     candidates = list(ranking.get("notification_candidates", []))
     if include_hold:
         candidates.extend(ranking.get("hold_candidates", []))
+    alias_source_rows = candidates or list(ranking.get("ranked_candidates", []))
 
     candidates.sort(
         key=lambda row: (
@@ -306,8 +313,17 @@ def render_notifications(
         ),
         reverse=True,
     )
+    alias_source_rows.sort(
+        key=lambda row: (
+            row.get("computed_ranking_decision", row.get("ranking_decision")) == "suggest_generate_materials_after_user_approval",
+            row.get("computed_ranking_decision", row.get("ranking_decision")) == "notify_user",
+            row.get("fit_score", 0),
+            row.get("topic_quality_label") == "specific_research_or_job_theme",
+        ),
+        reverse=True,
+    )
 
-    alias_map = build_alias_map(candidates, action_prefix=action_prefix)
+    alias_map = build_alias_map(alias_source_rows, action_prefix=action_prefix)
     aliases_by_action_id = {
         entry["action_id"]: entry["alias"]
         for entry in alias_map.get("aliases", [])
@@ -360,11 +376,13 @@ def main() -> int:
     parser.add_argument("--output-jsonl", default="outputs/logs/telegram_notifications.jsonl")
     parser.add_argument("--report", default="outputs/logs/telegram_notification_render_report.json")
     parser.add_argument("--alias-map", default="outputs/logs/telegram_action_alias_map.json")
+    parser.add_argument("--last-nonempty-output-jsonl", default="outputs/logs/telegram_notifications_last_nonempty.jsonl")
+    parser.add_argument("--last-nonempty-alias-map", default="outputs/logs/telegram_action_alias_map_last_nonempty.json")
     parser.add_argument("--action-prefix", default="job")
     parser.add_argument("--include-hold", action="store_true")
     parser.add_argument("--individual", action="store_true", help="Render one Telegram message per job instead of one digest.")
     parser.add_argument("--max-digest-items", type=int, default=7)
-    parser.add_argument("--use-action-aliases", action="store_true", help="Render short commands such as /job_generate_1.")
+    parser.add_argument("--use-action-aliases", action="store_true", help="Render short commands such as '/job_generate 1'.")
     args = parser.parse_args()
 
     ranking_path = Path(args.ranking)
@@ -382,12 +400,23 @@ def main() -> int:
     output_jsonl = Path(args.output_jsonl)
     report_path = Path(args.report)
     alias_map_path = Path(args.alias_map)
+    last_nonempty_output_jsonl = Path(args.last_nonempty_output_jsonl)
+    last_nonempty_alias_map_path = Path(args.last_nonempty_alias_map)
 
     write_jsonl(output_jsonl, report["notifications"])
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     alias_map_path.parent.mkdir(parents=True, exist_ok=True)
     alias_map_path.write_text(json.dumps(alias_map, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if report.get("notification_count", 0) > 0:
+        write_jsonl(last_nonempty_output_jsonl, report["notifications"])
+        last_nonempty_alias_map_path.parent.mkdir(parents=True, exist_ok=True)
+        snapshot = {
+            **alias_map,
+            "snapshot_type": "last_nonempty_alias_map",
+            "snapshot_updated_at": now_iso(),
+        }
+        last_nonempty_alias_map_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0

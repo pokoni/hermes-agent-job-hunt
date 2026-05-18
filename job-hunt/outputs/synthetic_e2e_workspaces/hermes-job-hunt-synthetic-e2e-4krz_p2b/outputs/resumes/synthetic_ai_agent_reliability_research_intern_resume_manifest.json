@@ -1,0 +1,29 @@
+{
+  "job_id": "synthetic_ai_agent_reliability_research_intern",
+  "job_basename": "synthetic_ai_agent_reliability_research_intern",
+  "resume_version": "1.0.0-draft",
+  "resume_file": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_resume_ja.md",
+  "cv_file": "outputs/resumes/synthetic_ai_agent_reliability_research_intern_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/synthetic_ai_agent_reliability_research_intern.json",
+    "outputs/logs/synthetic_ai_agent_reliability_research_intern_fit_report.md",
+    "outputs/logs/synthetic_ai_agent_reliability_research_intern_fit_score.json"
+  ],
+  "human_review_required": true,
+  "allowed_to_submit": false,
+  "missing_information": [
+    "email_address",
+    "phone_number",
+    "visa_work_authorization_status",
+    "expected_graduation_date",
+    "weekly_availability_hours"
+  ],
+  "generated_at": "2026-05-17T14:28:00Z",
+  "pipeline_stage": "resume-tailor",
+  "safety": {
+    "synthetic_validation_only": true,
+    "do_not_submit": true
+  }
+}

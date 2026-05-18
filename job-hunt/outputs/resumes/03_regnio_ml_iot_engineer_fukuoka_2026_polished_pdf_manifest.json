@@ -2,27 +2,32 @@
   "job_basename": "03_regnio_ml_iot_engineer_fukuoka_2026",
   "export_type": "polished_japanese_pdf",
   "status": "created",
-  "converter": "/usr/bin/libreoffice",
+  "converter": "cid_japanese_fallback",
+  "export_method": "cid_japanese_fallback",
   "generated_files": [
     {
       "document_type": "rirekisho",
       "source_docx": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_rirekisho_polished.docx",
       "output_pdf": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_rirekisho_polished.pdf",
-      "status": "created"
+      "status": "created",
+      "export_method": "cid_japanese_fallback"
     },
     {
       "document_type": "shokumukeirekisho",
       "source_docx": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_shokumukeirekisho_polished.docx",
       "output_pdf": "outputs/resumes/03_regnio_ml_iot_engineer_fukuoka_2026_shokumukeirekisho_polished.pdf",
-      "status": "created"
+      "status": "created",
+      "export_method": "cid_japanese_fallback"
     }
   ],
   "human_review_required": true,
   "notes": [
     "Generated from polished Japanese DOCX artifacts.",
+    "LibreOffice/soffice is preferred for layout-faithful conversion.",
+    "When no converter is available, the stdlib fallback uses a Japanese CID font and UTF-16BE text to avoid mojibake.",
     "Candidate facts were not rewritten during PDF export.",
     "Human visual review is required before submission.",
     "No application submission action was performed."
   ],
-  "created_at": "2026-05-14T01:17:08Z"
+  "created_at": "2026-05-17T13:50:22Z"
 }

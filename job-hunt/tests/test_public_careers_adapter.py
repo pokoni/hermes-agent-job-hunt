@@ -129,6 +129,42 @@ Python、深層学習、研究開発に関心のある学生を歓迎します�
     assert "PLaMo" in titles or "コンピュータビジョン" in titles
 
 
+def test_public_careers_adapter_supports_expanded_sources(tmp_path: Path) -> None:
+    workspace = tmp_path
+    snapshot = workspace / "data" / "raw_jobs" / "mercari_new_graduate_engineering" / "2099-01-01" / "new_grads.md"
+    _write_public_snapshot(
+        snapshot,
+        "mercari_new_graduate_engineering",
+        """
+Mercari Careers New Graduate
+
+Software Engineer Internship
+Build backend systems, AI features, and Machine Learning infrastructure for marketplace products.
+We welcome students interested in engineering, data, and large-scale services.
+""",
+    )
+
+    output = workspace / "outputs" / "logs" / "public_careers_adapter_report.json"
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(workspace),
+            "--raw-root",
+            "data/raw_jobs",
+            "--output",
+            str(output),
+        ],
+        check=True,
+    )
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["status"] == "passed"
+    assert report["extracted_job_count"] >= 1
+    assert report["written_jobs"][0]["source_id"] == "mercari_new_graduate_engineering_extracted"
+
+
 def test_public_careers_adapter_dry_run_does_not_write(tmp_path: Path) -> None:
     workspace = tmp_path
     snapshot = workspace / "data" / "raw_jobs" / "ntt_labs_internship_ai" / "2099-01-01" / "theme2.md"

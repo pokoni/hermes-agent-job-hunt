@@ -1,0 +1,26 @@
+{
+  "job_basename": "パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f",
+  "export_type": "docx",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "resume_ja",
+      "source_markdown": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_resume_ja.md",
+      "output_docx": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_resume_ja.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "cv_ja",
+      "source_markdown": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_cv_ja.md",
+      "output_docx": "outputs/resumes/パーソナルAIエージェント向けLLMのためのプロンプト最適化技術の検討_7197f0b25e6f_cv_ja.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from Markdown artifacts.",
+    "DOCX files require human layout review before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T00:27:34Z"
+}

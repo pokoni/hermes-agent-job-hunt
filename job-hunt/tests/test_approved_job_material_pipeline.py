@@ -75,7 +75,6 @@ def test_approved_material_pipeline_generates_plan(tmp_path: Path) -> None:
     assert report["allowed_to_submit"] is False
     assert report["human_review_required"] is True
     assert report["pipeline_stages"] == [
-        "job-normalizer",
         "job-fit-scorer",
         "resume-tailor",
         "application-tracker",
@@ -83,7 +82,6 @@ def test_approved_material_pipeline_generates_plan(tmp_path: Path) -> None:
     ]
 
     plan = (tmp_path / report["plan"]).read_text(encoding="utf-8")
-    assert "/job-normalizer" in plan
     assert "/job-fit-scorer" in plan
     assert "/resume-tailor" in plan
     assert "/application-tracker" in plan
@@ -91,8 +89,14 @@ def test_approved_material_pipeline_generates_plan(tmp_path: Path) -> None:
     assert "Do not submit by default." in plan
 
     commands = json.loads((tmp_path / report["commands"]).read_text(encoding="utf-8"))
-    assert len(commands["commands"]) == 5
+    assert len(commands["commands"]) == 4
+    assert commands["layer_contract"]["layer2_only"] is True
+    assert commands["layer_contract"]["layer1_normalized_job"] == "data/jobs/alignment.json"
     assert commands["allowed_to_submit"] is False
+    resume_command = next(item for item in commands["commands"] if item["stage"] == "resume-tailor")
+    assert "outputs/resumes/alignment_resume_ja.md" in resume_command["expected_outputs"]
+    assert "outputs/resumes/alignment_cv_ja.md" in resume_command["expected_outputs"]
+    assert "outputs/resumes/alignment_resume_ja.docx" in resume_command["expected_outputs"]
 
     queue = tmp_path / "outputs" / "logs" / "approved_material_generation_queue.jsonl"
     assert queue.exists()
@@ -156,6 +160,34 @@ def test_approved_material_pipeline_execute_records_slash_commands(tmp_path: Pat
     )
 
     assert report["status"] == "execution_recorded"
-    assert len(report["execution_results"]) == 5
+    assert len(report["execution_results"]) == 4
     assert all(item["status"] == "pending_supervised_skill_execution" for item in report["execution_results"])
     assert report["does_not_submit"] is True
+
+
+def test_approved_material_pipeline_can_include_legacy_normalizer_stage(tmp_path: Path) -> None:
+    trigger = tmp_path / "outputs" / "logs" / "action123_pipeline_trigger_request.json"
+    _write_trigger(trigger)
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(_script()),
+            "--workspace",
+            str(tmp_path),
+            "--trigger",
+            str(trigger),
+            "--include-normalizer",
+        ],
+        check=True,
+    )
+
+    report = json.loads(
+        (tmp_path / "outputs" / "logs" / "action123_material_generation_report.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert report["pipeline_stages"][0] == "job-normalizer"
+    commands = json.loads((tmp_path / report["commands"]).read_text(encoding="utf-8"))
+    assert commands["layer_contract"]["layer2_only"] is False

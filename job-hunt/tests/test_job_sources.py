@@ -38,6 +38,13 @@ def test_job_sources_include_expected_initial_sources() -> None:
         "wantedly_ai_ml_intern_japan",
         "preferred_networks_internship",
         "ntt_labs_internship_ai",
+        "rakuten_engineering_internship",
+        "mercari_new_graduate_engineering",
+        "lycorp_engineer_internship",
+        "cyberagent_engineer_internship",
+        "cybozu_engineer_internship",
+        "sony_japan_ai_internship",
+        "woven_toyota_internship",
         "manual_job_snapshot_inbox",
     }
     assert expected.issubset(source_ids)

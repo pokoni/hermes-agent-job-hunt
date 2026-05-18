@@ -37,6 +37,8 @@ class RawJobSnapshot:
     path: Path
     source_id: str
     source_name: str
+    source_type: str
+    fetch_mode: str
     original_location: str
     content_hash: str
     body_hash: str
@@ -85,6 +87,15 @@ def title_hint_from_body(body: str, path: Path) -> str:
     return path.stem[:120]
 
 
+def is_aggregate_public_snapshot(meta: dict) -> bool:
+    """Return True for whole-page snapshots that should feed adapters only."""
+    fetch_mode = str(meta.get("fetch_mode", "")).strip()
+    source_type = str(meta.get("source_type", "")).strip()
+    if source_type == "public_careers_extracted_job":
+        return False
+    return fetch_mode in {"public_url_html", "search_result_page", "rss_or_feed"}
+
+
 def read_snapshot(path: Path, workspace: Path) -> RawJobSnapshot:
     text = path.read_text(encoding="utf-8", errors="replace")
     meta, body = parse_frontmatter(text)
@@ -105,6 +116,8 @@ def read_snapshot(path: Path, workspace: Path) -> RawJobSnapshot:
         path=rel_path,
         source_id=meta.get("source_id", "unknown"),
         source_name=meta.get("source_name", ""),
+        source_type=meta.get("source_type", ""),
+        fetch_mode=meta.get("fetch_mode", ""),
         original_location=meta.get("original_location", ""),
         content_hash=content_hash,
         body_hash=body_hash,
@@ -157,6 +170,7 @@ def deduplicate(workspace: Path, raw_root: Path, seen_path: Path, dry_run: bool)
     snapshots = scan_raw_jobs(workspace, raw_root)
     new_records = []
     duplicate_records = []
+    skipped_records = []
 
     run_at = now_iso()
 
@@ -167,6 +181,8 @@ def deduplicate(workspace: Path, raw_root: Path, seen_path: Path, dry_run: bool)
             "body_hash": snapshot.body_hash,
             "source_id": snapshot.source_id,
             "source_name": snapshot.source_name,
+            "source_type": snapshot.source_type,
+            "fetch_mode": snapshot.fetch_mode,
             "raw_job_path": str(snapshot.path),
             "original_location": snapshot.original_location,
             "title_hint": snapshot.title_hint,
@@ -175,6 +191,16 @@ def deduplicate(workspace: Path, raw_root: Path, seen_path: Path, dry_run: bool)
             "human_review_required": True,
             "auto_apply_allowed": False,
         }
+
+        if is_aggregate_public_snapshot({
+            "source_type": snapshot.source_type,
+            "fetch_mode": snapshot.fetch_mode,
+        }):
+            skipped_records.append({
+                **record,
+                "skip_reason": "aggregate_public_source_snapshot",
+            })
+            continue
 
         if snapshot.job_fingerprint in batch_seen:
             duplicate_records.append({
@@ -194,10 +220,16 @@ def deduplicate(workspace: Path, raw_root: Path, seen_path: Path, dry_run: bool)
         "seen_path": str(seen_path),
         "dry_run": dry_run,
         "scanned_snapshot_count": len(snapshots),
+        "skipped_snapshot_count": len(skipped_records),
+        "aggregate_public_snapshot_count": sum(
+            1 for record in skipped_records
+            if record.get("skip_reason") == "aggregate_public_source_snapshot"
+        ),
         "new_job_count": len(new_records),
         "duplicate_job_count": len(duplicate_records),
         "new_jobs": new_records,
         "duplicates": duplicate_records,
+        "skipped_snapshots": skipped_records,
         "human_review_required": True,
         "does_not_submit": True,
         "stores_credentials": False,

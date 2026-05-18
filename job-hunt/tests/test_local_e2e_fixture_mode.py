@@ -35,7 +35,7 @@ parser.add_argument('--result')
 args = parser.parse_args()
 
 alias_map = json.loads(Path(args.alias_map).read_text(encoding='utf-8'))
-alias = args.command.rsplit('_', 1)[-1]
+alias = args.command.split(maxsplit=1)[1] if ' ' in args.command else args.command.rsplit('_', 1)[-1]
 entry = next(item for item in alias_map['aliases'] if str(item['alias']) == alias)
 action_id = entry['action_id']
 
@@ -164,7 +164,7 @@ def test_local_e2e_fixture_mode_builds_alias_and_passes(tmp_path: Path) -> None:
     report = json.loads(output.read_text(encoding="utf-8"))
 
     assert report["status"] == "passed"
-    assert report["selected_command"] == "/job_generate_1"
+    assert report["selected_command"] == "/job_generate 1"
     assert report["candidate_count"] == 1
     assert report["approved_pipeline_status"] == "ready_for_frozen_pipeline"
     assert report["does_not_submit"] is True
@@ -175,7 +175,7 @@ def test_local_e2e_fixture_mode_builds_alias_and_passes(tmp_path: Path) -> None:
 
     assert alias_map["fixture_from_latest_extracted"] is True
     assert alias_map["aliases"][0]["alias"] == "1"
-    assert alias_map["aliases"][0]["commands"]["generate"] == "/job_generate_1"
+    assert alias_map["aliases"][0]["commands"]["generate"] == "/job_generate 1"
 
 
 def test_local_e2e_fixture_mode_blocks_when_no_extracted_jobs(tmp_path: Path) -> None:

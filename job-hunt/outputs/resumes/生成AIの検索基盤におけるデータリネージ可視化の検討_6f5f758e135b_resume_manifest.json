@@ -1,0 +1,22 @@
+{
+  "job_id": "生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b",
+  "job_basename": "生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b",
+  "resume_version": "0.1.0",
+  "resume_file": "outputs/resumes/生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b_resume_ja.md",
+  "cv_file": "outputs/resumes/生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b_cv_ja.md",
+  "status": "draft_requires_review",
+  "source_inputs": [
+    "data/candidate_profile.json",
+    "data/jobs/生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b.json"
+  ],
+  "human_review_required": true,
+  "allowed_to_submit": false,
+  "tailor_plan": "outputs/tailored_resumes/生成AIの検索基盤におけるデータリネージ可視化の検討_6f5f758e135b_tailor_plan.md",
+  "generated_at": "2026-05-17T14:14:00Z",
+  "notes": [
+    "Markdown artifacts generated from candidate_profile.json and job data.",
+    "No DOCX/PDF export has been performed yet.",
+    "Human review required before submission gate.",
+    "No application submission action was performed."
+  ]
+}

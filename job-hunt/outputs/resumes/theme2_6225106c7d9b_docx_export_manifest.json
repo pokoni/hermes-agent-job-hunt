@@ -1,0 +1,26 @@
+{
+  "job_basename": "theme2_6225106c7d9b",
+  "export_type": "docx",
+  "status": "created",
+  "generated_files": [
+    {
+      "document_type": "resume_ja",
+      "source_markdown": "outputs/resumes/theme2_6225106c7d9b_resume_ja.md",
+      "output_docx": "outputs/resumes/theme2_6225106c7d9b_resume_ja.docx",
+      "status": "created"
+    },
+    {
+      "document_type": "cv_ja",
+      "source_markdown": "outputs/resumes/theme2_6225106c7d9b_cv_ja.md",
+      "output_docx": "outputs/resumes/theme2_6225106c7d9b_cv_ja.docx",
+      "status": "created"
+    }
+  ],
+  "human_review_required": true,
+  "notes": [
+    "Generated from Markdown artifacts.",
+    "DOCX files require human layout review before submission.",
+    "No application submission action was performed."
+  ],
+  "created_at": "2026-05-17T01:02:04Z"
+}

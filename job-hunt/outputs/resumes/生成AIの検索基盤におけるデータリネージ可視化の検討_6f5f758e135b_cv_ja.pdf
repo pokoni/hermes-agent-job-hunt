@@ -1,0 +1,147 @@
+%PDF-1.4
+%����
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 4041 >>
+stream
+BT
+/F1 12 Tf
+50 790 Td
+14 TL
+(cv_ja) Tj
+T*
+(Generated fallback PDF for human review.) Tj
+T*
+(Layout must be checked against the DOCX before submission.) Tj
+T*
+(Japanese CV Artifact) Tj
+T*
+(Profile Summary) Tj
+T*
+(Python による研究開発とデータ分析を基盤とし、LangGraph・LlamaIndex を用いた RAG 関連技術の探求を進める、生成AI検索基盤に関心を持つ大学院生。九州大学大学院で機) Tj
+T*
+(Core Skills) Tj
+T*
+(Research & Development:) Tj
+T*
+(• Python を用いた研究用 ML ワークフローの実装・評価) Tj
+T*
+(• 実験設計・データ収集・データ分析・評価パイプライン構築) Tj
+T*
+(• LangGraph / LlamaIndex を用いた agent タスク設計と RAG パイプラインの基礎検討) Tj
+T*
+(Programming & Frameworks:) Tj
+T*
+(• Python \(3年以上\), PyTorch, LangGraph, LlamaIndex, OpenCV) Tj
+T*
+(Data Pipeline & Analysis:) Tj
+T*
+(• データ収集・前処理・拡張パイプライン構築) Tj
+T*
+(• モデル評価・比較実験の設計と実行) Tj
+T*
+(• データ分析と結果の可視化) Tj
+T*
+(Languages:) Tj
+T*
+(• 日本語: JLPT N2（技術的なコミュニケーションが可能）) Tj
+T*
+(• 英語: TOEIC 750（技術文書・論文の読解が可能）) Tj
+T*
+(• 中国語: ネイティブ) Tj
+T*
+(Professional / Research Experience) Tj
+T*
+(Graduate Researcher) Tj
+T*
+(九州大学 Pangu Research Lab \(2024年10月〜現在\)) Tj
+T*
+(福岡県) Tj
+T*
+(ソフトウェア工学とAIの接点における開発指向型研究に従事。機械学習、コンピュータビジョン、マルチモーダル情報処理、agent 関連技術を探求。) Tj
+T*
+(• LangGraph および LlamaIndex を使用した agent タスク設計の基礎検討を実施) Tj
+T*
+(• 研究用 ML/CV ワークフローの実装と実験評価を担当) Tj
+T*
+(• マルチモーダル情報処理のための実験設計とデータ分析) Tj
+T*
+(• 使用技術: Python, PyTorch, LangGraph, LlamaIndex) Tj
+T*
+(Student Researcher) Tj
+T*
+(上海第二工業大学 Computer Vision Research \(2022年9月〜2024年6月\)) Tj
+T*
+(上海市) Tj
+T*
+(軽量コンピュータビジョンモデルの研究に従事。フレームワーク設計、実験設定、データ分析、論文執筆を担当。) Tj
+T*
+(• 軽量ビジュアルバックボーンネットワークの研究フレームワークを設計) Tj
+T*
+(• データ収集・分析パイプラインを構築し、実験データを管理) Tj
+T*
+(• 3本の査読付き論文（Neurocomputing, Empirical Software Engineering 等）に共著者として貢献) Tj
+T*
+(• 使用技術: Python, PyTorch, OpenCV) Tj
+T*
+(Edge AI Engineer Intern) Tj
+T*
+(Sony Semiconductor Solutions \(上海\) Edge AI \(2023年7月〜2024年4月\)) Tj
+T*
+(上海市) Tj
+T*
+(エッジデバイス向け物体認識アルゴリズムの開発。データ準備からモデル軽量化・評価までエンドツーエンドで担当。) Tj
+T*
+(• スマートカメラ・スマートグラス向け物体認識の学習データ整備とデータ拡張パイプラインを構築) Tj
+T*
+(• 量子化・枝刈りによるモデル圧縮を適用し、限られた計算リソース下で推論を最適化) Tj
+T*
+(• 検討成果の一部はスマートグラス向け物体認識機能として商用製品に実装) Tj
+T*
+(• 使用技術: Python, PyTorch, OpenCV, 量子化, 枝刈り) Tj
+T*
+(Selected Projects) Tj
+T*
+(RAG Pipeline 基礎検討 \(LangGraph / LlamaIndex\)) Tj
+T*
+(期間: 2024年10月〜現在) Tj
+T*
+(役割: Graduate Researcher) Tj
+T*
+(• LangGraph と LlamaIndex を用いた agent タスク設計と RAG パイプラインの基礎調査) Tj
+T*
+(• 検索基盤技術に対する理解を深めるための実験的検討) Tj
+T*
+(• 生成AIと検索技術の接点への関心から、自主的に学習・探求を実施) Tj
+T*
+(軽量ビジュアルバックボーン研究 \(Lightweight Visual Backbone\)) Tj
+T*
+(期間: 2022年9月〜2024年6月) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+4410
+%%EOF

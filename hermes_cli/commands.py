@@ -311,10 +311,11 @@ def is_gateway_known_command(name: str | None) -> bool:
     """
     if not name:
         return False
-    if name in GATEWAY_KNOWN_COMMANDS:
+    normalized = name.replace("_", "-")
+    if name in GATEWAY_KNOWN_COMMANDS or normalized in GATEWAY_KNOWN_COMMANDS:
         return True
     for plugin_name, _description, _args_hint in _iter_plugin_command_entries():
-        if plugin_name == name:
+        if plugin_name == name or plugin_name == normalized:
             return True
     return False
 
@@ -363,7 +364,12 @@ def should_bypass_active_session(command_name: str | None) -> bool:
     ACTIVE_SESSION_BYPASS_COMMANDS remains the subset of commands with
     explicit Level-2 handlers; the rest fall through to the catch-all.
     """
-    return resolve_command(command_name) is not None if command_name else False
+    if not command_name:
+        return False
+    if resolve_command(command_name) is not None:
+        return True
+    # Also check plugin commands so they bypass the active session guard.
+    return is_gateway_known_command(command_name)
 
 
 def _resolve_config_gates() -> set[str]:
